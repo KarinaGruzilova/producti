@@ -1,0 +1,31 @@
+<!-- Уведомления об ошибках -->
+{% if form.non_field_errors %}
+<div class="error-toast" id="errorToast" style="display: none;">
+    <button class="error-close" onclick="this.parentElement.style.display='none'">×</button>
+    <span class="error-icon">⚠</span>
+    <span class="error-text">
+        {% for error in form.non_field_errors %}
+            {{ error }}
+        {% endfor %}
+    </span>
+</div>
+
+<script>
+// Показываем уведомление при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    const toast = document.getElementById('errorToast');
+    if (toast) {
+        toast.style.display = 'block';
+        
+        // Автоматически скрываем через 20 секунд
+        setTimeout(function() {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.5s';
+            setTimeout(function() {
+                toast.style.display = 'none';
+            }, 500);
+        }, 20000);
+    }
+});
+</script>
+{% endif %}

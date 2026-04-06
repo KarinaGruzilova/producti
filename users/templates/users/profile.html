@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/users.css'%}">
+{% endblock %}
+
+{% block title %}Профиль | Producti{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    
+    <!-- ШАПКА ПРОФИЛЯ (как container-1) -->
+    <div class="profile-header-block">
+        <div class="profile-header-content">
+            <div class="profile-avatar-section">
+                {% if user.profile.avatar %}
+                <img src="{{ user.profile.avatar.url }}" alt="Аватар" class="profile-avatar-img">
+                {% else %}                
+                    <div class="profile-avatar-placeholder" style="background: linear-gradient(135deg, #2D268C, #AEBCFE);">
+                    {{ user.username|first|upper }}
+                </div>
+                {% endif %}
+                <div class="profile-avatar-edit">
+                    <button class="avatar-edit-btn" id="avatarEditBtn">✏️</button>
+                </div>
+            </div>
+            
+            <div class="profile-info2">
+                <h1>{{ user.get_full_name|default:user.username }}</h1>
+                <p class="profile-username">@{{ user.username }}</p>
+                <p class="profile-email">{{ user.email }}</p>
+                <p class="profile-joined">Присоединился: {{ user.date_joined|date:"d F Y" }}</p>
+            </div>
+            
+            <div class="profile-actions">
+                <button class="btn-edit-profile" id="editProfileBtn">
+                    Редактировать профиль
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- СТАТИСТИКА (как why-we блок) -->
+    <div class="stats-container">
+        <h2><span>Моя</span> статистика</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_hours }}</div>
+                <div class="stat-label">всего часов</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ tasks_count }}</div>
+                <div class="stat-label">выполненных задач</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ categories_count }}</div>
+                <div class="stat-label">активных категорий</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ streak_days }}</div>
+                <div class="stat-label">дней в серии 🔥</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ completed_goals }}</div>
+                <div class="stat-label">достигнутых целей</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ГРАФИК АКТИВНОСТИ -->
+    <div class="activity-container">
+        <h2><span>Активность</span> по месяцам</h2>
+        <div class="activity-chart">
+            {% for month in months_data %}
+            <div class="chart-bar-wrapper">
+                <div class="chart-bar" style="height: {% widthratio month.hours 50 120 %}px;"></div>
+                <span class="chart-label">{{ month.name }}</span>
+                <span class="chart-value">{{ month.hours }}ч</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- НАСТРОЙКИ -->
+    <div class="settings-container">
+        <h2><span>Настройки</span> аккаунта</h2>
+        
+        <div class="settings-grid">
+            <!-- Тема -->
+            <div class="setting-card">
+                <div class="setting-icon">🌙</div>
+                <div class="setting-info">
+                    <h4>Тема оформления</h4>
+                    <p>Выберите светлую или тёмную тему</p>
+                </div>
+                <div class="setting-control">
+                    <div class="theme-switch">
+                        <button class="theme-option active" data-theme="light">☀️</button>
+                        <button class="theme-option" data-theme="dark">🌙</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Уведомления -->
+            <div class="setting-card">
+                <div class="setting-icon">🔔</div>
+                <div class="setting-info">
+                    <h4>Уведомления</h4>
+                    <p>Настройте получаемые уведомления</p>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Еженедельный отчёт -->
+            <div class="setting-card">
+                <div class="setting-icon">📊</div>
+                <div class="setting-info">
+                    <h4>Еженедельный отчёт</h4>
+                    <p>Получайте сводку о вашей продуктивности</p>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Экспорт данных -->
+            <div class="setting-card">
+                <div class="setting-icon">📤</div>
+                <div class="setting-info">
+                    <h4>Экспорт данных</h4>
+                    <p>Скачайте все ваши данные в CSV или JSON</p>
+                </div>
+                <div class="setting-control">
+                    <button class="btn-setting" id="exportDataBtn">Экспорт</button>
+                </div>
+            </div>
+            
+            <!-- Смена пароля -->
+            <div class="setting-card">
+                <div class="setting-icon">🔐</div>
+                <div class="setting-info">
+                    <h4>Безопасность</h4>
+                    <p>Измените пароль для входа</p>
+                </div>
+                <div class="setting-control">
+                    <button class="btn-setting" id="changePasswordBtn">Сменить</button>
+                </div>
+            </div>
+            
+            <!-- Удаление аккаунта (опасная зона) -->
+            <div class="setting-card danger">
+                <div class="setting-icon">⚠️</div>
+                <div class="setting-info">
+                    <h4>Удалить аккаунт</h4>
+                    <p>Это действие необратимо</p>
+                </div>
+                <div class="setting-control">
+                    <button class="btn-danger" id="deleteAccountBtn">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+
+
+{% endblock %}
+

@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name }} | Producti{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/category.css'%}">
+{% endblock %}
+
+{% block content %}
+
+<div class="content-container">
+    
+    <!-- ВЕРХНЯЯ ПАНЕЛЬ С КАТЕГОРИЕЙ -->
+    <div class="category-hero" style="background: {{ category.color }};">
+        <div class="category-hero-content">
+            <div class="category-hero-left">
+                <div class="category-hero-icon">
+                    {{ category.emoji }}
+                </div>
+                <div class="category-hero-text">
+                    <h1>{{ category.name }}</h1>
+                    {% if category.description %}
+                    <p>{{ category.description }}</p>
+                    {% else %}
+                    <p>Категория создана {{ category.created_at|date:"d.m.Y" }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="category-hero-buttons">
+                <button class="btn-hero-edit" data-id="{{ category.id }}">
+                    Редактировать
+                </button>
+                <button class="btn-hero-delete" data-id="{{ category.id }}">
+                    Удалить
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ТРИ КЛЮЧЕВЫЕ МЕТРИКИ -->
+    <div class="key-metrics">
+        <div class="metric-card">
+            <div class="metric-value">{{ total_hours }}</div>
+            <div class="metric-label">всего часов</div>
+            <div class="metric-trend trend-up">↑ +15% к прошлому месяцу</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">{{ tasks_count }}</div>
+            <div class="metric-label">выполненных задач</div>
+            <div class="metric-trend">{{ avg_hours }} ч в среднем</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">{{ recent_hours }}</div>
+            <div class="metric-label">за последние 30 дней</div>
+            <div class="metric-trend">активно</div>
+        </div>
+    </div>
+    
+    <!-- ДВЕ КОЛОНКИ -->
+    <div class="two-columns">
+        
+        <!-- ГРАФИК -->
+        <div class="chart-column">
+            <div class="chart-header">
+                <h3>Активность за неделю</h3>
+                <span>часы</span>
+            </div>
+            <div class="chart-bars">
+                {% for day in week_data %}
+                <div class="chart-day">
+                    <div class="chart-bar" style="height: {% widthratio day.hours max_hours 100 %}px;"></div>
+                    <span class="chart-day-name">{{ day.name_short }}</span>
+                    <span class="chart-hours">{{ day.hours }}ч</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- ИНСАЙТЫ -->
+        <div class="insights-column">
+            <div class="insights-header">
+                <h3>Инсайты</h3>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon">📈</div>
+                <div class="insight-text">
+                    <div class="insight-title">Пик продуктивности</div>
+                    <div class="insight-desc">Самое продуктивное время: утро</div>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon">🎯</div>
+                <div class="insight-text">
+                    <div class="insight-title">Цель близка</div>
+                    <div class="insight-desc">Осталось 5 часов до цели</div>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon">🔥</div>
+                <div class="insight-text">
+                    <div class="insight-title">Лучший день</div>
+                    <div class="insight-desc">Среда — самый продуктивный день</div>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon">💪</div>
+                <div class="insight-text">
+                    <div class="insight-title">Прогресс</div>
+                    <div class="insight-desc">+25% к прошлому месяцу</div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- СПИСОК ЗАДАЧ -->
+    <div class="tasks-section">
+        <div class="tasks-header">
+            <h3>Последние задачи</h3>
+            <button class="btn-add-task" data-category-id="{{ category.id }}">
+                + Добавить задачу
+            </button>
+        </div>
+        
+        <div class="task-list">
+            {% for task in recent_tasks %}
+            <div class="task-row">
+                <div class="task-date">
+                    {{ task.created_at|date:"d.m" }}
+                </div>
+                <div class="task-info">
+                    <div class="task-name">{{ task.title|default:"Без названия" }}</div>
+                    <div class="task-duration">{{ task.duration_formatted }}</div>
+                </div>
+                <div class="task-actions">
+                    <button class="btn-resume" data-task-id="{{ task.id }}">
+                        Возобновить
+                    </button>
+                    <button class="btn-resume" data-task-id="{{ task.id }}">
+                        <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.375 5.16667V9.83333M4.625 5.16667V9.83333M1.875 2.5V10.3667C1.875 11.1134 1.875 11.4865 2.02487 11.7717C2.15669 12.0226 2.36689 12.227 2.62561 12.3548C2.91945 12.5 3.30431 12.5 4.07288 12.5H7.92712C8.69569 12.5 9.07999 12.5 9.37383 12.3548C9.63256 12.227 9.84345 12.0226 9.97528 11.7717C10.125 11.4868 10.125 11.114 10.125 10.3687V2.5M1.875 2.5H3.25M1.875 2.5H0.5M3.25 2.5H8.75M3.25 2.5C3.25 1.87874 3.25 1.56827 3.35467 1.32324C3.49422 0.996538 3.76172 0.736819 4.09863 0.601494C4.35132 0.5 4.67183 0.5 5.3125 0.5H6.6875C7.32817 0.5 7.6485 0.5 7.90119 0.601494C8.2381 0.736819 8.50571 0.996538 8.64526 1.32324C8.74993 1.56827 8.75 1.87875 8.75 2.5M8.75 2.5H10.125M10.125 2.5H11.5" stroke="#2A2A2A" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <p>У вас пока нет задач в этой категории</p>
+                <button class="btn-add-task" data-category-id="{{ category.id }}">
+                    + Создать первую задачу
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- НАЗАД -->
+    <div class="back-nav">
+        <a href="{% url 'categories:activities' %}" class="btn-back">
+            ← Вернуться к списку категорий
+        </a>
+    </div>
+    
+</div>
+
+{% endblock %}

@@ -1,0 +1,338 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="content-container">
+    <div id="overlay" class="overlay"></div>
+    <div class="data-and-focus">
+        <div class="data-container">
+            <div class="data-forma">
+                <h1>Сегодня</h1>
+                <p>{{ current_date }} | {{ current_time }}</p>
+            </div>
+            <!-- <p>Полезное время за неделю: 4ч 20мин</p> -->
+        </div>
+        <div class="launch-container">
+            <span>Запустить фокус</span>
+            <button class="launch-focus" id="openModalBtn">
+                <img src="{% static 'icons/launch-go.svg' %}" alt="Запустить">
+            </button>
+        </div>
+    </div>
+
+    <div class="block1-dashboard">
+        <div class="focus-activities">
+            <div class="zagolovok">
+                <h4>Активность</h4>
+                <div class="text">
+                    <span id="week-total-hours">{{ week_total_hours }} часов</span>
+                    <p>работы на этой неделе</p>
+                </div>
+            </div>
+            <div class="grafik-activities" id="week-chart">
+                {% for day in week_data %}
+                <div class="day {% if day.hours > 0 %}day-actives{% else %}day-no{% endif %}" 
+                    data-hours="{{ day.hours }}" 
+                    data-day="{{ day.name }}"
+                    data-tasks="{{ day.tasks_count }}"
+                    onmouseenter="showTooltip(this)"
+                    onmouseleave="hideTooltip(this)">
+                    <span class="bar" style="height: {% widthratio day.hours max_hours 128 %}px;"></span>
+                    <span class="dot"></span>
+                    <span class="day-name">{{ day.name_short }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    <div class="history-container">
+    <div class="history-header">
+        <h4>Последние сеансы фокуса</h4>
+        <!-- <span class="sessions-count">{{ sessions_by_day.today|length|add:sessions_by_day.yesterday|length|add:sessions_by_day.older|length }}</span> -->
+    </div>
+
+    <div class="focus-history">
+        <div class="history-block">
+            
+            <!-- СЕГОДНЯ -->
+            {% if sessions_by_day.today %}
+            <div class="datainfo">
+                <span>сегодня</span>
+                <div class="categories">
+                    {% for session in sessions_by_day.today %}
+                    <div class="category" style="background: linear-gradient(135deg, {{ session.category_color }}20 0%, {{ session.category_color }}40 100%);">
+                        <button class="btn-again" data-session-id="{{ session.id }}" data-category-id="{{ session.category_id }}" data-description="{{ session.full_description }}">
+                            возобновить
+                        </button>
+                        <div class="info-category">
+                            <p>{{ session.category_emoji }} {{ session.time }} — {{ session.duration }}</p>
+                            <p>{{ session.category_name }}: «{{ session.description }}»</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ВЧЕРА -->
+            {% if sessions_by_day.yesterday %}
+            <div class="datainfo">
+                <span>вчера</span>
+                <div class="categories">
+                    {% for session in sessions_by_day.yesterday %}
+                    <div class="category" style="background: linear-gradient(135deg, {{ session.category_color }}20 0%, {{ session.category_color }}40 100%);">
+                        <button class="btn-again" data-session-id="{{ session.id }}" data-category-id="{{ session.category_id }}" data-description="{{ session.full_description }}">
+                            возобновить
+                        </button>
+                        <div class="info-category">
+                            <p>{{ session.category_emoji }} {{ session.time }} — {{ session.duration }}</p>
+                            <p>{{ session.category_name }}: «{{ session.description }}»</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- РАНЕЕ -->
+            {% if sessions_by_day.older %}
+            <div class="datainfo">
+                <span>ранее</span>
+                <div class="categories">
+                    {% for session in sessions_by_day.older %}
+                    <div class="category" style="background: linear-gradient(135deg, {{ session.category_color }}20 0%, {{ session.category_color }}40 100%);">
+                        <button class="btn-again" data-session-id="{{ session.id }}" data-category-id="{{ session.category_id }}" data-description="{{ session.full_description }}">
+                            возобновить
+                        </button>
+                        <div class="info-category">
+                            <p>{{ session.category_emoji }} {{ session.time }} — {{ session.duration }}</p>
+                            <p>{{ session.category_name }}: «{{ session.description }}»</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Если нет сеансов -->
+            {% if not sessions_by_day.today and not sessions_by_day.yesterday and not sessions_by_day.older %}
+            <div class="empty-history">
+                <p>У вас пока нет сеансов</p>
+                <a href="#" class="btn-start-focus">Начать первый фокус</a>
+            </div>
+            {% endif %}
+
+        </div>
+        <span class="scroll-bar"></span>
+    </div>
+</div>
+
+
+    <!-- Модальное окно1 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn close-mod1">&times;</span>
+            <h3>На чем сфокусируемся?</h3>
+            <div class="category-content">
+                <div class="categories-container">
+                    <div class="categories-row">
+                        <button class="category" data-value="study">
+                            <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
+                            <span>учеба</span>
+                        </button>
+                        <button class="category" data-value="read">
+                            <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
+                            <span>чтение</span>
+                        </button>
+                        <button class="category" data-value="work">
+                            <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
+                            <span>работа</span>
+                        </button>
+                    </div>
+                    <div class="categories-row">
+                        <button class="category" data-value="hobby">
+                            <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
+                            <span>хобби</span>
+                        </button>
+
+
+                        <!-- Кнопка "выбрать" с выпадающим списком -->
+                        <div class="category-select-wrapper">
+                            <button class="category category-select-btn" data-value="other">
+                                <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
+                                <span>выбрать</span>
+                                <svg width="12" height="6" viewBox="0 0 9 5" fill="none" xmlns="http://www.w3.org/2000/svg" class="select-arrow">
+                                    <path d="M8.5 0.5L4.5 4.5L0.5 0.5" stroke="#2D268C" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                                <div class="category-dropdown">
+                                    {% if categories %}
+                                        {% for category in categories %}
+                                        <div class="category-option" 
+                                            data-value="{{ category.name|lower }}"
+                                            data-id="{{ category.id }}">
+                                            {{ category.name }}
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="category-option-empty">Нет категорий</div>
+                                    {% endif %}
+                                </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Форма с таймером -->
+            <form>
+                <div class="timer-chose">
+                    <img src="{% static 'icons/mod1-timer.svg' %}" alt="">
+                    <div class="time-select">
+                        <div class="time-selected">
+                            <span class="selected-time">25 мин</span>
+                            <img src="{% static 'icons/dashboard-cat-other.svg' %}" alt="▼" class="dropdown-arrow">
+                        </div>
+                        <div class="time-dropdown">
+                            <div class="time-option" data-minutes="10">10 мин</div>
+                            <div class="time-option" data-minutes="25">25 мин</div>
+                            <div class="time-option" data-minutes="30">30 мин</div>
+                            <div class="time-option" data-minutes="60">1 час</div>
+                            <div class="time-option" data-minutes="120">2 часа</div>
+                            <div class="time-option" data-minutes="180">3 часа</div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="selected-minutes" name="selected_minutes" value="25">
+            </form>
+            
+            <input class="mod1-tasks" type="text" placeholder="описание задачи">
+            
+            <div class="button-mod1">
+                <button class="create">+ новая категория</button>
+                <button class="start">старт</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Модальное окно2 - Создание категории -->
+    <div id="createCategoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn close-mod2">&times;</span>
+            <h3>Создать новую категорию</h3>
+            
+            <form class="category-form" id="createCategoryForm" method="post">
+                {% csrf_token %}
+                
+                <!-- Название категории -->
+                <input type="text" 
+                    id="category-name" 
+                    name="name" 
+                    class="mod2-tasks" 
+                    placeholder="Введите название категории"
+                    required
+                    minlength="2"
+                    maxlength="100">
+                
+                <div class="options-row">
+                    <!-- Блок с эмодзи -->
+                    <div class="option-selector emoji-selector-container">
+                        <span class="option-label">Иконка:</span>
+                        
+                        <button type="button" class="emoji-trigger-button" id="emojiPickerBtn">
+                            <span class="selected-emoji" id="selectedEmoji">🎨</span>
+                            <svg width="12" height="6" viewBox="0 0 9 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.5 0.5L4.5 4.5L0.5 0.5" stroke="#2D268C" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        
+                        <input type="hidden" name="emoji" id="emojiInput" value="🎨">
+                        <div class="emoji-picker-container" id="emojiPickerContainer" style="display: none;"></div>
+                    </div>
+                    
+                    <!-- Выбор цвета -->
+                    <div class="option-selector color-selector-container">
+                        <span class="option-label">Цвет:</span>
+                        <div class="custom-color-select">
+                            <button type="button" class="color-selector-btn" id="colorSelectorBtn">
+                                <span class="color-preview" id="selectedColorPreview" style="background-color: #C7CEEA;"></span>
+                                <svg width="12" height="6" viewBox="0 0 9 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8.5 0.5L4.5 4.5L0.5 0.5" stroke="#2D268C" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                            
+                            <div class="color-dropdown" id="colorDropdown" style="display: none;">
+                                {% for color_code, color_name in color_choices %}
+                                <div class="color-option" data-color="{{ color_code }}" data-name="{{ color_name }}">
+                                    <span class="color-dot" style="background-color: {{ color_code }};"></span>
+                                    <span class="color-text">{{ color_name }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <input type="hidden" name="color" id="colorInput" value="#C7CEEA">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Скрытое поле description (если нужно) -->
+                <input type="hidden" name="description" value="">
+                
+                <!-- Кнопка создания -->
+                <div class="button-mod2">
+                    <button type="submit" class="btn-create" id="createCategorySubmit">+ создать</button>
+                </div>
+                
+                <!-- Контейнер для ошибок -->
+                <div id="categoryError" class="error-message" style="display: none; color: red; margin-top: 10px; text-align: center;"></div>
+            </form>
+        </div>
+    </div>
+
+
+<!-- Модальное окно3 - Старт таймера с выбранной категорией -->
+<div id="startTimerModal" class="modal start-timer-modal">
+    <div class="modal-content start-timer-content">
+        <span class="close-btn close-mod3">&times;</span>
+        
+        <div class="start-timer-body">
+            <div class="zagolovok">
+                <div class="start-emoji" id="startCategoryEmoji">📚</div>
+                <h2 class="start-category-name" id="startCategoryName">Учеба</h2>
+            </div>
+
+            <div class="start-task-description" id="startTaskDescription">описание задачи</div>
+            
+            <div class="start-timer-info">
+                <img src="{% static 'icons/timer.svg' %}" alt="" class="timer-start" >
+                <div class="start-time-display" id="startTimeDisplay">25:00</div>
+            </div>
+            
+            <!-- Сообщение о завершении таймера -->
+            <div class="timer-complete-message" id="timerCompleteMessage" style="display: none;">
+                <span>✅ Время вышло!</span>
+            </div>
+            
+            <div class="start-timer-actions">
+                <button class="btn-start-cancel" id="btnDistracted">я отвлекся</button>
+                <div>
+                    <div class="right-btn">
+                        <button class="btn-pauza-begin" id="btnPause">
+                            <img src="{% static 'icons/pauza.svg' %}" alt="" class="timer-start" >
+                            <span>взять паузу</span>
+                        </button>
+                        <button class="btn-start-begin" id="btnComplete">готово!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+    <!-- Подключаем только category.js, dashboard-modal.js не подключается -->
+    <script src="{% static 'js/dashboard-modal.js' %}"></script>
+{% endblock %}

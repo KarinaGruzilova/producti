@@ -1,0 +1,86 @@
+@font-face {
+    font-family: 'DVDDS';
+    src: url('../fonts/h1/dvdds.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+    font-family: 'DVDDS', sans-serif;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+}
+
+
+
+
+
+.error-toast {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    border-left: 5px solid #ff4444;
+    max-width: 400px;
+    width: 90%;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Иконка и текст */
+.error-icon {
+    color: #ff4444;
+    font-size: 20px;
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.error-text {
+    color: #333;
+    font-size: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Кнопка закрытия */
+.error-close {
+    float: right;
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+}
+
+.error-close:hover {
+    color: #333;
+}
+
+/* Анимация появления */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Для мобильных */
+@media (max-width: 480px) {
+    .error-toast {
+        padding: 15px;
+        max-width: 90%;
+    }
+}

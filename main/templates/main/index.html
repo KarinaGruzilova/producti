@@ -1,0 +1,80 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная</title>
+    <link rel="stylesheet" href="{% static 'styles/index.css'%}">
+
+</head>
+<body>
+    <main>
+        <div class="container-1">
+            <img src="" alt="">
+            <div class="heder">
+                <div class="logo">
+                    <span>Pr</span>
+                    <svg width="14" height="20" viewBox="0 0 14 20" color="#2d268c" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 19H10M7 1C3.68629 1 1 3.68629 1 7C1 8.2145 1.36084 9.34472 1.98117 10.2893C2.93507 11.7418 3.41161 12.4676 3.47352 12.5761C4.02428 13.541 3.92287 13.2007 3.99219 14.3096C3.99998 14.4342 4 14.6229 4 15C4 15.5523 4.44772 16 5 16L9 16C9.55229 16 10 15.5523 10 15C10 14.6229 10 14.4342 10.0078 14.3096C10.0771 13.2007 9.97511 13.541 10.5259 12.5761C10.5878 12.4676 11.0651 11.7418 12.019 10.2893C12.6394 9.34472 13.0002 8.2145 13.0002 7C13.0002 3.68629 10.3137 1 7 1Z" stroke="#2D268C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span>ducti</span>
+                </div>
+                <div class="btns-login">
+                    <a href="{% url "users:login" %}" class="nav-link"><button class="btn-login">Войти</button></a>
+                    <a href="{% url "users:registration" %}" class="nav-link"><button class="btn-reg">Зарегистрироваться</button></a>
+                </div>
+            </div>
+            <div class="promo">
+                <div class="glavnoe">
+                    <h1>Сфокусируйся на важном. Producti превратит твоё время в результат.</h1>
+                    <p>Умный трекер продуктивности с аналитикой, которая показывает, где ты растешь, а где теряешь часы. Никакой воды — только польза.</p>
+                    <button>начать бесплатно</button>
+                </div>
+                <div class="privilege">
+                    <div class="priv1">
+                        <span>4 200+</span>
+                        <p>Активных пользователей, которые уже управляют своей продуктивностью</p>
+                    </div>
+                    <p>Запускай таймер, выбирай категорию и погружайся в работу. Приложение само посчитает, сколько времени ты посвятил важным делам.А когда видишь свой прогресс — двигаться к целям становится в разы проще.</p>
+                    <div class="priv2">
+                        <span>Уже 185 000+ часов</span>
+                        <p>Полезного времени отслежено пользователями Producti </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-2">
+            <h2><span>Почему</span> мы выбираем Prоducti</h2>
+            <div class="why-we">
+                <div class="why">
+                    <span>01</span>
+                    <h6>Точный прогноз</h6>
+                    <p>Аналитика на основе твоих данных, а не усреднённых шаблонов.</p>
+                </div>
+                <div class="why">
+                    <span>02</span>
+                    <h6>Осознанный фокус</h6>
+                    <p>Без лишнего шума. Только ты, твои задачи и чёткое понимание, куда уходит время.</p>
+                </div>
+                <div class="why">
+                    <span>03</span>
+                    <h6>Реальный прогресс</h6>
+                    <p>Не иллюзия занятости, а измеримые шаги к твоим целям.</p>
+                </div>                
+            </div>
+        </div>  
+    </main>
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="message message-{{ message.tags }}">
+            {{ message }}
+            <button class="message-close" onclick="this.parentElement.remove()">×</button>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+</body>
+</html>
