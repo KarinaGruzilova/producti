@@ -9,39 +9,104 @@
 
 {% block content %}
 <div class="content-container">
-    
-    <!-- ШАПКА ПРОФИЛЯ (как container-1) -->
-    <div class="profile-header-block">
-        <div class="profile-header-content">
-            <div class="profile-avatar-section">
-                {% if user.profile.avatar %}
-                <img src="{{ user.profile.avatar.url }}" alt="Аватар" class="profile-avatar-img">
-                {% else %}                
-                    <div class="profile-avatar-placeholder" style="background: linear-gradient(135deg, #2D268C, #AEBCFE);">
-                    {{ user.username|first|upper }}
-                </div>
-                {% endif %}
-                <div class="profile-avatar-edit">
-                    <button class="avatar-edit-btn" id="avatarEditBtn">✏️</button>
-                </div>
+    <div class="block1">
+        <div class="photo-info">
+            {% if user.avatar and user.avatar.url %}
+            <img src="{{ user.avatar.url }}" alt="Аватар" class="photo-avatar-img">
+            {% else %}
+            <div class="photo-avatar-placeholder" style="background: linear-gradient(135deg, #2D268C, #AEBCFE);">
+                {{ user.username|first|upper }}
             </div>
-            
-            <div class="profile-info2">
-                <h1>{{ user.get_full_name|default:user.username }}</h1>
-                <p class="profile-username">@{{ user.username }}</p>
-                <p class="profile-email">{{ user.email }}</p>
-                <p class="profile-joined">Присоединился: {{ user.date_joined|date:"d F Y" }}</p>
-            </div>
-            
-            <div class="profile-actions">
-                <button class="btn-edit-profile" id="editProfileBtn">
-                    Редактировать профиль
-                </button>
+            {% endif %}
+            <div class="photo-content">
+                <div class="user-info-overlay">
+                    <div class="photo-username">{{ user.first_name }}</div>
+                    <div class="photo-login">@{{ user.username }}</div>
+                </div>
+                <div class="photo-icons">
+                    <div class="avatar-edit-btn" id="editProfileBtn">
+                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 12H12M1 12V9.42032L6.5 3.26097M1 12L4 12L9.5 5.84064M6.5 3.26097L8.65147 1.05234L8.65277 1.05103C8.94893 0.747003 9.09727 0.59472 9.26827 0.537683C9.41891 0.487439 9.58118 0.487439 9.73181 0.537683C9.90269 0.594679 10.0509 0.74679 10.3466 1.05039L11.6515 2.38989C11.9485 2.69479 12.097 2.84731 12.1527 3.0231C12.2016 3.17774 12.2016 3.34431 12.1527 3.49894C12.0971 3.67461 11.9487 3.8269 11.6521 4.13136L11.6515 4.13202L9.5 6.34064M6.5 3.26097L9.5 6.34064" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="avatar-edit-btn" id="avatarEditBtn">
+                        <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 12V9.75M6 9.75V7.5M6 9.75H3.75M6 9.75H8.25M6.75 0.750652C6.67838 0.75 6.59796 0.75 6.50603 0.75H3.15015C2.31007 0.75 1.88972 0.75 1.56885 0.913493C1.2866 1.0573 1.0573 1.2866 0.913493 1.56885C0.75 1.88972 0.75 2.31007 0.75 3.15015V11.8502C0.75 12.6902 0.75 13.1101 0.913493 13.4309C1.0573 13.7132 1.2866 13.9429 1.56885 14.0867C1.88941 14.25 2.30925 14.25 3.1477 14.25L8.8523 14.25C9.69075 14.25 10.11 14.25 10.4305 14.0867C10.7128 13.9429 10.9429 13.7132 11.0867 13.4309C11.25 13.1104 11.25 12.6911 11.25 11.8527V5.49426C11.25 5.40222 11.25 5.32171 11.2493 5.25M6.75 0.750652C6.96423 0.752603 7.09976 0.760389 7.22913 0.791445C7.38218 0.828188 7.52843 0.888945 7.6626 0.97119C7.81395 1.06393 7.94386 1.19386 8.20312 1.45313L10.5473 3.79724C10.8067 4.05667 10.9357 4.18604 11.0285 4.33739C11.1107 4.47161 11.1715 4.61795 11.2082 4.771C11.2393 4.90032 11.2472 5.0359 11.2493 5.25M6.75 0.750652V2.85C6.75 3.69008 6.75 4.10981 6.91349 4.43069C7.0573 4.71294 7.2866 4.94286 7.56885 5.08667C7.88941 5.25 8.30925 5.25 9.1477 5.25H11.2493M11.2493 5.25H11.2501" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+                <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/gif" style="display: none;">
             </div>
         </div>
+        <div class="calendar">
+            <div class="calendar__header">
+                <div class="calendar__month"></div>
+                <div class="calendar__year"></div>
+            </div>
+            <div class="calendar__grid">
+                <div class="calendar__day-names">
+                    <span class="calendar__day-name">Пн</span>
+                    <span class="calendar__day-name">Вт</span>
+                    <span class="calendar__day-name">Ср</span>
+                    <span class="calendar__day-name">Чт</span>
+                    <span class="calendar__day-name">Пт</span>
+                    <span class="calendar__day-name">Сб</span>
+                    <span class="calendar__day-name">Вс</span>
+                </div>
+                <div class="calendar__day-numbers"></div>
+            </div>
+        </div>
+        <div class="trend-chart-container">
+            <h3>Динамика активности по категориям за месяц</h3>
+            <div class="chart-wrapper">
+                <canvas id="monthlyTrendChart" width="300" height="300"></canvas>
+            </div>
+        </div>
+    <!-- Выезжающая панель -->
+    <div class="profile-edit-panel" id="profileEditPanel">
+        <div class="profile-edit-header">
+            <h3>Редактирование профиля</h3>
+            <button class="profile-edit-close" id="closeEditPanelBtn">×</button>
+        </div>
+        
+        <form id="profileEditForm" class="profile-edit-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>Имя</label>
+                <input type="text" id="editFirstName" name="first_name" placeholder="Введите имя">
+            </div>
+            
+            <div class="form-group">
+                <label>Логин</label>
+                <input type="text" id="editUsername" name="username" placeholder="Введите логин" required>
+                <div class="error-message" id="usernameError" style="display: none;"></div>
+            </div>
+            
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="editEmail" name="email" placeholder="Введите email">
+            </div>
+            
+            <div class="form-group">
+                <label>Новый пароль</label>
+                <input type="password" id="editPassword" name="password" placeholder="Оставьте пустым, если не хотите менять">
+                <div class="error-message" id="passwordError" style="display: none;"></div>
+            </div>
+            
+            <div class="form-group">
+                <label>Подтверждение пароля</label>
+                <input type="password" id="editConfirmPassword" placeholder="Повторите пароль">
+            </div>
+            
+            <div class="profile-edit-buttons">
+                <button type="button" class="btn-cancel" id="cancelEditBtn">Отмена</button>
+                <button type="submit" class="btn-save">Сохранить</button>
+            </div>
+        </form>
     </div>
     
-    <!-- СТАТИСТИКА (как why-we блок) -->
+    <!-- СТАТИСТИКА -->
     <div class="stats-container">
         <h2><span>Моя</span> статистика</h2>
         <div class="stats-grid">
@@ -82,12 +147,11 @@
         </div>
     </div>
     
-    <!-- НАСТРОЙКИ -->
+
     <div class="settings-container">
         <h2><span>Настройки</span> аккаунта</h2>
         
         <div class="settings-grid">
-            <!-- Тема -->
             <div class="setting-card">
                 <div class="setting-icon">🌙</div>
                 <div class="setting-info">
@@ -176,3 +240,9 @@
 
 {% endblock %}
 
+{% block scripts %}
+    <!-- Подключаем только category.js, dashboard-modal.js не подключается -->
+    <script src="{% static 'js/user.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/trend-chart.js' %}"></script>
+{% endblock %}

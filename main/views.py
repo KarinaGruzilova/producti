@@ -482,3 +482,22 @@ def save_timer_result(request):
             'success': False,
             'error': str(e)
         }, status=500)
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    

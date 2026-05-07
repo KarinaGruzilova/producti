@@ -30,11 +30,11 @@
                     
                     {% for item in form %}
                         <div class="form-group">
-                            <label for="{{ item.id_for_label}}" class="form-label">{{item.label}}</label>
+                            <label class="form-label">{{item.label}}</label>
                             {{item}}
                         </div>
                     {% endfor %}                
-                    <button type="submit" class="auth-button">
+                    <button type="submit" class="auth-button form-group-full">
                         <span>Войти в систему</span>
                     </button>
                 </form>
@@ -45,34 +45,6 @@
                         Еще нет аккаунта? 
                         <a href="{% url "users:registration" %}" class="auth-link-accent">Зарегистрироваться</a>
                     </p>
-                </div>
-            </div>
-            
-            <div class="auth-right">
-                <div class="auth-info">
-                    <h2 class="auth-info-title">Сфокусируйтесь на важном</h2>
-                    <p class="auth-info-text">
-                        Начните отслеживать свое продуктивное время и достигайте большего с нашим интуитивным трекером
-                    </p>
-                    
-                    <div class="features-list">
-                        <div class="feature-item">
-                            <img src="{% static 'icons/nav-sessions.svg' %}" alt="⏱️" class="feature-icon">
-                            <span>Точный учет времени</span>
-                        </div>
-                        <div class="feature-item">
-                            <img src="{% static 'icons/nav-dashboard.svg' %}" alt="📊" class="feature-icon">
-                            <span>Детальная статистика</span>
-                        </div>
-                        <div class="feature-item">
-                            <img src="{% static 'icons/nav-goals.svg' %}" alt="🎯" class="feature-icon">
-                            <span>Система фокус-сессий</span>
-                        </div>
-                    </div>
-                    
-                    <div class="auth-links" style="color: rgba(255,255,255,0.8);">
-                        <p>Оптимизируйте свое время с умом</p>
-                    </div>
                 </div>
             </div>
         </div>

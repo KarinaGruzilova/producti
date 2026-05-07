@@ -174,3 +174,71 @@ def logout(request):
     auth.logout(request)
     messages.success(request, 'Вы успешно вышли из системы')
     return redirect(reverse('main:index'))
+
+
+
+
+# users/api_views.py
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
+import os
+
+class UserProfileViewSet(viewsets.ViewSet):
+    """API для работы с профилем пользователя"""
+    permission_classes = [IsAuthenticated]
+    
+    @action(detail=False, methods=['post'], url_path='upload-avatar')
+    def upload_avatar(self, request):
+        """Загрузка аватара пользователя"""
+        user = request.user
+        
+        if 'avatar' not in request.FILES:
+            return Response(
+                {'error': 'Файл не найден'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        avatar_file = request.FILES['avatar']
+        
+        # Проверка типа файла
+        if not avatar_file.content_type.startswith('image/'):
+            return Response(
+                {'error': 'Можно загружать только изображения'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Проверка размера (максимум 5MB)
+        if avatar_file.size > 5 * 1024 * 1024:
+            return Response(
+                {'error': 'Размер файла не должен превышать 5MB'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Удаляем старый аватар, если он существует
+        if user.profile.avatar and user.profile.avatar.name != 'default.png':
+            old_avatar_path = os.path.join(settings.MEDIA_ROOT, user.profile.avatar.name)
+            if os.path.exists(old_avatar_path):
+                os.remove(old_avatar_path)
+        
+        # Сохраняем новый аватар
+        file_extension = os.path.splitext(avatar_file.name)[1]
+        new_filename = f"avatars/{user.id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}{file_extension}"
+        saved_path = default_storage.save(new_filename, ContentFile(avatar_file.read()))
+        
+        # Обновляем запись в базе данных
+        user.profile.avatar = saved_path
+        user.profile.save()
+        
+        # Возвращаем URL нового аватара
+        avatar_url = settings.MEDIA_URL + saved_path
+        
+        return Response({
+            'success': True,
+            'avatar_url': avatar_url,
+            'message': 'Аватар успешно обновлён'
+        }, status=status.HTTP_200_OK)

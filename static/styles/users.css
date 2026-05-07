@@ -23,13 +23,15 @@ body, h1, h2, h3, h4, h5, h6 {
 
 .auth-container {
     display: flex;
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
-    background-color: #2d268c;
     position: relative;
     overflow: hidden;
+    background-image: url('../images/i1.png'); /* Путь к вашей картинке i1 */
+    background-size: cover;
+    background-position: center;
 }
-
-
 
 .logo {
     display: flex;
@@ -59,10 +61,10 @@ body, h1, h2, h3, h4, h5, h6 {
 }
 
 /* Основной контент форм */
-.auth-content {
-    display: flex;
-    width: 100%;
-    z-index: 1;
+
+
+.form-group-full {
+    grid-column: span 2;
 }
 
 .auth-left {
@@ -70,25 +72,18 @@ body, h1, h2, h3, h4, h5, h6 {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     padding: 40px 80px;
     background: white;
-    border-top-right-radius: 40px;
-    border-bottom-right-radius: 40px;
+    border-radius: 40px;
 }
 
-.auth-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 80px;
-}
 .auth-title {
     font-size: 52px;
     color: #2a2a2a;
     margin-bottom: 16px;
     line-height: 1.2;
+    text-align: center;
 }
 
 .auth-subtitle {
@@ -96,14 +91,16 @@ body, h1, h2, h3, h4, h5, h6 {
     color: #757575;
     margin-bottom: 48px;
     max-width: 400px;
+    text-align: center;
 }
 
 /* Формы */
 .auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    max-width: 400px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 0px;
+    column-gap: 20px;
+    max-width: 800px;
     width: 100%;
 }
 
@@ -114,7 +111,7 @@ body, h1, h2, h3, h4, h5, h6 {
     border: 2px solid rgba(239, 239, 239, 0.8);
     border-radius: 40px;
     background: white;
-    font-size: 16px;
+    font-size: 12px;
     color: #2a2a2a;
     font-family: 'DVDDS', sans-serif;
     transition: all 0.3s ease;
@@ -180,47 +177,6 @@ body, h1, h2, h3, h4, h5, h6 {
     color: #2d268c;
     font-weight: 500;
 }
-
-/* Правый блок с информацией */
-.auth-info {
-    max-width: 500px;
-    text-align: center;
-}
-
-.auth-info-title {
-    font-size: 32px;
-    color: white;
-    margin-bottom: 24px;
-    line-height: 1.3;
-}
-
-.auth-info-text {
-    font-size: 20px;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 48px;
-    line-height: 1.6;
-}
-
-.features-list {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    margin-bottom: 48px;
-}
-
-.feature-item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    color: white;
-    font-size: 18px;
-}
-
-.feature-icon {
-    width: 24px;
-    height: 24px;
-}
-
 
 /* Анимации для форм */
 @keyframes slideIn {
@@ -392,113 +348,18 @@ body, h1, h2, h3, h4, h5, h6 {
 
 
 
-/* ===== ШАПКА ПРОФИЛЯ (как container-1) ===== */
-.profile-header-block {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    padding: 40px 60px;
-    background: linear-gradient(to bottom, #ffffff, #AEBCFE);
-    border-radius: 40px;
-}
 
-.profile-header-content {
-    display: flex;
-    align-items: center;
-    gap: 40px;
-}
 
-/* Аватар */
-.profile-avatar-section {
-    position: relative;
-}
 
-.profile-avatar-img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
 
-.profile-avatar-placeholder {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 48px;
-    font-weight: 600;
-    color: white;
-}
 
-.avatar-edit-btn {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 36px;
-    height: 36px;
-    background: #2D268C;
-    border: none;
-    border-radius: 50%;
-    color: white;
-    cursor: pointer;
-    transition: all 0.2s;
-}
 
-.avatar-edit-btn:hover {
-    background: #AEBCFE;
-    color: #2D268C;
-}
 .profile-info2 {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
     width: auto;
-}
-/* Информация */
-.profile-info2 h1 {
-    font-size: 40px;
-    font-weight: 500;
-    color: #2a2a2a;
-    margin-bottom: 8px;
-}
-
-.profile-username {
-    font-size: 16px;
-    color: #2D268C;
-    margin-bottom: 4px;
-}
-
-.profile-email {
-    font-size: 14px;
-    color: #757575;
-    margin-bottom: 4px;
-}
-
-.profile-joined {
-    font-size: 12px;
-    color: #757575;
-}
-
-/* Кнопка */
-.profile-actions {
-    margin-left: auto;
-}
-
-.btn-edit-profile {
-    padding: 16px 32px;
-    background-color: #2D268C;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 400;
-    border: none;
-    border-radius: 40px;
-    cursor: pointer;
-    transition: all 0.3s ease;
 }
 
 .btn-edit-profile:hover {
@@ -793,4 +654,398 @@ body, h1, h2, h3, h4, h5, h6 {
 
 .btn-danger:hover {
     background: #ff6666;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.block1 {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;                  /* ← расстояние 20px между блоками */
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+.profile-avatar-edit {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.photo-info {
+    width: 300px;
+    height: 300px;
+    border-radius: 40px;
+    position: relative;
+    overflow: hidden;
+    background-color: #F2F2F2;
+}
+
+.photo-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 40px;
+}
+
+.photo-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    font-weight: 600;
+    color: white;
+}
+
+.photo-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 60px;
+    padding: 0px 24px 24px 24px;
+    background: linear-gradient(180deg, rgba(45, 38, 140, 0) 0%, rgba(45, 38, 140, 0.4) 50%, rgba(45, 38, 140, 0.85) 1000%);
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    backdrop-filter: blur(1px);
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.user-info-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 24px;
+}
+.photo-username {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    text-shadow: 0px 5px 15px rgba(255, 255, 255, 0.7);
+}
+
+.photo-login {
+    color: #fff;
+    font-size: 12px;
+    font-weight: 300;
+    text-shadow: 0px 2px 15px rgba(255, 255, 255, 0.7);
+}
+
+.photo-icons {
+    display: flex;
+    gap: 4px;
+    padding-top: 24px;
+}
+
+.photo-icons div {
+    border:1px solid #fff;
+    border-radius: 40px;
+    padding: 8px 6px;
+    box-shadow: 0px 2px 15px rgba(255, 255, 255, 0.4);
+}
+.avatar-edit-btn {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.avatar-edit-btn:hover {
+    background: #AEBCFE;
+    color: #2D268C;
+    transform: scale(1.05);
+}
+
+
+
+
+/* Затемнение */
+.profile-edit-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    display: none;
+}
+
+/* Выезжающая панель */
+.profile-edit-panel {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 320px;
+    height: 100%;
+    background: white;
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.profile-edit-panel.open {
+    left: 0;
+}
+
+.profile-edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.profile-edit-header h3 {
+    font-size: 20px;
+    color: #2A2A2A;
+}
+
+.profile-edit-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #757575;
+    transition: all 0.2s;
+}
+
+.profile-edit-close:hover {
+    background: #F0F0F0;
+    color: #2A2A2A;
+}
+
+.profile-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2A2A2A;
+}
+
+.form-group input {
+    padding: 12px 16px;
+    border: 1px solid #E0E0E0;
+    border-radius: 30px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #2D268C;
+    box-shadow: 0 0 0 2px rgba(45, 38, 140, 0.1);
+}
+
+.profile-edit-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-cancel, .btn-save {
+    flex: 1;
+    padding: 12px;
+    border-radius: 40px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel {
+    background: #F5F5F5;
+    border: none;
+    color: #757575;
+}
+
+.btn-cancel:hover {
+    background: #E0E0E0;
+}
+
+.btn-save {
+    background: #2D268C;
+    border: none;
+    color: white;
+}
+
+.btn-save:hover {
+    background: #AEBCFE;
+    color: #2D268C;
+}
+
+.error-message {
+    font-size: 12px;
+    color: #FF4444;
+}
+
+
+
+
+/* календарик */
+/* Календарь */
+.calendar {
+    background-color: #FFF;
+    border-radius: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    padding: 16px 20px;
+    width: 280px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar__header {
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    letter-spacing: 0.5px;
+    padding: 12px 0;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.calendar__month {
+    font-size: 16px;
+    color: #2D268C;
+}
+
+.calendar__year {
+    font-size: 14px;
+    color: #757575;
+}
+
+.calendar__grid {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar__day-names {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+}
+
+.calendar__day-name {
+    width: 32px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: #757575;
+}
+
+.calendar__day-numbers {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.calendar__day-numbers-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+}
+
+.calendar__day-number {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #2A2A2A;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.calendar__day-number:hover {
+    background-color: #F0F0FF;
+}
+
+.calendar__day-number--current {
+    background-color: #2D268C;
+    color: white;
+}
+
+.calendar__day-number--other-month {
+    color: #C0C0C0;
+}
+
+.calendar__day-number--active {
+    background-color: #AEBCFE;
+    color: #2D268C;
+}
+
+
+/* график активности за месяц */
+/* Контейнер графика */
+.trend-chart-container {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FF 100%);
+    border-radius: 32px;
+    padding: 24px;
+    margin-top: 32px;
+    box-shadow: 0 20px 35px -10px rgba(45, 38, 140, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.trend-chart-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 25px 40px -12px rgba(45, 38, 140, 0.15);
+}
+
+.trend-chart-container h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-left: 8px;
+    background: linear-gradient(135deg, #2D268C, #AEBCFE);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+}
+
+.chart-wrapper {
+    width: 100%;
+    height: auto;
+    padding: 8px;
 }

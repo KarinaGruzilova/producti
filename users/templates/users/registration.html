@@ -11,7 +11,8 @@
     {% include "includes/notification.html" %}
 </head>
 <body>
-    <div class="auth-container">    
+    <div class="auth-container">  
+          
         <div class="auth-content">
             <div class="auth-left">
                 <div class="logo">
@@ -36,20 +37,11 @@
                         <div class="alert-dismissible">{{ form.first_name.errors }}</div>
                         {% endif %}
                     </div>
-                    
-                    <div class="form-group">
-                        <input type="text" name="last_name" class="auth-input"
-                        value="{% if form.last_name.value %}{{ form.last_name.value}}{% endif %}"
-                        placeholder="Фамилия">
-                        {% if form.last_name.errors %}
-                        <div class="alert-dismissible">{{ form.last_name.errors }}</div>
-                        {% endif %}
-                    </div>
 
-                    <div class="form-group">
+                    <div class="form-group ">
                         <input type="text" name="username" class="auth-input"
                         value="{% if form.username.value %}{{ form.username.value}}{% endif %}"
-                        placeholder="Имя пользователя" required>
+                        placeholder="Логин" required>
                         {% if form.username.errors %}
                         <div class="alert-dismissible">{{ form.username.errors }}</div>
                         {% endif %}
@@ -73,7 +65,7 @@
                         {% endif %}
                     </div>
                     
-                    <div class="form-group">
+                    <div class="form-group form-group-full">
                         <input type="password" name="password2" class="auth-input" 
                         value="{% if form.password2.value %}{{ form.password2.value}}{% endif %}"
                         placeholder="Подтвердите пароль" required>
@@ -82,7 +74,7 @@
                         {% endif %}
                     </div>
                     
-                    <button type="submit" class="auth-button">
+                    <button type="submit" class="auth-button form-group-full">
                         <span>Создать аккаунт</span>
                     </button>
                 </form>
@@ -92,34 +84,6 @@
                         Уже есть аккаунт? 
                         <a href="{% url 'users:login' %}" class="auth-link-accent">Войти</a>
                     </p>
-                </div>
-            </div>
-            
-            <div class="auth-right">
-                <div class="auth-info">
-                    <h2 class="auth-info-title">Преимущества регистрации</h2>
-                    <p class="auth-info-text">
-                        Присоединяйтесь к тысячам пользователей, которые уже оптимизируют свое время
-                    </p>
-                    
-                    <div class="features-list">
-                        <div class="feature-item">
-                            <img src="{% static 'icons/nav-sessions.svg' %}" alt="⏱️" class="feature-icon">
-                            <span>Точный учет времени</span>
-                        </div>
-                        <div class="feature-item">
-                            <img src="{% static 'icons/nav-dashboard.svg' %}" alt="📊" class="feature-icon">
-                            <span>Детальная статистика</span>
-                        </div>
-                        <div class="feature-item">
-                            <img src="{% static 'icons/nav-goals.svg' %}" alt="🎯" class="feature-icon">
-                            <span>Система фокус-сессий</span>
-                        </div>
-                    </div>
-                    
-                    <div class="auth-links" style="color: rgba(255,255,255,0.8);">
-                        <p>Начните свой путь к продуктивности сегодня</p>
-                    </div>
                 </div>
             </div>
         </div>

@@ -33,11 +33,20 @@
             <div class="header">
                 {% comment %} <div class="name-page">Dashboard</div> {% endcomment %}
                 <div class="head-info">
-                    <div class="search-field">
-                        <input type="text" placeholder="Я ищу ...">
-                        <svg width="19" height="19" color="#757575" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12.5 12.5L18.5 18.5M7.5 14.5C3.63401 14.5 0.5 11.366 0.5 7.5C0.5 3.63401 3.63401 0.5 7.5 0.5C11.366 0.5 14.5 3.63401 14.5 7.5C14.5 11.366 11.366 14.5 7.5 14.5Z" stroke="#757575" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
+                    <div class="search-container">
+                        <div class="search-field">
+                            <input type="text" id="searchInput" placeholder="Я ищу ..." autocomplete="off">
+                            <button class="search-btn" id="searchBtn">
+                                <svg width="19" height="19" color="#757575" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12.5 12.5L18.5 18.5M7.5 14.5C3.63401 14.5 0.5 11.366 0.5 7.5C0.5 3.63401 3.63401 0.5 7.5 0.5C11.366 0.5 14.5 3.63401 14.5 7.5C14.5 11.366 11.366 14.5 7.5 14.5Z" stroke="#757575" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Выпадающий список результатов -->
+                        <div class="search-dropdown" id="searchDropdown" style="display: none;">
+                            <div class="search-results" id="searchResults"></div>
+                        </div>
                     </div>
                     <div class="objects">
                         <svg width="30" height="30" color="#2a2a2a" border="2px" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -50,13 +59,19 @@
                     <div class="profile-info">
                         <div class="infouser-head">
                             <span class="username-head">
-                                Karina
+                                {{ user.first_name|default:user.username }}
                             </span>
                             <span class="tasks-head">
-                                11 задач
+                                В сети
                             </span>
                         </div>
-                        <img src="" alt="" class="profile-photo">
+                            {% if user.avatar and user.avatar.url %}
+                            <img src="{{ user.avatar.url }}" alt="Аватар" class="profile-photo" id="headerAvatar">
+                            {% else %}
+                            <div class="profile-photo-placeholder" id="headerAvatarPlaceholder">
+                                {{ user.username|first|upper }}
+                            </div>
+                            {% endif %}
                     </div>
                 </div>
             </div>
@@ -84,6 +99,14 @@
                             <span class="no-active">Аналитика</span>
                         </a>
                     </li>
+                    {% if user.is_staff %}
+                    <li class="nav-item">
+                        <a href="/admin/" class="nav-link" target="_blank">
+                            <img class="no-active" src="{% static 'icons/nav-analytics.svg' %}" alt="">
+                            <span class="no-active">Админ-панель</span>
+                        </a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <img class="no-active" src="{% static 'icons/nav-goals.svg' %}" alt="">
@@ -96,12 +119,12 @@
                             <span class="no-active">Профиль</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    {% comment %} <li class="nav-item">
                         <a href="#" class="nav-link">
                             <img class="no-active" src="{% static 'icons/nav-help.svg' %}" alt="">
                             <span class="no-active">Помощь</span>
                         </a>
-                    </li>
+                    </li> {% endcomment %}
                     <li class="nav-item">
                         <a href="{% url "users:logout" %}" class="nav-link">
                             <img class="no-active" src="{% static 'icons/nav-logout.svg' %}" alt="">
@@ -117,12 +140,10 @@
     </main>
 
 
-
-
-    {% block scripts %}{% endblock %}
-
-
+    <script src="{% static 'js/global-search.js' %}"></script>
     {% block extra_js %}
     {% endblock %}
+    {% block scripts %}{% endblock %}
+
 </body>
 </html>

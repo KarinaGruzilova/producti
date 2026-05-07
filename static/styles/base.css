@@ -84,6 +84,12 @@ header {
     align-items: center;
 }
 
+/* Контейнер поиска */
+.search-container {
+    position: relative;
+    display: inline-block;
+}
+
 .search-field {
     display: flex;
     flex-direction: row;
@@ -108,6 +114,105 @@ header {
 
 .search-field input::placeholder {
     color: #757575;
+}
+
+.search-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-btn:hover svg path {
+    stroke: #2d268c;
+}
+
+/* Выпадающий список */
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 8px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+    z-index: 1000;
+    overflow: hidden;
+    animation: fadeInDown 0.2s ease;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.search-results {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.search-result-item:hover {
+    background: rgba(45, 38, 140, 0.05);
+}
+
+.result-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.result-info {
+    flex: 1;
+}
+
+.result-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.result-name mark {
+    background: rgba(45, 38, 140, 0.2);
+    color: #2d268c;
+    padding: 0 2px;
+    border-radius: 3px;
+}
+
+.result-stats {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.search-no-results {
+    padding: 16px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
 }
 
 .objects {
@@ -137,11 +242,12 @@ header {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 120px;
+    width: auto;
+    gap: 12px;
 }
 
 .infouser-head {
-    width: 60px;
+    width: auto;
     height: 38px;
     display: flex;
     flex-direction: column;
@@ -168,7 +274,6 @@ header {
 
 
 
-/* ОСНОВНОЙ КОНТЕНТ */
 .main-container {
     display: flex;
 }
@@ -501,27 +606,6 @@ ul {
     justify-content: space-between;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .focus-activities {
     display: flex;
     flex-direction: column;
@@ -576,7 +660,6 @@ ul {
     cursor: pointer;
 }
 
-/* Столбик графика */
 .day .bar {
     width: 16px;
     background-color: #D9D9D9;
@@ -585,7 +668,6 @@ ul {
     min-height: 4px;
 }
 
-/* Точка под столбиком */
 .day .dot {
     width: 16px;
     height: 16px;
@@ -594,7 +676,6 @@ ul {
     transition: all 0.2s ease;
 }
 
-/* Название дня */
 .day .day-name {
     font-size: 16px;
     font-weight: 700;
@@ -684,7 +765,7 @@ ul {
     background-color: #fff;
     border-radius: 40px;
     gap: 20px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* тень блока */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .history-header {
@@ -803,21 +884,6 @@ ul {
     font-size: 11px;
     color: #757575;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* Стили для затемнения фона */
@@ -1354,12 +1420,6 @@ emoji-picker {
 }
 
 
-.color-preview {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 1px solid #757575;
-}
 
 .color-dropdown {
     position: absolute;

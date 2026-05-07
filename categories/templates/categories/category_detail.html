@@ -9,8 +9,6 @@
 {% block content %}
 
 <div class="content-container">
-    
-    <!-- ВЕРХНЯЯ ПАНЕЛЬ С КАТЕГОРИЕЙ -->
     <div class="category-hero" style="background: {{ category.color }};">
         <div class="category-hero-content">
             <div class="category-hero-left">
@@ -36,8 +34,7 @@
             </div>
         </div>
     </div>
-    
-    <!-- ТРИ КЛЮЧЕВЫЕ МЕТРИКИ -->
+
     <div class="key-metrics">
         <div class="metric-card">
             <div class="metric-value">{{ total_hours }}</div>
@@ -56,7 +53,6 @@
         </div>
     </div>
     
-    <!-- ДВЕ КОЛОНКИ -->
     <div class="two-columns">
         
         <!-- ГРАФИК -->
@@ -76,7 +72,6 @@
             </div>
         </div>
         
-        <!-- ИНСАЙТЫ -->
         <div class="insights-column">
             <div class="insights-header">
                 <h3>Инсайты</h3>
@@ -154,7 +149,6 @@
         </div>
     </div>
     
-    <!-- НАЗАД -->
     <div class="back-nav">
         <a href="{% url 'categories:activities' %}" class="btn-back">
             ← Вернуться к списку категорий

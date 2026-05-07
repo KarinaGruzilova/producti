@@ -64,7 +64,6 @@ class Category(models.Model):
     
     @property
     def total_time_formatted(self):
-        """Форматированное общее время"""
         total = self.total_time
         hours = total // 3600
         minutes = (total % 3600) // 60
@@ -78,7 +77,6 @@ class Category(models.Model):
     
     @property
     def task_count(self):
-        """Количество задач в категории"""
         return self.Tasks.count()
 
 
@@ -106,7 +104,6 @@ class Task(models.Model):
     
     @property
     def duration_formatted(self):
-        """Форматированное время задачи"""
         hours = self.duration_seconds // 3600
         minutes = (self.duration_seconds % 3600) // 60
         seconds = self.duration_seconds % 60

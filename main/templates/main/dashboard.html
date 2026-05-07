@@ -10,7 +10,6 @@
                 <h1>Сегодня</h1>
                 <p>{{ current_date }} | {{ current_time }}</p>
             </div>
-            <!-- <p>Полезное время за неделю: 4ч 20мин</p> -->
         </div>
         <div class="launch-container">
             <span>Запустить фокус</span>
@@ -276,15 +275,12 @@
                     </div>
                 </div>
                 
-                <!-- Скрытое поле description (если нужно) -->
                 <input type="hidden" name="description" value="">
                 
-                <!-- Кнопка создания -->
                 <div class="button-mod2">
                     <button type="submit" class="btn-create" id="createCategorySubmit">+ создать</button>
                 </div>
                 
-                <!-- Контейнер для ошибок -->
                 <div id="categoryError" class="error-message" style="display: none; color: red; margin-top: 10px; text-align: center;"></div>
             </form>
         </div>
@@ -311,7 +307,7 @@
             
             <!-- Сообщение о завершении таймера -->
             <div class="timer-complete-message" id="timerCompleteMessage" style="display: none;">
-                <span>✅ Время вышло!</span>
+                <span>Время вышло!</span>
             </div>
             
             <div class="start-timer-actions">
@@ -333,6 +329,5 @@
 
 
 {% block scripts %}
-    <!-- Подключаем только category.js, dashboard-modal.js не подключается -->
     <script src="{% static 'js/dashboard-modal.js' %}"></script>
 {% endblock %}

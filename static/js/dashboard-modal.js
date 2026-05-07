@@ -918,23 +918,16 @@ const btnComplete = document.getElementById('btnComplete');
 
 // ========== ФУНКЦИИ ТАЙМЕРА ==========
 
-/**
- * Форматирование времени (секунды -> MM:SS)
- */
 function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
-/**
- * Запуск таймера
- */
+/*Запуск таймера*/
 function startTimer(seconds, categoryData) {
-    // Останавливаем предыдущий таймер если был
     stopTimer();
-    
-    // Сохраняем данные
+
     timerTotalSeconds = seconds;
     timerSeconds = seconds;
     currentTimerData = {
@@ -943,17 +936,14 @@ function startTimer(seconds, categoryData) {
         completedEarly: false
     };
     
-    // Обновляем отображение
     if (timerDisplay) {
         timerDisplay.textContent = formatTime(timerSeconds);
     }
     
-    // Прячем сообщение о завершении
     if (timerCompleteMessage) {
         timerCompleteMessage.style.display = 'none';
     }
     
-    // Запускаем интервал
     isPaused = false;
     timerInterval = setInterval(() => {
         if (!isPaused && timerSeconds > 0) {
@@ -961,20 +951,15 @@ function startTimer(seconds, categoryData) {
             if (timerDisplay) {
                 timerDisplay.textContent = formatTime(timerSeconds);
             }
-            
-            // Если время вышло
+         
             if (timerSeconds === 0) {
                 handleTimerComplete('natural');
             }
         }
     }, 1000);
-    
-    console.log('▶️ Таймер запущен на', seconds, 'секунд');
 }
 
-/**
- * Остановка таймера
- */
+/* Остановка таймера*/
 function stopTimer() {
     if (timerInterval) {
         clearInterval(timerInterval);
@@ -982,9 +967,7 @@ function stopTimer() {
     }
 }
 
-/**
- * Получение CSRF токена из куки
- */
+/* Получение CSRF токена из куки*/
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -1016,7 +999,6 @@ function saveTimerResult(seconds, reason) {
         timestamp: new Date().toISOString()
     };
     
-    console.log('💾 Сохранение результата:', data);
     
     const csrftoken = getCookie('csrftoken');
     
@@ -1034,44 +1016,36 @@ function saveTimerResult(seconds, reason) {
         if (result.success) {
             console.log('✅ Результат сохранен:', result);
             
-            // Показываем сообщение об успехе
             if (timerCompleteMessage) {
                 let messageText = '';
                 if (reason === 'natural') {
-                    messageText = '✅ Время вышло! Отличная работа!';
+                    messageText = ' Время вышло! Отличная работа!';
                 } else if (reason === 'complete') {
-                    messageText = '✅ Задача выполнена досрочно!';
+                    messageText = ' Задача выполнена досрочно!';
                 } else if (reason === 'distracted') {
-                    messageText = '⏸️ Таймер остановлен';
+                    messageText = '⏸ Таймер остановлен';
                 }
                 
                 timerCompleteMessage.innerHTML = `<span>${messageText}</span>`;
                 timerCompleteMessage.style.display = 'block';
             }
         } else {
-            console.error('❌ Ошибка сохранения:', result.error);
+            console.error(' Ошибка сохранения:', result.error);
         }
     })
     .catch(error => {
-        console.error('❌ Ошибка сети:', error);
+        console.error('Ошибка сети:', error);
     });
 }
 
-/**
- * Обработка завершения таймера
- */
+/*Обработка завершения таймера*/
 function handleTimerComplete(reason) {
     stopTimer();
     
     const elapsedSeconds = timerTotalSeconds - timerSeconds;
-    
-    console.log('⏹️ Таймер завершен. Причина:', reason);
-    console.log('⏱️ Прошло времени:', elapsedSeconds, 'секунд');
-    
-    // Сохраняем результат
+
     saveTimerResult(timerSeconds, reason);
     
-    // Если это не пауза, показываем сообщение
     if (reason !== 'pause') {
         if (timerCompleteMessage) {
             timerCompleteMessage.style.display = 'block';
@@ -1079,14 +1053,11 @@ function handleTimerComplete(reason) {
     }
 }
 
-// ========== ОБРАБОТЧИКИ КНОПОК ТАЙМЕРА ==========
-
 // Кнопка "я отвлекся"
 if (btnDistracted) {
     btnDistracted.addEventListener('click', function() {
         handleTimerComplete('distracted');
         
-        // Закрываем окно через 2 секунды
         setTimeout(() => {
             if (modal3) {
                 modal3.style.display = 'none';
@@ -1096,12 +1067,10 @@ if (btnDistracted) {
     });
 }
 
-// Кнопка "взять паузу"
 if (btnPause) {
     btnPause.addEventListener('click', function() {
         isPaused = !isPaused;
         
-        // Меняем текст кнопки
         const spanElement = btnPause.querySelector('span');
         if (spanElement) {
             spanElement.textContent = isPaused ? 'продолжить' : 'взять паузу';
@@ -1352,4 +1321,227 @@ function initResumeSession() {
 document.addEventListener('DOMContentLoaded', function() {
     // ... существующий код ...
     initResumeSession();
+});
+
+
+
+
+
+
+
+
+// static/js/search.js
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const searchDropdown = document.getElementById('searchDropdown');
+    const searchResults = document.getElementById('searchResults');
+    
+    let searchTimeout;
+    let allCategories = []; // Хранилище всех категорий
+    
+    // Загружаем все категории при загрузке страницы
+    function loadCategories() {
+        const csrftoken = getCookie('csrftoken');
+        
+        fetch('/api/categories/', {
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(categories => {
+            allCategories = categories;
+            console.log('📦 Загружено категорий для поиска:', allCategories.length);
+        })
+        .catch(error => {
+            console.error('❌ Ошибка загрузки категорий:', error);
+        });
+    }
+    
+    // Функция получения CSRF токена
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // Поиск категорий по запросу
+    function searchCategories(query) {
+        if (!query || query.trim() === '') {
+            searchDropdown.style.display = 'none';
+            return [];
+        }
+        
+        const lowerQuery = query.toLowerCase().trim();
+        const results = allCategories.filter(category => {
+            return category.name.toLowerCase().includes(lowerQuery);
+        });
+        
+        // Возвращаем максимум 4 результата
+        return results.slice(0, 4);
+    }
+    
+    // Отображение результатов поиска
+    function displayResults(results, query) {
+        if (results.length === 0) {
+            searchResults.innerHTML = `
+                <div class="search-no-results">
+                    <span>😕 Ничего не найдено для "${escapeHtml(query)}"</span>
+                </div>
+            `;
+            searchDropdown.style.display = 'block';
+            return;
+        }
+        
+        let html = '';
+        results.forEach(category => {
+            // Подсвечиваем совпадающую часть
+            const highlightedName = highlightText(category.name, query);
+            
+            html += `
+                <div class="search-result-item" data-category-id="${category.id}" data-category-url="/categories/${category.id}/">
+                    <div class="result-icon" style="background-color: ${category.color}">
+                        ${category.emoji || '📁'}
+                    </div>
+                    <div class="result-info">
+                        <div class="result-name">${highlightedName}</div>
+                        <div class="result-stats">${category.total_time_formatted || '0ч'} • ${category.Tasks?.length || 0} задач</div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        searchResults.innerHTML = html;
+        searchDropdown.style.display = 'block';
+        
+        // Добавляем обработчики кликов на результаты
+        document.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = this.dataset.categoryUrl;
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    }
+    
+    // Подсветка текста
+    function highlightText(text, query) {
+        if (!query) return escapeHtml(text);
+        
+        const lowerText = text.toLowerCase();
+        const lowerQuery = query.toLowerCase();
+        const index = lowerText.indexOf(lowerQuery);
+        
+        if (index === -1) return escapeHtml(text);
+        
+        const before = escapeHtml(text.substring(0, index));
+        const match = escapeHtml(text.substring(index, index + query.length));
+        const after = escapeHtml(text.substring(index + query.length));
+        
+        return `${before}<mark>${match}</mark>${after}`;
+    }
+    
+    // Экранирование HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Открыть первую категорию из результатов
+    function openFirstCategory() {
+        const firstResult = document.querySelector('.search-result-item');
+        if (firstResult) {
+            const url = firstResult.dataset.categoryUrl;
+            if (url) {
+                window.location.href = url;
+            }
+        } else {
+            // Если нет результатов, но есть текст в инпуте - можно создать новую категорию
+            const query = searchInput.value.trim();
+            if (query) {
+                const createNew = confirm(`Категория "${query}" не найдена. Создать новую?`);
+                if (createNew) {
+                    // Открываем модальное окно создания категории
+                    const openBtn = document.getElementById('openCategoryModalBtn');
+                    if (openBtn) {
+                        openBtn.click();
+                        // Заполняем поле имени
+                        const nameInput = document.getElementById('category-name');
+                        if (nameInput) {
+                            nameInput.value = query;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Обработчик ввода текста (debounced)
+    function onSearchInput() {
+        clearTimeout(searchTimeout);
+        const query = searchInput.value;
+        
+        if (query.trim() === '') {
+            searchDropdown.style.display = 'none';
+            return;
+        }
+        
+        searchTimeout = setTimeout(() => {
+            const results = searchCategories(query);
+            displayResults(results, query);
+        }, 300); // Задержка 300ms для оптимизации
+    }
+    
+    // Обработчик клавиши Enter
+    function onSearchKeyPress(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            openFirstCategory();
+        }
+    }
+    
+    // Закрыть выпадающий список при клике вне
+    function closeSearchDropdown(e) {
+        const searchContainer = document.querySelector('.search-container');
+        if (searchContainer && !searchContainer.contains(e.target)) {
+            searchDropdown.style.display = 'none';
+        }
+    }
+    
+    // Инициализация
+    function initSearch() {
+        loadCategories();
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', onSearchInput);
+            searchInput.addEventListener('keypress', onSearchKeyPress);
+        }
+        
+        if (searchBtn) {
+            searchBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                openFirstCategory();
+            });
+        }
+        
+        document.addEventListener('click', closeSearchDropdown);
+    }
+    
+    // Запускаем поиск
+    initSearch();
 });
