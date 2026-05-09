@@ -1027,11 +1027,6 @@ body, h1, h2, h3, h4, h5, h6 {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.trend-chart-container:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 25px 40px -12px rgba(45, 38, 140, 0.15);
-}
-
 .trend-chart-container h3 {
     font-size: 18px;
     font-weight: 700;

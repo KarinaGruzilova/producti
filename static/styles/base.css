@@ -1096,6 +1096,9 @@ ul {
     gap: 16px;
     margin: 20px 0;
 }
+.category-option-empty {
+    padding: 10px;
+}
 
 .timer-chose {
     display: flex;
@@ -1571,7 +1574,7 @@ emoji-picker {
 .modal {
     display: none;
     position: fixed;
-    top: 50%;
+    top: 54%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 100;

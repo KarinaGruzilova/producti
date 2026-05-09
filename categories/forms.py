@@ -1,5 +1,6 @@
 from django import forms
 from .models import Category
+from .models import Task
 
 class CategoryCreateForm(forms.ModelForm):
     class Meta:
@@ -34,3 +35,16 @@ class CategoryCreateForm(forms.ModelForm):
         if not color:
             raise forms.ValidationError('Выберите цвет категории')
         return color
+    
+
+ 
+
+class TaskForm(forms.ModelForm):
+    due_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
+    
+    class Meta:
+        model = Task
+        fields = ['category', 'title', 'description', 'due_date', 'duration_seconds']

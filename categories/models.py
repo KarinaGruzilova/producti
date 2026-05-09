@@ -91,6 +91,8 @@ class Task(models.Model):
     description = models.TextField(verbose_name='Описание задачи', blank=True)
     duration_seconds = models.IntegerField(verbose_name='Потраченное время (сек)', default=0)
     completed = models.BooleanField(default=False, verbose_name='Выполнена')
+    due_date = models.DateField(verbose_name='Дата выполнения', null=True, blank=True)
+    due_time = models.TimeField(verbose_name='Время выполнения', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

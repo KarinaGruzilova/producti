@@ -99,6 +99,12 @@
                             <span class="no-active">Аналитика</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{% url "categories:tasks_calendar" %}" class="nav-link">
+                            <img class="no-active" src="{% static 'icons/nav-analytics.svg' %}" alt="">
+                            <span class="no-active">Мои задачи</span>
+                        </a>
+                    </li>
                     {% if user.is_staff %}
                     <li class="nav-item">
                         <a href="/admin/" class="nav-link" target="_blank">

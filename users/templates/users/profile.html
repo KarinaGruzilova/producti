@@ -56,10 +56,25 @@
                 <div class="calendar__day-numbers"></div>
             </div>
         </div>
+
+        <!-- ГРАФИК АКТИВНОСТИ -->
+        <div class="activity-container">
+            <h2><span>Активность</span> по месяцам</h2>
+            <div class="activity-chart">
+                {% for month in months_data %}
+                <div class="chart-bar-wrapper">
+                    <div class="chart-bar" style="height: {% widthratio month.hours 50 120 %}px;"></div>
+                    <span class="chart-label">{{ month.name }}</span>
+                    <span class="chart-value">{{ month.hours }}ч</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
         <div class="trend-chart-container">
             <h3>Динамика активности по категориям за месяц</h3>
             <div class="chart-wrapper">
-                <canvas id="monthlyTrendChart" width="300" height="300"></canvas>
+                <canvas id="monthlyTrendChart" width="600" height="300"></canvas>
             </div>
         </div>
     <!-- Выезжающая панель -->
@@ -133,19 +148,7 @@
         </div>
     </div>
     
-    <!-- ГРАФИК АКТИВНОСТИ -->
-    <div class="activity-container">
-        <h2><span>Активность</span> по месяцам</h2>
-        <div class="activity-chart">
-            {% for month in months_data %}
-            <div class="chart-bar-wrapper">
-                <div class="chart-bar" style="height: {% widthratio month.hours 50 120 %}px;"></div>
-                <span class="chart-label">{{ month.name }}</span>
-                <span class="chart-value">{{ month.hours }}ч</span>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+    
     
 
     <div class="settings-container">

@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'styles/tasks_calendar.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    
+    <div class="block-btns">
+        <button class="btn">все ({{ total_incomplete }})</button>
+        <button class="btn btn-create-task" id="openCreateTaskModal">+ создать задачу</button>
+    </div>
+
+    <div class="all-tasks">
+        <div class="overdue">
+            <span class="btn">Просроченные ({{ overdue_tasks.count }})</span>
+            <div class="tasks">
+                {% for task in overdue_tasks %}
+                <div class="task">
+                    <a href="#">
+                        <button class="btn-mini category-btn" style="background-color: {{ task.category.color }};">
+                            {{ task.category.emoji }} {{ task.category.name }}
+                        </button>
+                    </a>
+                    <p>{{ task.title }}</p>
+                    <div class="info-task">
+                        <div class="two">
+                            <button class=" data-task">{{ task.due_date|date:"d.m.Y" }}</button>
+                            <button class=" run">выполнить</button>
+                        </div>
+                        <button class=" mysor">
+                            <div data-svg-wrapper>
+                                <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.375 5.16667V9.83333M4.625 5.16667V9.83333M1.875 2.5V10.3667C1.875 11.1134 1.875 11.4865 2.02487 11.7717C2.15669 12.0226 2.36689 12.227 2.62561 12.3548C2.91945 12.5 3.30431 12.5 4.07288 12.5H7.92712C8.69569 12.5 9.07999 12.5 9.37383 12.3548C9.63256 12.227 9.84345 12.0226 9.97528 11.7717C10.125 11.4868 10.125 11.114 10.125 10.3687V2.5M1.875 2.5H3.25M1.875 2.5H0.5M3.25 2.5H8.75M3.25 2.5C3.25 1.87874 3.25 1.56827 3.35467 1.32324C3.49422 0.996538 3.76172 0.736819 4.09863 0.601494C4.35132 0.5 4.67183 0.5 5.3125 0.5H6.6875C7.32817 0.5 7.6485 0.5 7.90119 0.601494C8.2381 0.736819 8.50571 0.996538 8.64526 1.32324C8.74993 1.56827 8.75 1.87875 8.75 2.5M8.75 2.5H10.125M10.125 2.5H11.5" stroke="#2A2A2A" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <p>Просроченных задач нет</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="active">
+            <span class="btn">Активные ({{ active_tasks.count }})</span>
+            <div class="tasks">
+                {% for task in active_tasks %}
+                <div class="task">
+                    <a href="#">
+                        <button class="btn-mini category-btn" style="background-color: {{ task.category.color }};">
+                            {{ task.category.emoji }} {{ task.category.name }}
+                        </button>
+                    </a>
+                    <p>{{ task.title }}</p>
+                    <div class="info-task">
+                        <div class="two">
+                            <button class="data-task">сегодня {{ task.created_at|date:"H:i" }}</button>
+                            <button class="run" data-task-id="{{ task.id }}">выполнить</button>
+                        </div>
+                        <button class="mysor">
+                            <div data-svg-wrapper>
+                                <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.375 5.16667V9.83333M4.625 5.16667V9.83333M1.875 2.5V10.3667C1.875 11.1134 1.875 11.4865 2.02487 11.7717C2.15669 12.0226 2.36689 12.227 2.62561 12.3548C2.91945 12.5 3.30431 12.5 4.07288 12.5H7.92712C8.69569 12.5 9.07999 12.5 9.37383 12.3548C9.63256 12.227 9.84345 12.0226 9.97528 11.7717C10.125 11.4868 10.125 11.114 10.125 10.3687V2.5M1.875 2.5H3.25M1.875 2.5H0.5M3.25 2.5H8.75M3.25 2.5C3.25 1.87874 3.25 1.56827 3.35467 1.32324C3.49422 0.996538 3.76172 0.736819 4.09863 0.601494C4.35132 0.5 4.67183 0.5 5.3125 0.5H6.6875C7.32817 0.5 7.6485 0.5 7.90119 0.601494C8.2381 0.736819 8.50571 0.996538 8.64526 1.32324C8.74993 1.56827 8.75 1.87875 8.75 2.5M8.75 2.5H10.125M10.125 2.5H11.5" stroke="#2A2A2A" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <p>Нет активных задач на сегодня</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="future">
+            <span class="btn">Запланированные ({{ planned_tasks.count }})</span>
+            <div class="tasks">
+                {% for task in planned_tasks %}
+                <div class="task">
+                    <a href="#"><button class="btn-mini">
+                        <button class="btn-mini category-btn" style="background-color: {{ task.category.color }};">
+                            {{ task.category.emoji }} {{ task.category.name }}
+                        </button>
+                    </button></a>
+                    <p>{{ task.title }}</p>
+                    <div class="info-task">
+                        <div class="two">
+                            <button class="data-task">{{ task.due_date|date:"d.m.Y" }}</button>
+                            <button class="run">выполнить</button>
+                        </div>
+                        <button class="mysor">
+                            <div data-svg-wrapper>
+                                <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.375 5.16667V9.83333M4.625 5.16667V9.83333M1.875 2.5V10.3667C1.875 11.1134 1.875 11.4865 2.02487 11.7717C2.15669 12.0226 2.36689 12.227 2.62561 12.3548C2.91945 12.5 3.30431 12.5 4.07288 12.5H7.92712C8.69569 12.5 9.07999 12.5 9.37383 12.3548C9.63256 12.227 9.84345 12.0226 9.97528 11.7717C10.125 11.4868 10.125 11.114 10.125 10.3687V2.5M1.875 2.5H3.25M1.875 2.5H0.5M3.25 2.5H8.75M3.25 2.5C3.25 1.87874 3.25 1.56827 3.35467 1.32324C3.49422 0.996538 3.76172 0.736819 4.09863 0.601494C4.35132 0.5 4.67183 0.5 5.3125 0.5H6.6875C7.32817 0.5 7.6485 0.5 7.90119 0.601494C8.2381 0.736819 8.50571 0.996538 8.64526 1.32324C8.74993 1.56827 8.75 1.87875 8.75 2.5M8.75 2.5H10.125M10.125 2.5H11.5" stroke="#2A2A2A" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <p>Запланированных задач нет</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <div id="modalOverlay" class="modal-overlay"></div>
+    <!-- Модальное окно создания задачи -->
+    <div id="createTaskModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn close-mod1">&times;</span>
+            <h3>На чем сфокусируемся?</h3>
+            
+            <div class="category-content">
+                <div class="categories-container">
+                    <div class="categories-row">
+                        <button class="category" data-value="study">
+                            <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
+                            <span>учеба</span>
+                        </button>
+                        <button class="category" data-value="read">
+                            <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
+                            <span>чтение</span>
+                        </button>
+                        <button class="category" data-value="work">
+                            <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
+                            <span>работа</span>
+                        </button>
+                    </div>
+                    <div class="categories-row">
+                        <button class="category" data-value="hobby">
+                            <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
+                            <span>хобби</span>
+                        </button>
+                        
+                        <div class="category-select-wrapper">
+                            <button class="category category-select-btn" data-value="other">
+                                <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
+                                <span>выбрать</span>
+                                <svg width="12" height="6" viewBox="0 0 9 5" fill="none" class="select-arrow">
+                                    <path d="M8.5 0.5L4.5 4.5L0.5 0.5" stroke="#2D268C" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                            <div class="category-dropdown">
+                                {% if categories %}
+                                    {% for category in categories %}
+                                    <div class="category-option" 
+                                        data-value="{{ category.name|lower }}"
+                                        data-id="{{ category.id }}">
+                                        {{ category.name }}
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="category-option-empty">Нет категорий</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Выбор даты и времени -->
+            <!-- Выбор даты и времени (без предустановленных значений) -->
+            <div class="date-chose">
+                <span>Выполнить до (необязательно):</span>
+                <div class="date-select">
+                    <div class="data-info">
+                        <input type="date" id="taskDueDate" class="date-input" placeholder="дд.мм.гггг">
+                        <input type="time" id="taskTime" class="time-input" placeholder="чч:мм">
+                    </div>
+                </div>
+            </div>
+
+            <input class="mod1-tasks" type="text" id="taskTitle" placeholder="название задачи *" required>
+            <input class="mod1-tasks" type="text" id="taskDescription" placeholder="описание задачи (необязательно)">
+            <div class="button-mod1">
+                <button class="create" id="addCategoryBtn">+ новая категория</button>
+                <button class="start" id="submitTaskBtn">создать задачу</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+
+
+
+{% block scripts %}
+    
+{% endblock %}
+
+<!-- Переопределяем extra_js, чтобы отключить dashboard-modal.js -->
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/emoji-mart.js"></script>
+    <script src="{% static 'js/tasks.js' %}"></script>
+{% endblock %}

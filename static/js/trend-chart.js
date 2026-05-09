@@ -6,23 +6,20 @@ async function loadMonthlyTrends() {
     
     try {
         const response = await fetch('/api/stats/monthly-trends/');
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
         const data = await response.json();
-        renderTrendChart(data);
+        renderBeautifulChart(data);
     } catch (error) {
-        console.error('Ошибка загрузки данных для графика:', error);
+        console.error('Ошибка:', error);
         showChartError();
     }
 }
 
-function renderTrendChart(data) {
+function renderBeautifulChart(data) {
     const ctx = document.getElementById('monthlyTrendChart').getContext('2d');
     
-    // Удаляем старый график, если есть
+    // Удаляем старый график
     const existingChart = Chart.getChart(ctx.canvas);
     if (existingChart) existingChart.destroy();
     
@@ -31,23 +28,35 @@ function renderTrendChart(data) {
         return;
     }
     
+    // Создаём градиенты для линий
+    const gradients = data.categories.map(cat => {
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, cat.color);
+        gradient.addColorStop(1, cat.color + '80');
+        return gradient;
+    });
+    
     new Chart(ctx, {
         type: 'line',
         data: {
             labels: data.dates,
-            datasets: data.categories.map(cat => ({
+            datasets: data.categories.map((cat, index) => ({
                 label: cat.name,
                 data: cat.values,
                 borderColor: cat.color,
-                backgroundColor: cat.color + '20',
-                borderWidth: 2,
-                pointRadius: 3,
-                pointHoverRadius: 5,
+                backgroundColor: cat.color + '10',
+                borderWidth: 3,
+                pointRadius: 4,
+                pointHoverRadius: 7,
                 pointBackgroundColor: cat.color,
                 pointBorderColor: '#fff',
-                pointBorderWidth: 1,
-                tension: 0.3,
-                fill: false
+                pointBorderWidth: 2,
+                tension: 0.4,
+                fill: true,
+                shadowOffsetX: 2,
+                shadowOffsetY: 2,
+                shadowBlur: 10,
+                shadowColor: cat.color + '40'
             }))
         },
         options: {
@@ -57,19 +66,32 @@ function renderTrendChart(data) {
                 legend: {
                     position: 'bottom',
                     labels: {
-                        boxWidth: 12,
-                        boxHeight: 12,
                         usePointStyle: true,
                         pointStyle: 'circle',
-                        font: { size: 11 }
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        padding: 15,
+                        font: {
+                            family: "'DVDDS', sans-serif",
+                            size: 12,
+                            weight: '500'
+                        },
+                        color: '#2A2A2A'
                     }
                 },
                 tooltip: {
                     mode: 'index',
                     intersect: false,
+                    backgroundColor: 'rgba(45, 38, 140, 0.95)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: '#AEBCFE',
+                    borderWidth: 1,
+                    cornerRadius: 12,
+                    padding: 10,
                     callbacks: {
                         label: function(context) {
-                            return `${context.dataset.label}: ${context.raw} задач`;
+                            return `📌 ${context.dataset.label}: ${context.raw} задач`;
                         }
                     }
                 }
@@ -77,38 +99,73 @@ function renderTrendChart(data) {
             scales: {
                 y: {
                     beginAtZero: true,
+                    grid: {
+                        color: '#F0F0F5',
+                        drawBorder: false,
+                        lineWidth: 1
+                    },
                     title: {
                         display: true,
-                        text: 'Количество задач',
-                        font: { size: 12 }
+                        text: 'количество задач',
+                        font: {
+                            family: "'DVDDS', sans-serif",
+                            size: 11,
+                            weight: '400'
+                        },
+                        color: '#AEBCFE'
                     },
                     ticks: {
                         stepSize: 1,
-                        precision: 0
-                    },
-                    grid: {
-                        color: '#F0F0F0'
+                        precision: 0,
+                        color: '#757575',
+                        font: { size: 11 }
                     }
                 },
                 x: {
-                    title: {
-                        display: true,
-                        text: 'Дни месяца',
-                        font: { size: 12 }
+                    grid: {
+                        display: false,
+                        drawBorder: false
                     },
+                    // title: {
+                    //     display: true,
+                    //     text: 'дни месяца',
+                    //     font: {
+                    //         family: "'DVDDS', sans-serif",
+                    //         size: 11,
+                    //         weight: '400'
+                    //     },
+                    //     color: '#AEBCFE'
+                    // },
                     ticks: {
+                        color: '#757575',
+                        font: { size: 10 },
                         maxRotation: 45,
                         minRotation: 45
-                    },
-                    grid: {
-                        display: false
                     }
                 }
             },
             interaction: {
-                mode: 'nearest',
-                axis: 'x',
+                mode: 'index',
                 intersect: false
+            },
+            elements: {
+                line: {
+                    tension: 0.4,
+                    borderJoin: 'round',
+                    borderCap: 'round'
+                },
+                point: {
+                    hoverBorderWidth: 3,
+                    hoverBorderColor: '#fff'
+                }
+            },
+            layout: {
+                padding: {
+                    top: 20,
+                    bottom: 10,
+                    left: 10,
+                    right: 10
+                }
             }
         }
     });
@@ -123,9 +180,9 @@ function showEmptyChart() {
     if (existingChart) existingChart.destroy();
     
     ctx.font = '14px "DVDDS", sans-serif';
-    ctx.fillStyle = '#757575';
+    ctx.fillStyle = '#AEBCFE';
     ctx.textAlign = 'center';
-    ctx.fillText('Нет данных за этот месяц', canvas.width / 2, canvas.height / 2);
+    ctx.fillText('✨ пока нет данных ✨', canvas.width / 2, canvas.height / 2);
 }
 
 function showChartError() {
@@ -139,8 +196,7 @@ function showChartError() {
     ctx.font = '14px "DVDDS", sans-serif';
     ctx.fillStyle = '#FF4444';
     ctx.textAlign = 'center';
-    ctx.fillText('Ошибка загрузки данных', canvas.width / 2, canvas.height / 2);
+    ctx.fillText('❌ ошибка загрузки данных', canvas.width / 2, canvas.height / 2);
 }
 
-// Загружаем данные при загрузке страницы
 document.addEventListener('DOMContentLoaded', loadMonthlyTrends);

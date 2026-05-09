@@ -2,8 +2,9 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from datetime import date
 from datetime import timedelta
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from .models import Category, Task
 import plotly.express as px
 import pandas as pd
@@ -205,10 +206,40 @@ def category_detail(request, category_id):
 
 
 
-
-
-
-
+@login_required
+def tasks_calendar(request):
+    user = request.user
+    today = timezone.now().date()
+    categories = Category.objects.filter(user=user, is_active=True)
+    
+    # Все невыполненные задачи
+    all_tasks = Task.objects.filter(user=user, completed=False)
+    
+    # Просроченные: due_date < сегодня ИЛИ (due_date нет И created_at < сегодня)
+    overdue_tasks = all_tasks.filter(
+        Q(due_date__lt=today)
+    )
+    
+    # Активные (сегодняшние): due_date = сегодня ИЛИ (due_date нет И created_at = сегодня)
+    active_tasks = all_tasks.filter(
+        Q(due_date=today) | 
+        Q(due_date__isnull=True, created_at__date=today)
+    )
+    
+    # Запланированные: due_date > сегодня
+    planned_tasks = all_tasks.filter(
+        Q(due_date__gt=today) |
+        Q(due_date__isnull=True, created_at__date__lt=today))
+    
+    context = {
+        'categories': categories,
+        'overdue_tasks': overdue_tasks,
+        'active_tasks': active_tasks,
+        'planned_tasks': planned_tasks,
+        'total_incomplete': all_tasks.count(),
+        'today': today,
+    }
+    return render(request, 'categories/tasks_calendar.html', context)
 
 
 
