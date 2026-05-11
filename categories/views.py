@@ -10,6 +10,20 @@ import plotly.express as px
 import pandas as pd
 from django.shortcuts import render, get_object_or_404
 
+
+COLOR_CHOICES = [
+    ("#C7CEEA", "Пастельно-лавандовый"),
+    ("#B5EAD7", "Мятно-зелёный"),
+    ("#FFDAC1", "Персиковый"),
+    ("#FFB7B2", "Розовый"),
+    ("#E2F0CB", "Светло-лаймовый"),
+    ("#FFD3B6", "Абрикосовый"),
+    ("#D4A5D8", "Сиреневый"),
+    ("#A8D8EA", "Небесно-голубой"),
+    ("#F7DC6F", "Солнечно-жёлтый"),
+    ("#FF9AA2", "Коралловый"),
+]
+
 @login_required
 def activities(request):
     user = request.user
@@ -119,92 +133,140 @@ def activities(request):
 
 @login_required
 def category_detail(request, category_id):
-    """Детальная страница категории с данными"""
+    """Детальная страница категории"""
     
-    # Получаем категорию
     category = get_object_or_404(Category, id=category_id, user=request.user, is_active=True)
-    
-    # Получаем все задачи этой категории
-    tasks = Task.objects.filter(user=request.user, category=category).order_by('-created_at')
     
     # ========== СТАТИСТИКА ==========
     
-    # Общее время
-    total_seconds = tasks.aggregate(Sum('duration_seconds'))['duration_seconds__sum'] or 0
+    # Только задачи с duration_seconds > 0 (реальные сеансы)
+    tasks_with_time = Task.objects.filter(
+        user=request.user,
+        category=category,
+        duration_seconds__gt=0
+    ).order_by('-created_at')
+    
+    # Общее время (всегда)
+    total_seconds = tasks_with_time.aggregate(Sum('duration_seconds'))['duration_seconds__sum'] or 0
     total_hours = round(total_seconds / 3600, 1)
     
-    # Количество задач
-    tasks_count = tasks.count()
+    # Количество выполненных задач
+    tasks_count = tasks_with_time.count()
     
     # Среднее время на задачу
     avg_hours = round(total_hours / tasks_count, 1) if tasks_count > 0 else 0
     
-    # За последние 30 дней
-    month_ago = timezone.now().date() - timedelta(days=30)
-    recent_tasks = tasks.filter(created_at__date__gte=month_ago)
-    recent_seconds = recent_tasks.aggregate(Sum('duration_seconds'))['duration_seconds__sum'] or 0
+    # ========== ЧАСЫ ЗА ПОСЛЕДНИЕ 30 ДНЕЙ ==========
+    today = timezone.now().date()
+    thirty_days_ago = today - timedelta(days=30)
+    
+    recent_seconds = tasks_with_time.filter(
+        created_at__date__gte=thirty_days_ago
+    ).aggregate(Sum('duration_seconds'))['duration_seconds__sum'] or 0
     recent_hours = round(recent_seconds / 3600, 1)
     
+    # ========== РАСЧЁТ ПРОЦЕНТА ИЗМЕНЕНИЯ МЕЖДУ МЕСЯЦАМИ ==========
+    # Текущий месяц
+    start_of_current_month = today.replace(day=1)
+    current_month_seconds = tasks_with_time.filter(
+        created_at__date__gte=start_of_current_month
+    ).aggregate(Sum('duration_seconds'))['duration_seconds__sum'] or 0
+    current_month_hours = round(current_month_seconds / 3600, 1)
+    
+    # Прошлый месяц
+    if today.month == 1:
+        start_of_last_month = today.replace(year=today.year - 1, month=12, day=1)
+        last_day_of_last_month = today.replace(year=today.year - 1, month=12, day=31)
+    else:
+        start_of_last_month = today.replace(month=today.month - 1, day=1)
+        next_month = start_of_last_month.replace(month=start_of_last_month.month + 1, day=1)
+        last_day_of_last_month = next_month - timedelta(days=1)
+    
+    last_month_seconds = tasks_with_time.filter(
+        created_at__date__gte=start_of_last_month,
+        created_at__date__lte=last_day_of_last_month
+    ).aggregate(Sum('duration_seconds'))['duration_seconds__sum'] or 0
+    last_month_hours = round(last_month_seconds / 3600, 1)
+    
+    # Расчёт процента изменения
+    if last_month_hours > 0:
+        percent_change = round(((current_month_hours - last_month_hours) / last_month_hours) * 100, 1)
+    else:
+        percent_change = 100 if current_month_hours > 0 else 0
+    
+    if percent_change > 0:
+        trend_class = 'trend-up'
+        trend_icon = '↑'
+        trend_text = f'+{percent_change}% к прошлому месяцу'
+    elif percent_change < 0:
+        trend_class = 'trend-down'
+        trend_icon = '↓'
+        trend_text = f'{percent_change}% к прошлому месяцу'
+    else:
+        trend_class = 'trend-neutral'
+        trend_icon = '→'
+        trend_text = '0% к прошлому месяцу'
+    
     # ========== ГРАФИК ЗА НЕДЕЛЮ ==========
-    today = timezone.now().date()
     start_of_week = today - timedelta(days=today.weekday())
     
     week_data = []
     max_hours = 0
     days_short = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+    hours_by_day = {}
     
     for i in range(7):
         current_day = start_of_week + timedelta(days=i)
-        day_tasks = tasks.filter(created_at__date=current_day)
+        day_tasks = tasks_with_time.filter(created_at__date=current_day)
         day_seconds = day_tasks.aggregate(Sum('duration_seconds'))['duration_seconds__sum'] or 0
         day_hours = round(day_seconds / 3600, 1)
         
-        if day_hours > max_hours:
-            max_hours = day_hours
-        
+        hours_by_day[days_short[i]] = day_hours
         week_data.append({
             'name_short': days_short[i],
             'hours': day_hours,
         })
+        
+        if day_hours > max_hours:
+            max_hours = day_hours
     
     if max_hours == 0:
         max_hours = 1
     
-    # ========== ПОСЛЕДНИЕ 10 ЗАДАЧ ==========
-    recent_tasks_list = []
-    for task in tasks[:10]:
-        recent_tasks_list.append({
-            'id': task.id,
-            'title': task.title,
-            'duration_formatted': task.duration_formatted,
-            'created_at': task.created_at.strftime('%d.%m %H:%M'),
-        })
+    # Лучший день
+    best_day_name = max(hours_by_day, key=hours_by_day.get) if hours_by_day else 'Нет данных'
+    best_day_hours = hours_by_day.get(best_day_name, 0)
     
-    # Форматирование длительности
-    def format_duration(seconds):
-        hours = seconds // 3600
-        minutes = (seconds % 3600) // 60
-        if hours > 0:
-            return f"{hours}ч {minutes}м"
-        return f"{minutes}м"
+    # ========== ПОСЛЕДНИЕ ЗАДАЧИ ==========
+    recent_completed_tasks = tasks_with_time[:10]
+    
+    # ========== НЕВЫПОЛНЕННЫЕ ЗАДАЧИ ==========
+    pending_tasks = Task.objects.filter(
+        user=request.user,
+        category=category,
+        duration_seconds=0,
+        completed=False
+    ).order_by('due_date', 'created_at')[:10]
     
     context = {
         'category': category,
         'total_hours': total_hours,
         'tasks_count': tasks_count,
         'avg_hours': avg_hours,
-        'recent_hours': recent_hours,
+        'recent_hours': recent_hours,  # ← ВОЗВРАЩАЕМ
+        'trend_class': trend_class,
+        'trend_icon': trend_icon,
+        'trend_text': trend_text,
+        'percent_change': percent_change,
         'week_data': week_data,
         'max_hours': max_hours,
-        'recent_tasks': recent_tasks_list,
-        'format_duration': format_duration,
+        'best_day_name': best_day_name,
+        'best_day_hours': best_day_hours,
+        'recent_tasks': recent_completed_tasks,
+        'pending_tasks': pending_tasks,
     }
     
     return render(request, 'categories/category_detail.html', context)
-
-
-
-
 
 @login_required
 def tasks_calendar(request):

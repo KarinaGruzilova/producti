@@ -254,7 +254,8 @@ def dashboard(request):
 
     # ========== ПОСЛЕДНИЕ 10 СЕАНСОВ ==========
     recent_tasks = Task.objects.filter(
-        user=request.user
+        user=request.user,
+        duration_seconds__gt=0  # 🔥 ТОЛЬКО ЗАДАЧИ С ПОТРАЧЕННЫМ ВРЕМЕНЕМ
     ).select_related('category').order_by('-created_at')[:10]
 
     # Группируем по датам

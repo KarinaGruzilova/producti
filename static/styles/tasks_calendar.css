@@ -198,7 +198,7 @@
 .modal {
     display: none;
     position: absolute;
-    transform: translate(0%, -90%);
+    transform: translate(0%, -170%);
     top: 0;
     left: 0;
     right: 0;
@@ -217,7 +217,10 @@
     border-radius: 40px;
     padding: 40px;
     box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.15);
+    gap: 20px;
 }
+
+
 
 
 

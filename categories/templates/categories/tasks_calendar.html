@@ -83,11 +83,10 @@
             <div class="tasks">
                 {% for task in planned_tasks %}
                 <div class="task">
-                    <a href="#"><button class="btn-mini">
+                    <a href="#">
                         <button class="btn-mini category-btn" style="background-color: {{ task.category.color }};">
                             {{ task.category.emoji }} {{ task.category.name }}
-                        </button>
-                    </button></a>
+                        </button></a>
                     <p>{{ task.title }}</p>
                     <div class="info-task">
                         <div class="two">
@@ -128,25 +127,15 @@
             <div class="category-content">
                 <div class="categories-container">
                     <div class="categories-row">
-                        <button class="category" data-value="study">
+                        {% for category in categories|slice:":3" %}
+                        <button class="category" data-value="{{ category.name|lower }}" data-id="{{ category.id }}" data-name="{{ category.name }}">
                             <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
-                            <span>учеба</span>
+                            <span>{{ category.name }}</span>
                         </button>
-                        <button class="category" data-value="read">
-                            <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
-                            <span>чтение</span>
-                        </button>
-                        <button class="category" data-value="work">
-                            <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
-                            <span>работа</span>
-                        </button>
+                        {% endfor %}
                     </div>
                     <div class="categories-row">
-                        <button class="category" data-value="hobby">
-                            <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
-                            <span>хобби</span>
-                        </button>
-                        
+                        {% if categories|length > 3 %}
                         <div class="category-select-wrapper">
                             <button class="category category-select-btn" data-value="other">
                                 <img src="{% static 'icons/dashboard-cat.svg' %}" alt="">
@@ -156,19 +145,18 @@
                                 </svg>
                             </button>
                             <div class="category-dropdown">
-                                {% if categories %}
-                                    {% for category in categories %}
-                                    <div class="category-option" 
-                                        data-value="{{ category.name|lower }}"
-                                        data-id="{{ category.id }}">
-                                        {{ category.name }}
-                                    </div>
-                                    {% endfor %}
-                                {% else %}
-                                    <div class="category-option-empty">Нет категорий</div>
-                                {% endif %}
+                                {% for category in categories|slice:"3:" %}
+                                <div class="category-option" 
+                                    data-value="{{ category.name|lower }}"
+                                    data-id="{{ category.id }}">
+                                    {{ category.name }}
+                                </div>
+                                {% endfor %}
                             </div>
                         </div>
+                        {% else %}
+                        <div class="empty-space"></div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -188,7 +176,7 @@
             <input class="mod1-tasks" type="text" id="taskTitle" placeholder="название задачи *" required>
             <input class="mod1-tasks" type="text" id="taskDescription" placeholder="описание задачи (необязательно)">
             <div class="button-mod1">
-                <button class="create" id="addCategoryBtn">+ новая категория</button>
+                {% comment %} <button class="create" id="addCategoryBtn">+ новая категория</button> {% endcomment %}
                 <button class="start" id="submitTaskBtn">создать задачу</button>
             </div>
         </div>

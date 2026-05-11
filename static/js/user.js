@@ -263,6 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+// calendar.js
 
 const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
@@ -274,65 +275,152 @@ const currentDay = currentDate.getDate();
 document.querySelector('.calendar__month').innerText = months[currentDate.getMonth()];
 document.querySelector('.calendar__year').innerText = currentYear;
 
-const daysContainer = document.querySelector('.calendar__day-numbers');
-daysContainer.innerHTML = '';
-
 const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-const startDayOfWeek = firstDayOfMonth.getDay(); // 0 = воскресенье
-
+const startDayOfWeek = firstDayOfMonth.getDay();
 const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-let week = document.createElement('div');
-week.classList.add('calendar__day-numbers-row');
-
-// Преобразуем так, чтобы понедельник был первым днём
-// воскресенье (0) -> 6, понедельник (1) -> 0, вторник (2) -> 1, и т.д.
-let emptyCells = startDayOfWeek === 0 ? 6 : startDayOfWeek - 1;
-
-for (let i = 0; i < emptyCells; i++) {
-    let emptyDay = document.createElement('span');
-    emptyDay.classList.add('calendar__day-number', 'calendar__day-number--other-month');
-    emptyDay.innerText = '';
-    week.appendChild(emptyDay);
+// ========== ФУНКЦИЯ ДЛЯ ПАРСИНГА ДАТЫ БЕЗ TIMEZONE ==========
+function parseLocalDate(dateString) {
+    if (!dateString) return null;
+    // Разбираем строку вида "2026-05-17"
+    const parts = dateString.split('T')[0].split('-');
+    if (parts.length === 3) {
+        return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    }
+    return new Date(dateString);
 }
 
-for (let i = 1; i <= daysInMonth; i++) {
-    let day = document.createElement('span');
-    day.classList.add('calendar__day-number');
-    day.innerText = i;
+// ========== ПОЛУЧАЕМ ДАННЫЕ О ЗАДАЧАХ ==========
+async function loadTasksAndRenderCalendar() {
+    try {
+        const response = await fetch('/api/tasks/');
+        if (!response.ok) throw new Error('Ошибка загрузки задач');
+        
+        const tasks = await response.json();
+        console.log('Все задачи:', tasks);
+        
+        // Группируем задачи по датам (только невыполненные)
+        const tasksByDate = {};
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        tasks.forEach(task => {
+            // Пропускаем выполненные задачи
+            if (task.completed === true) return;
+            
+            let taskDate = null;
+            let dateKey = null;
+            
+            // Если есть due_date, используем его
+            if (task.due_date) {
+                taskDate = parseLocalDate(task.due_date);
+                if (taskDate) {
+                    taskDate.setHours(0, 0, 0, 0);
+                    dateKey = `${taskDate.getFullYear()}-${String(taskDate.getMonth() + 1).padStart(2, '0')}-${String(taskDate.getDate()).padStart(2, '0')}`;
+                }
+            } 
+            // Если есть created_at и нет due_date
+            else if (task.created_at) {
+                taskDate = parseLocalDate(task.created_at.split('T')[0]);
+                if (taskDate) {
+                    taskDate.setHours(0, 0, 0, 0);
+                    dateKey = `${taskDate.getFullYear()}-${String(taskDate.getMonth() + 1).padStart(2, '0')}-${String(taskDate.getDate()).padStart(2, '0')}`;
+                }
+            }
+            
+            if (!dateKey) return;
+            
+            if (!tasksByDate[dateKey]) {
+                tasksByDate[dateKey] = [];
+            }
+            
+            // Определяем статус задачи
+            let status = '';
+            if (taskDate < today) {
+                status = 'overdue';  // просроченная
+            } else if (taskDate.getTime() === today.getTime()) {
+                status = 'today';     // на сегодня
+            } else {
+                status = 'planned';   // запланированная
+            }
+            
+            tasksByDate[dateKey].push({ status: status, title: task.title });
+        });
+        
+        console.log('Задачи по датам (после обработки):', tasksByDate);
+        renderCalendar(tasksByDate, today);
+        
+    } catch (error) {
+        console.error('Ошибка загрузки задач:', error);
+        renderCalendar({}, null);
+    }
+}
+
+function renderCalendar(tasksByDate, today) {
+    const daysContainer = document.querySelector('.calendar__day-numbers');
+    daysContainer.innerHTML = '';
     
-    if (i == currentDay) {
-        day.classList.add('calendar__day-number--current');
+    let week = document.createElement('div');
+    week.classList.add('calendar__day-numbers-row');
+    
+    // Пустые ячейки
+    let emptyCells = startDayOfWeek === 0 ? 6 : startDayOfWeek - 1;
+    
+    for (let i = 0; i < emptyCells; i++) {
+        let emptyDay = document.createElement('span');
+        emptyDay.classList.add('calendar__day-number', 'calendar__day-number--other-month');
+        emptyDay.innerText = '';
+        week.appendChild(emptyDay);
     }
     
-    week.appendChild(day);
-    
-    // 🔥 ВАЖНО: теперь проверяем ВОСКРЕСЕНЬЕ (день 0) как конец недели
-    const dayOfWeek = new Date(currentYear, currentMonth, i).getDay();
-    const isSunday = dayOfWeek === 0; // воскресенье
-    
-    if (isSunday || i == daysInMonth) {
-        daysContainer.appendChild(week);
-        if (i != daysInMonth) {
-            week = document.createElement('div');
-            week.classList.add('calendar__day-numbers-row');
+    for (let i = 1; i <= daysInMonth; i++) {
+        let day = document.createElement('span');
+        day.classList.add('calendar__day-number');
+        day.innerText = i;
+        
+        // Текущий день
+        if (i == currentDay) {
+            day.classList.add('calendar__day-number--current');
+        }
+        
+        // Формируем ключ даты (локальная дата)
+        const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+        const dateTasks = tasksByDate[dateKey];
+        
+        if (dateTasks && dateTasks.length > 0) {
+            const hasOverdue = dateTasks.some(task => task.status === 'overdue');
+            const hasPlanned = dateTasks.some(task => task.status === 'planned');
+            
+            if (hasOverdue) {
+                day.classList.add('calendar__day-number--has-overdue');
+                day.setAttribute('data-has-overdue', 'true');
+            } else if (hasPlanned) {
+                day.classList.add('calendar__day-number--has-planned');
+            }
+            
+            // Добавляем всплывающую подсказку
+            const taskTitles = dateTasks.map(t => `${t.status === 'overdue' ? '⚠️' : '📅'} ${t.title}`).join('\n');
+            day.title = taskTitles;
+        }
+        
+        week.appendChild(day);
+        
+        // Проверяем конец недели (воскресенье)
+        const dayOfWeek = new Date(currentYear, currentMonth, i).getDay();
+        const isSunday = dayOfWeek === 0;
+        
+        if (isSunday || i == daysInMonth) {
+            daysContainer.appendChild(week);
+            if (i != daysInMonth) {
+                week = document.createElement('div');
+                week.classList.add('calendar__day-numbers-row');
+            }
         }
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Запускаем загрузку
+loadTasksAndRenderCalendar();
 
 
 

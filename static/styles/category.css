@@ -98,7 +98,6 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 32px;
-    margin-bottom: 32px;
 }
 
 .metric-card {
@@ -148,7 +147,6 @@
 .two-columns {
     display: flex;
     gap: 32px;
-    margin-bottom: 32px;
 }
 
 /* Левая колонка - график */
@@ -163,7 +161,6 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 32px;
     padding-bottom: 16px;
     border-bottom: 1px solid #F0F0F0;
 }
@@ -424,4 +421,347 @@
 
 .btn-back:hover {
     background: #2D268C;
+}
+
+
+/* Две колонки для задач */
+.two-columns-tasks {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+.two-columns-tasks .tasks-section {
+    flex: 1;
+    background: white;
+    border-radius: 40px;
+    padding: 32px;
+}
+
+/* Стили для невыполненных задач */
+.pending-tasks .task-date {
+    color: #FF8C00;
+}
+
+.pending-tasks .btn-start-task {
+    background: #2D268C;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pending-tasks .btn-start-task:hover {
+    background: #AEBCFE;
+    color: #2D268C;
+}
+
+
+.task-description {
+    font-size: 11px;
+    color: #757575;
+    margin-top: 4px;
+}
+
+.btn-delete-task {
+    border: 1px solid #ffffff;
+    padding: 10px ;
+    border-radius: 40px;
+    padding: 10px;
+    font-size: 8px;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Выезжающая панель — СЛЕВА */
+.category-edit-panel {
+    position: fixed;
+    top: 0;
+    left: -380px;
+    width: 312px;
+    height: 100%;
+    background: white;
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.category-edit-panel.open {
+    left: 0;
+}
+
+.category-edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.category-edit-header h3 {
+    font-size: 20px;
+    color: #2A2A2A;
+}
+
+.category-edit-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #757575;
+    transition: all 0.2s;
+}
+
+.category-edit-close:hover {
+    background: #F0F0F0;
+    color: #2A2A2A;
+}
+
+.category-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.category-edit-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.category-edit-form label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2A2A2A;
+}
+
+.category-edit-form input,
+.category-edit-form textarea {
+    padding: 12px 16px;
+    border: 1px solid #E0E0E0;
+    border-radius: 30px;
+    font-size: 14px;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.category-edit-form input:focus,
+.category-edit-form textarea:focus {
+    outline: none;
+    border-color: #2D268C;
+    box-shadow: 0 0 0 2px rgba(45, 38, 140, 0.1);
+}
+
+.category-edit-form textarea {
+    border-radius: 20px;
+    resize: vertical;
+}
+
+/* Эмодзи кнопка */
+.emoji-select-wrapper {
+    position: relative;
+}
+
+.emoji-selector-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border: 1px solid #E0E0E0;
+    border-radius: 40px;
+    background: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+}
+
+.emoji-selector-btn:hover {
+    border-color: #2D268C;
+}
+
+.emoji-picker-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+    z-index: 1000;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Выбор цвета */
+.color-select-wrapper {
+    position: relative;
+}
+
+.color-selector-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border: 1px solid #E0E0E0;
+    border-radius: 40px;
+    background: white;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.color-selector-btn:hover {
+    border-color: #2D268C;
+}
+
+.color-preview {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+}
+
+.color-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 8px;
+    background: white;
+    border: 1px solid #2D268C;
+    border-radius: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.color-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.color-option:hover {
+    background: #ECEFFE;
+}
+
+.color-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.color-text {
+    font-size: 14px;
+    color: #2A2A2A;
+}
+
+/* Кнопки */
+.category-edit-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.category-edit-buttons .btn-cancel,
+.category-edit-buttons .btn-save {
+    flex: 1;
+    padding: 12px;
+    border-radius: 40px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.category-edit-buttons .btn-cancel {
+    background: #F5F5F5;
+    border: none;
+    color: #757575;
+}
+
+.category-edit-buttons .btn-cancel:hover {
+    background: #E0E0E0;
+}
+
+.category-edit-buttons .btn-save {
+    background: #2D268C;
+    border: none;
+    color: white;
+}
+
+.category-edit-buttons .btn-save:hover {
+    background: #AEBCFE;
+    color: #2D268C;
+}
+
+.error-message {
+    font-size: 12px;
+    color: #FF4444;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.metric-trend {
+    font-size: 11px;
+    margin-top: 8px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.trend-up {
+    background-color: rgba(76, 175, 80, 0.15);
+    color: #4CAF50;
+}
+
+.trend-down {
+    background-color: rgba(244, 67, 54, 0.15);
+    color: #F44336;
+}
+
+.trend-neutral {
+    background-color: rgba(158, 158, 158, 0.15);
+    color: #757575;
 }

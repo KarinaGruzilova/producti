@@ -1014,6 +1014,73 @@ body, h1, h2, h3, h4, h5, h6 {
     background-color: #AEBCFE;
     color: #2D268C;
 }
+/* Позиционирование для точек */
+.calendar__day-number {
+    position: relative;
+}
+
+/* Красный индикатор для просроченных задач */
+.calendar__day-number--has-overdue::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: #FF4444;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+/* Бирюзовый индикатор для запланированных задач */
+.calendar__day-number--has-planned::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: #7AD4D6;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+/* Легенда календаря */
+.calendar-legend {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid #F0F0F0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.overdue-dot {
+    background-color: #FF4444;
+}
+
+.planned-dot {
+    background-color: #7AD4D6;
+}
+
+.legend-text {
+    font-size: 10px;
+    color: #757575;
+}
 
 
 /* график активности за месяц */

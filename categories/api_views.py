@@ -40,6 +40,11 @@ class CategoryViewSet(viewsets.ModelViewSet):
         category.is_active = False
         category.save()
         return Response({'status': 'archived', 'id': category.id})
+    
+
+    def perform_destroy(self, instance):
+        """При удалении категории удаляются все связанные задачи (cascade)"""
+        instance.delete()
 
 
 class TaskViewSet(viewsets.ModelViewSet):
