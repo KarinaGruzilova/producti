@@ -11,26 +11,51 @@
 </head>
 <body>
     <main>
-        <div class="container-1">
-            <img src="" alt="">
-            <div class="heder">
-                <div class="logo">
-                    <span>Pr</span>
-                    <svg width="14" height="20" viewBox="0 0 14 20" color="#2d268c" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M4 19H10M7 1C3.68629 1 1 3.68629 1 7C1 8.2145 1.36084 9.34472 1.98117 10.2893C2.93507 11.7418 3.41161 12.4676 3.47352 12.5761C4.02428 13.541 3.92287 13.2007 3.99219 14.3096C3.99998 14.4342 4 14.6229 4 15C4 15.5523 4.44772 16 5 16L9 16C9.55229 16 10 15.5523 10 15C10 14.6229 10 14.4342 10.0078 14.3096C10.0771 13.2007 9.97511 13.541 10.5259 12.5761C10.5878 12.4676 11.0651 11.7418 12.019 10.2893C12.6394 9.34472 13.0002 8.2145 13.0002 7C13.0002 3.68629 10.3137 1 7 1Z" stroke="#2D268C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <img src="{% static 'images/fon-index.png' %}" class="hero_bg" alt="">
+        <header class="header">
+            <a href="{% url 'main:index' %}" class="logo">
+                <svg width="12" height="17" viewBox="0 0 12 17" fill="none">
+                    <path d="M3.24995 16.5H8.74986M5.9999 0.5C2.96239 0.5 0.5 2.88781 0.5 5.83333C0.5 6.91289 0.830767 7.91753 1.39939 8.75715C2.27379 10.0483 2.7106 10.6934 2.76735 10.7899C3.27221 11.6476 3.17925 11.3451 3.24279 12.3307C3.24993 12.4415 3.24995 12.6092 3.24995 12.9444C3.24995 13.4354 3.66035 13.8333 4.1666 13.8333L7.83321 13.8333C8.33946 13.8333 8.74986 13.4354 8.74986 12.9444C8.74986 12.6092 8.74986 12.4415 8.757 12.3307C8.82053 11.3451 8.72704 11.6476 9.2319 10.7899C9.28865 10.6934 9.72621 10.0483 10.6006 8.75715C11.1692 7.91753 11.5 6.91289 11.5 5.83333C11.5 2.88781 9.03742 0.5 5.9999 0.5Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Producti</span>
+            </a>
+                
+            <nav class="nav">
+                <a href="{% url 'main:proversion' %}" class="nav__link">Pro-версия</a>
+                <a href="{% url 'users:login' %}" class="nav__link">Войти</a>
+                <a href="{% url 'users:registration' %}" class="nav__link">Создать аккаунт</a>
+            </nav>
+        </header>
+
+        <div class="container-0">
+            <div class="hero__content">
+                <button class="btn-glass-dark">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M8 0C8.1562 4.35194 11.6481 7.8438 16 8C11.6481 8.1562 8.1562 11.6481 8 16C7.8438 11.6481 4.35194 8.1562 0 8C4.35194 7.8438 7.8438 4.35194 8 0Z" fill="#2D268C"/>
                     </svg>
-                    <span>ducti</span>
-                </div>
-                <div class="btns-login">
-                    <a href="{% url "users:login" %}" class="nav-link"><button class="btn-login">Войти</button></a>
-                    <a href="{% url "users:registration" %}" class="nav-link"><button class="btn-reg">Зарегистрироваться</button></a>
-                </div>
+                    <span>только ты и твои задачи</span>
+                </button>
+                
+                <h1 class="hero__title">Сфокусируйся на важном<br/>Producti превратит твоё время в результат.</h1>
+                
+                <p class="hero__subtitle">Трекер продуктивности с аналитикой, которая показывает, где ты растешь, а где теряешь часы.</p>
+                
+                <button class="btn btn--large btn--gradient">
+                    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                        <rect width="36" height="36" rx="18" fill="white"/>
+                        <path d="M18 10C18.1562 14.3519 21.6481 17.8438 26 18C21.6481 18.1562 18.1562 21.6481 18 26C17.8438 21.6481 14.3519 18.1562 10 18C14.3519 17.8438 17.8438 14.3519 18 10Z" fill="#2D268C"/>
+                    </svg>
+                    <span>начать бесплатно</span>
+                </button>
             </div>
+        </div>
+
+        <div class="container-1">
             <div class="promo">
                 <div class="glavnoe">
-                    <h1>Сфокусируйся на важном. Producti превратит твоё время в результат.</h1>
-                    <p>Умный трекер продуктивности с аналитикой, которая показывает, где ты растешь, а где теряешь часы. Никакой воды — только польза.</p>
-                    <button>начать бесплатно</button>
+                    <h2>Не очередной таймер, а твой личный коуч по времени</h2>
+                    <p>Мы не просто считаем минуты — мы показываем, куда они уходят. Никакой воды, только ясная картина твоих привычек и настоящие инсайты.</p>
+                    <button>инструменты Free-версии</button>
                 </div>
                 <div class="privilege">
                     <div class="priv1">
@@ -46,7 +71,7 @@
             </div>
         </div>
         <div class="container-2">
-            <h2><span>Почему</span> мы выбираем Prоducti</h2>
+            <h3>Почему мы выбираем Prоducti</h3>
             <div class="why-we">
                 <div class="why">
                     <span>01</span>
@@ -64,7 +89,68 @@
                     <p>Не иллюзия занятости, а измеримые шаги к твоим целям.</p>
                 </div>                
             </div>
-        </div>  
+        </div> 
+
+        <div class="container-3">
+            <h3>Удобно когда под рукой всегда есть</h3>
+            <div class="feature-card">
+                <div class="feature-card__inner">
+                    <div class="feature-card__content">
+                        <div class="feature-card__tag">Таймер фокуса</div>
+                        <h2 class="feature-card__title">Один клик — и ты в потоке</h2>
+                        <p class="feature-card__desc">Запусти отсчёт, выбери задачу и работай без отвлечений. Producti сам зафиксирует каждую минуту твоего внимания.</p>
+                    </div>
+                    <img class="feature-card__img" src="{% static "images/image 8.png" %}" alt="">
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__inner">
+                    <div class="feature-card__content">
+                        <div class="feature-card__tag">Аналитика</div>
+                        <h2 class="feature-card__title">Цифры не врут</h2>
+                        <p class="feature-card__desc">Графики покажут, где ты сверкаешь, а где теряешь темп. Ты увидишь не просто часы, а реальную картину своей эффективности.</p>
+                    </div>
+                    <img class="feature-card__img" src="{% static "images/image 9.png" %}" alt="">
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__inner">
+                    <div class="feature-card__content">
+                        <div class="feature-card__tag">Категории</div>
+                        <h2 class="feature-card__title">Наведи порядок в делах</h2>
+                        <p class="feature-card__desc">Работа, учёба, спорт или личные проекты — группируй задачи по своим правилам. Добавляй цвета и эмодзи, чтобы сразу находить нужное.</p>
+                    </div>
+                    <img class="feature-card__img" src="{% static "images/image 10.png" %}" alt="">
+                </div>
+            </div>
+        </div> 
+
+        <div class="container-0">
+            <div class="hero__content">
+                
+                <h1 class="hero__title">Готов изменить своё отношение ко времени?</h1>
+                <p class="hero__subtitle">Начни с малого. Зарегистрируйся сегодня — и увидишь, как изменится твоя продуктивность уже через неделю.</p>
+                
+                <div class="two">
+                    <a href="{% url 'main:proversion' %}" class="btn-glass-dark">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M8 0C8.1562 4.35194 11.6481 7.8438 16 8C11.6481 8.1562 8.1562 11.6481 8 16C7.8438 11.6481 4.35194 8.1562 0 8C4.35194 7.8438 7.8438 4.35194 8 0Z" fill="#2D268C"/>
+                        </svg>
+                        <span>Ознакомиться с Pro-версией</span>
+                    </a>
+
+                    <a href="{% url 'users:registration' %}" class="btn-glass-dark">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M8 0C8.1562 4.35194 11.6481 7.8438 16 8C11.6481 8.1562 8.1562 11.6481 8 16C7.8438 11.6481 4.35194 8.1562 0 8C4.35194 7.8438 7.8438 4.35194 8 0Z" fill="#2D268C"/>
+                        </svg>
+                        <span>Создать аккаунт</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <img src="{% static 'images/fon-index.png' %}" class="hero_bg2" alt="">
     </main>
     {% if messages %}
     <div class="messages-container">

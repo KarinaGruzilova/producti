@@ -62,6 +62,11 @@ def activities(request):
     # Общее время
     total_hours_all = sum(c['hours'] for c in chart_data)
     other_hours = sum(c['hours'] for c in other_categories)
+
+    total_incomplete = Task.objects.filter(
+        user=request.user, 
+        completed=False
+    ).count()
     
     # Формируем данные для графика
     pie_data = []
@@ -122,6 +127,7 @@ def activities(request):
         chart_html = '<div class="no-data">Нет данных за последние 30 дней</div>'
     
     context = {
+        'total_incomplete': total_incomplete,
         'categories': categories,
         'chart_html': chart_html,
         'pie_data': pie_data,
@@ -247,13 +253,19 @@ def category_detail(request, category_id):
         duration_seconds=0,
         completed=False
     ).order_by('due_date', 'created_at')[:10]
+
+
+    total_incomplete = Task.objects.filter(
+        user=request.user, 
+        completed=False
+    ).count()
     
     context = {
         'category': category,
         'total_hours': total_hours,
         'tasks_count': tasks_count,
         'avg_hours': avg_hours,
-        'recent_hours': recent_hours,  # ← ВОЗВРАЩАЕМ
+        'recent_hours': recent_hours,
         'trend_class': trend_class,
         'trend_icon': trend_icon,
         'trend_text': trend_text,
@@ -264,6 +276,7 @@ def category_detail(request, category_id):
         'best_day_hours': best_day_hours,
         'recent_tasks': recent_completed_tasks,
         'pending_tasks': pending_tasks,
+        'total_incomplete': total_incomplete,
     }
     
     return render(request, 'categories/category_detail.html', context)

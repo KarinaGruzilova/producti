@@ -23,7 +23,17 @@ class CategoryViewSet(viewsets.ModelViewSet):
         ).order_by('name')
     
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        user = self.request.user
+        current_count = Category.objects.filter(user=user, is_active=True).count()
+    
+        # Бесплатный тариф: максимум 5 категорий
+        if not user.is_pro and current_count >= 5:
+            from rest_framework import serializers
+            raise serializers.ValidationError({
+                'error': 'Достигнут лимит категорий (5). Оформите Pro-подписку для безлимита.'
+            })
+    
+        serializer.save(user=user)
     
     @action(detail=True, methods=['get'])
     def tasks(self, request, pk=None):
@@ -68,8 +78,18 @@ class TaskViewSet(viewsets.ModelViewSet):
         
         return queryset.order_by('-created_at')
     
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+def perform_create(self, serializer):
+    user = self.request.user
+    current_count = Task.objects.filter(user=user, completed=False).count()
+    
+    # Бесплатный тариф: максимум 10 активных задач
+    if not user.is_pro and current_count >= 10:
+        from rest_framework import serializers
+        raise serializers.ValidationError({
+            'error': 'Достигнут лимит активных задач (10). Оформите Pro-подписку для безлимита.'
+        })
+    
+    serializer.save(user=user)
     
     @action(detail=False, methods=['get'])
     def today(self, request):

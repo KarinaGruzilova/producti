@@ -1,0 +1,153 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная</title>
+    <link rel="stylesheet" href="{% static 'styles/index.css'%}">
+
+</head>
+<body data-user-authenticated="{{ user.is_authenticated|yesno:'true,false' }}">
+    <main>
+        <img src="{% static 'images/fon-proversion.png' %}" class="hero_bg" alt="">
+        <header class="header">
+            <a href="{% url 'main:index' %}" class="logo">
+                <svg width="12" height="17" viewBox="0 0 12 17" fill="none">
+                    <path d="M3.24995 16.5H8.74986M5.9999 0.5C2.96239 0.5 0.5 2.88781 0.5 5.83333C0.5 6.91289 0.830767 7.91753 1.39939 8.75715C2.27379 10.0483 2.7106 10.6934 2.76735 10.7899C3.27221 11.6476 3.17925 11.3451 3.24279 12.3307C3.24993 12.4415 3.24995 12.6092 3.24995 12.9444C3.24995 13.4354 3.66035 13.8333 4.1666 13.8333L7.83321 13.8333C8.33946 13.8333 8.74986 13.4354 8.74986 12.9444C8.74986 12.6092 8.74986 12.4415 8.757 12.3307C8.82053 11.3451 8.72704 11.6476 9.2319 10.7899C9.28865 10.6934 9.72621 10.0483 10.6006 8.75715C11.1692 7.91753 11.5 6.91289 11.5 5.83333C11.5 2.88781 9.03742 0.5 5.9999 0.5Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Producti</span>
+            </a>
+                
+            <nav class="nav">
+                <a href="{% url 'main:proversion' %}" class="nav__link">Pro-версия</a>
+                <a href="{% url 'users:login' %}" class="nav__link">Войти</a>
+                <a href="{% url 'users:registration' %}" class="nav__link">Создать аккаунт</a>
+            </nav>
+        </header>
+
+        <div class="container-0">
+            <div class="hero__content">
+                <button class="btn-glass-dark">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M8 0C8.1562 4.35194 11.6481 7.8438 16 8C11.6481 8.1562 8.1562 11.6481 8 16C7.8438 11.6481 4.35194 8.1562 0 8C4.35194 7.8438 7.8438 4.35194 8 0Z" fill="#2D268C"/>
+                    </svg>
+                    <span>Выведите свою продуктивность на максимальный уровень</span>
+                </button>
+                
+                <h1 class="hero__title">Всё, что нужно для осознанного управления временем</h1>
+                
+                <p class="hero__subtitle">Бесплатно — чтобы попробовать. Платно — чтобы достигать большего.</p>
+                
+                <div class="tarifs">
+                    <div class="tarif">
+                        <div class="title-tarif">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 0C8.1562 4.35194 11.6481 7.8438 16 8C11.6481 8.1562 8.1562 11.6481 8 16C7.8438 11.6481 4.35194 8.1562 0 8C4.35194 7.8438 7.8438 4.35194 8 0Z" fill="#2A2A2A"/>
+                            </svg>
+                            <span>Базовый</span>
+                        </div>
+                        <p>Бесплатный тариф для знакомства</p>
+                        <span class="tarif-price">0 ₽ / месяц</span>
+                        <button class="btn-tarif">начать</button>
+                        <div class="capabilities">
+                            <div class="capability">
+                                <svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.5 4.74268L9.74264 8.98532L18.227 0.5M0.5 4.74268L4.74264 8.98532M13.2279 0.5L10 3.75741" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>До 5 активных категорий</span>
+                            </div>
+                            <div class="capability">
+                                <svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.5 4.74268L9.74264 8.98532L18.227 0.5M0.5 4.74268L4.74264 8.98532M13.2279 0.5L10 3.75741" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>До 10 активных задач</span>
+                            </div>
+                            <div class="capability">
+                                <svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.5 4.74268L9.74264 8.98532L18.227 0.5M0.5 4.74268L4.74264 8.98532M13.2279 0.5L10 3.75741" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Хранение истории до 30 дней</span>
+                            </div>
+                            <div class="capability">
+                                <svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.5 4.74268L9.74264 8.98532L18.227 0.5M0.5 4.74268L4.74264 8.98532M13.2279 0.5L10 3.75741" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Базовые графики активности</span>
+                            </div>
+                            <div class="capability">
+                                <svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.5 4.74268L9.74264 8.98532L18.227 0.5M0.5 4.74268L4.74264 8.98532M13.2279 0.5L10 3.75741" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Статистика по категориям</span>
+                            </div>
+                        </div>
+                        <p class="text-tarif">Все базовые возможности — чтобы попробовать и понять, как работает система.</p>
+                    </div>
+                    <div class="tarif">
+                        <div class="title-tarif">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 0C8.1562 4.35194 11.6481 7.8438 16 8C11.6481 8.1562 8.1562 11.6481 8 16C7.8438 11.6481 4.35194 8.1562 0 8C4.35194 7.8438 7.8438 4.35194 8 0Z" fill="#2D268C"/>
+                            </svg>
+                            <span>Продвинутый</span>
+                        </div>
+                        <p>Полный доступ ко всем функциям</p>
+                        <span class="tarif-price">299 ₽ / месяц</span>
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'users:login' %}" class="btn-pro btn-tarif">Войти для оформления</a>
+                        {% elif user.is_pro %}
+                            <button class="btn-current btn-tarif" disabled>Текущий тариф</button>
+                        {% else %}
+                            <button class="btn-pro btn-tarif" id="upgradeProBtn">Оформить Pro</button>
+                        {% endif %}
+                        <div class="capabilities">
+                            <div class="capability">
+                                <svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.5 4.74268L9.74264 8.98532L18.227 0.5M0.5 4.74268L4.74264 8.98532M13.2279 0.5L10 3.75741" stroke="#2D268C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Безлимит категорий</span>
+                            </div>
+                            <div class="capability">
+                                <svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.5 4.74268L9.74264 8.98532L18.227 0.5M0.5 4.74268L4.74264 8.98532M13.2279 0.5L10 3.75741" stroke="#2D268C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Безлимит задач</span>
+                            </div>
+                            <div class="capability">
+                                <svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.5 4.74268L9.74264 8.98532L18.227 0.5M0.5 4.74268L4.74264 8.98532M13.2279 0.5L10 3.75741" stroke="#2D268C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Безлимитная история</span>
+                            </div>
+                            <div class="capability">
+                                <svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.5 4.74268L9.74264 8.98532L18.227 0.5M0.5 4.74268L4.74264 8.98532M13.2279 0.5L10 3.75741" stroke="#2D268C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Углублённые инсайты и графики</span>
+                            </div>
+                            <div class="capability">
+                                <svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.5 4.74268L9.74264 8.98532L18.227 0.5M0.5 4.74268L4.74264 8.98532M13.2279 0.5L10 3.75741" stroke="#2D268C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Расширенная аналитика</span>
+                            </div>
+                                                        <div class="capability">
+                                <svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.5 4.74268L9.74264 8.98532L18.227 0.5M0.5 4.74268L4.74264 8.98532M13.2279 0.5L10 3.75741" stroke="#2D268C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Экспорт данных в CSV/Excel</span>
+                            </div>
+                        </div>
+                        <p class="text-tarif">Безлимитные категории и задачи, расширенная аналитика — для тех, кто настроен на результат.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="{% static 'js/priceing.js' %}"></script>
+</body>
+</html>
+

@@ -1,154 +1,3 @@
-# from django.shortcuts import render
-# from django.utils import timezone
-# from datetime import timedelta
-# from django.db.models import Sum
-# import datetime
-# import json
-# import logging
-
-# from django.http import JsonResponse
-# from django.views.decorators.http import require_POST
-# from django.contrib.auth.decorators import login_required
-# from django.views.decorators.csrf import csrf_protect, csrf_exempt
-
-# from categories.models import Category, Task  # Добавлен импорт Task
-# from categories.forms import CategoryCreateForm
-
-# from datetime import datetime
-
-# logger = logging.getLogger(__name__)
-
-# def index(request):
-#     return render(request, 'main/index.html' )
-
-# def dashboard(request):
-#     # Получаем текущую дату и время
-#     current_datetime = datetime.datetime.now()
-
-#     # Форматируем дату на русском языке
-#     months_ru = {
-#         1: 'Янв', 2: 'Фев', 3: 'Мар', 4: 'Апр', 5: 'Май', 6: 'Июн',
-#         7: 'Июл', 8: 'Авг', 9: 'Сен', 10: 'Окт', 11: 'Ноя', 12: 'Дек'
-#     }
-
-#     formatted_date = f"{months_ru[current_datetime.month]} {current_datetime.day:02d}, {current_datetime.year}"
-#     formatted_time = current_datetime.strftime("%H:%M")
-
-#     # ПОЛУЧАЕМ КАТЕГОРИИ ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ
-#     categories = Category.objects.filter(user=request.user, is_active=True)
-
-
-
-
-
-
-
-
-
-
-
-#     # ГРАФИК ДНЕЙ НЕДЕЛИ
-#     user = request.user
-#     today = timezone.now().date()
-    
-#     # Получаем начало недели (понедельник)
-#     start_of_week = today - timedelta(days=today.weekday())
-    
-#     # Данные за каждый день недели
-#     week_data = []
-#     week_total = 0
-#     max_hours = 0
-    
-#     for i in range(7):
-#         current_day = start_of_week + timedelta(days=i)
-#         next_day = current_day + timedelta(days=1)
-        
-#         # Суммируем время за день
-#         day_sessions = Task.objects.filter(
-#             user=user,
-#             created_at__date=current_day
-#         )
-        
-#         total_seconds = day_sessions.aggregate(Sum('duration_seconds'))['duration_seconds__sum'] or 0
-#         total_hours = total_seconds / 3600
-#         week_total += total_hours
-        
-#         # Находим максимальное значение для масштабирования
-#         if total_hours > max_hours:
-#             max_hours = total_hours
-        
-#         # Названия дней
-#         days_ru = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
-#         days_short = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
-        
-#         week_data.append({
-#             'name': days_ru[i],
-#             'name_short': days_short[i],
-#             'hours': round(total_hours, 1),
-#             'seconds': total_seconds,
-#         })
-    
-#     # Если максимальное значение 0, ставим 1 для корректного отображения
-#     if max_hours == 0:
-#         max_hours = 1
-
-
-
-# # Получаем последние 10 сеансов
-# recent_tasks = Task.objects.filter(
-#     user=request.user
-# ).select_related('category').order_by('-created_at')[:10]
-
-# # Группируем по датам
-# today = timezone.now().date()
-# yesterday = today - timedelta(days=1)
-
-# sessions_by_day = {
-#     'today': [],
-#     'yesterday': [],
-#     'older': []
-# }
-
-# for task in recent_tasks:
-#     task_date = task.created_at.date()
-#     session_data = {
-#         'id': task.id,
-#         'time': task.created_at.strftime('%H:%M'),
-#         'duration': format_duration(task.duration_seconds),
-#         'category_name': task.category.name,
-#         'category_emoji': task.category.emoji,
-#         'category_color': task.category.color,
-#         'description': truncate_text(task.title or 'без описания', 40),
-#         'full_description': task.title or '',
-#         'category_id': task.category.id,
-#     }
-    
-#     if task_date == today:
-#         sessions_by_day['today'].append(session_data)
-#     elif task_date == yesterday:
-#         sessions_by_day['yesterday'].append(session_data)
-#     else:
-#         sessions_by_day['older'].append(session_data)
-
-
-    
-#     context = {
-#         'current_date': formatted_date,
-#         'current_time': formatted_time,
-#         'full_datetime': current_datetime,
-#         'categories': categories,
-#         'color_choices': Category.PASTEL_COLORS,
-#         'week_data': week_data,
-#         'week_total_hours': round(week_total, 1),
-#         'max_hours': max_hours,
-
-#         'sessions_by_day' : sessions_by_day,
-#     }
-#     return render(request, 'main/dashboard.html', context)
-
-
-
-
 from django.shortcuts import render
 from django.utils import timezone
 from datetime import timedelta, datetime
@@ -190,6 +39,14 @@ def truncate_text(text, max_length=40):
 
 def index(request):
     return render(request, 'main/index.html')
+
+def proversion(request):
+    """Страница Pro-версии"""
+    context = {
+        'user_is_authenticated': request.user.is_authenticated,
+        'user_is_pro': request.user.is_authenticated and request.user.is_pro,
+    }
+    return render(request, 'main/proversion.html', context)
 
 
 @login_required
@@ -268,6 +125,12 @@ def dashboard(request):
         'older': []
     }
 
+    # Подсчёт невыполненных задач
+    total_incomplete = Task.objects.filter(
+        user=request.user, 
+        completed=False
+    ).count()
+
     for task in recent_tasks:
         task_date = task.created_at.date()
         session_data = {
@@ -300,6 +163,7 @@ def dashboard(request):
         'week_total_hours': round(week_total, 1),
         'max_hours': max_hours,
         'sessions_by_day': sessions_by_day,
+        'total_incomplete': total_incomplete,
     }
     
     return render(request, 'main/dashboard.html', context)
@@ -483,6 +347,30 @@ def save_timer_result(request):
             'success': False,
             'error': str(e)
         }, status=500)
+    
+
+
+
+
+
+
+
+@login_required
+@require_POST
+@csrf_exempt
+def activate_pro(request):
+    """Активация Pro-подписки (заглушка для теста)"""
+    user = request.user
+    
+    # Активируем подписку на 30 дней
+    user.is_pro = True
+    user.subscription_until = timezone.now() + timedelta(days=30)
+    user.save()
+    
+    return JsonResponse({
+        'success': True,
+        'message': f'Pro-подписка активирована до {user.subscription_until.strftime("%d.%m.%Y")}'
+    })
     
 
 

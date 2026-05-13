@@ -43,12 +43,6 @@ def registration(request):
     }
     return render(request, 'users/registration.html', context)
 
-# def profile(request):
-#     context = {
-#         'title':'Producti - Профиль'
-#     }
-#     return render(request, 'users/profile.html', context)
-
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
@@ -58,7 +52,6 @@ from django.utils import timezone
 from datetime import timedelta
 from .models import User
 from categories.models import Category, Task
-# from goals.models import Goal  # если есть приложение goals
 
 @login_required
 def profile(request):
@@ -115,13 +108,19 @@ def profile(request):
         })
     
     months_data.reverse()  # Отображаем от января к декабрю
+
+    # Подсчёт невыполненных задач
+    total_incomplete = Task.objects.filter(
+        user=request.user, 
+        completed=False
+    ).count()
     
     context = {
         'user': user,
         'categories_count': categories_count,
         'tasks_count': tasks_count,
         'total_hours': total_hours,
-        # 'completed_goals': completed_goals,
+        'total_incomplete': total_incomplete,
         'streak_days': streak_days,
         'months_data': months_data,
     }

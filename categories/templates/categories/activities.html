@@ -78,21 +78,25 @@
                 
                 
                 <div class="all-btn">
-                    {% comment %}<div class="two-btn">
+                    <div class="two-btn">
                         
-                        <button>
+                        {% comment %} <button>
                             <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0.5 8.50018V9.94C0.5 10.8361 0.5 11.2838 0.669544 11.6261C0.818678 11.9271 1.05647 12.1724 1.34917 12.3258C1.68159 12.5 2.11698 12.5 2.98646 12.5H14.5M0.5 8.50018V0.5M0.5 8.50018L3.49705 5.93125L3.49953 5.9292C4.0417 5.46448 4.31331 5.23167 4.60782 5.13711C4.95574 5.0254 5.3305 5.04307 5.66715 5.18672C5.95255 5.3085 6.2028 5.5659 6.7033 6.08071L6.70832 6.08587C7.21659 6.60867 7.47141 6.87077 7.76138 6.99228C8.10453 7.13606 8.48655 7.14845 8.83823 7.02846C9.1364 6.92672 9.40873 6.68204 9.95324 6.19197L14.4998 2.1" stroke="#2A2A2A" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </button> {% endcomment %}
                         
                         
-                        {% comment %} <button class="edit-category-btn" onclick="openEditModal()">
-                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <button class="edit-category-btn" data-id="{{ category.id }}"
+                            data-name="{{ category.name }}"
+                            data-emoji="{{ category.emoji }}"
+                            data-color="{{ category.color }}"
+                            data-description="{{ category.description|escapejs }}">
+                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
                                 <path d="M0.5 12.5H12.5M0.5 12.5V9.42032L6.5 3.26097M0.5 12.5L3.5 12.5L9.49999 6.34064M6.5 3.26097L8.65147 1.05234L8.65277 1.05103C8.94893 0.747003 9.09727 0.59472 9.26827 0.537683C9.41891 0.487439 9.58118 0.487439 9.73181 0.537683C9.90269 0.594679 10.0509 0.74679 10.3466 1.05039L11.6515 2.38989C11.9485 2.69479 12.097 2.84731 12.1527 3.0231C12.2016 3.17774 12.2016 3.34431 12.1527 3.49894C12.0971 3.67461 11.9487 3.8269 11.6521 4.13136L11.6515 4.13202L9.49999 6.34064M6.5 3.26097L9.49999 6.34064" stroke="#2A2A2A" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </button>
-                    </div> {% endcomment %}
+                    </div>
                     
                     <button class="btn-delete" data-category-id="{{ category.id }}">
                         <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -187,6 +191,75 @@
             </form>
         </div>
     </div>
+
+
+
+<!-- Затемнение для панели редактирования -->
+<div id="editCategoryOverlay" class="edit-overlay"></div>
+
+<!-- Выезжающая панель редактирования категории -->
+<div id="editCategoryPanel" class="edit-category-panel">
+    <div class="edit-panel-header">
+        <h3>✏️ Редактирование категории</h3>
+        <button class="close-edit-panel" id="closeEditPanelBtn">×</button>
+    </div>
+    
+    <form id="editCategoryForm" class="edit-category-form">
+        {% csrf_token %}
+        
+        <!-- Название -->
+        <div class="form-group">
+            <label>Название категории</label>
+            <input type="text" id="editCategoryName" name="name" placeholder="Введите название" required>
+        </div>
+        
+        <!-- Эмодзи (как в модальном окне) -->
+        <div class="option-selector emoji-selector-container">
+            <span class="option-label">Иконка:</span>
+            <button type="button" class="emoji-trigger-button" id="editEmojiPickerBtn">
+                <span class="selected-emoji" id="editSelectedEmoji">🎨</span>
+                <svg width="12" height="6" viewBox="0 0 9 5" fill="none">
+                    <path d="M8.5 0.5L4.5 4.5L0.5 0.5" stroke="#2D268C" stroke-linecap="round"/>
+                </svg>
+            </button>
+            <input type="hidden" name="emoji" id="editEmojiInput" value="🎨">
+            <div class="emoji-picker-container" id="editEmojiPickerContainer" style="display: none;"></div>
+        </div>
+        
+        <!-- Цвет (как в модальном окне) -->
+        <div class="option-selector color-selector-container">
+            <span class="option-label">Цвет:</span>
+            <div class="custom-color-select">
+                <button type="button" class="color-selector-btn" id="editColorSelectorBtn">
+                    <span class="color-preview" id="editColorPreview" style="background-color: #C7CEEA;"></span>
+                    <span class="color-name" id="editColorName">Пастельно-лавандовый</span>
+                    <svg width="12" height="6" viewBox="0 0 9 5" fill="none">
+                        <path d="M8.5 0.5L4.5 4.5L0.5 0.5" stroke="#2D268C" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <div class="color-dropdown" id="editColorDropdown" style="display: none;">
+                    {% for color_code, color_name in color_choices %}
+                    <div class="color-option" data-color="{{ color_code }}" data-name="{{ color_name }}">
+                        <span class="color-dot" style="background-color: {{ color_code }};"></span>
+                        <span class="color-text">{{ color_name }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <input type="hidden" name="color" id="editColorInput" value="#C7CEEA">
+            </div>
+        </div>
+        
+        <!-- Описание -->
+        <div class="form-group">
+            <label>Описание (необязательно)</label>
+            <textarea id="editCategoryDescription" rows="3" placeholder="Описание категории"></textarea>
+        </div>
+        
+        <div class="edit-panel-buttons">
+            <button type="button" class="btn-cancel" id="cancelEditBtn">Отмена</button>
+            <button type="submit" class="btn-save">Сохранить изменения</button>
+        </div>
+    </form>
 </div>
 {% endblock %}
 

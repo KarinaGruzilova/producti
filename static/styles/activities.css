@@ -309,5 +309,213 @@ h6 {
 
 
 
+/* Затемнение */
+.edit-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+    z-index: 998;
+}
+
+/* Выезжающая панель (слева) */
+.edit-category-panel {
+    position: fixed;
+    top: 0;
+    left: -400px;
+    width: 380px;
+    height: 100%;
+    background: white;
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.edit-category-panel.open {
+    left: 0;
+}
+
+.edit-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.edit-panel-header h3 {
+    font-size: 20px;
+    color: #2A2A2A;
+}
+
+.close-edit-panel {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #757575;
+    transition: all 0.2s;
+}
+
+.close-edit-panel:hover {
+    background: #F0F0F0;
+    color: #2A2A2A;
+}
+
+.edit-category-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.edit-category-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.edit-category-form label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2A2A2A;
+}
+
+.edit-category-form input,
+.edit-category-form textarea {
+    padding: 12px 16px;
+    border: 1px solid #E0E0E0;
+    border-radius: 30px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.edit-category-form input:focus,
+.edit-category-form textarea:focus {
+    outline: none;
+    border-color: #2D268C;
+    box-shadow: 0 0 0 2px rgba(45, 38, 140, 0.1);
+}
+
+/* Эмодзи */
+.emoji-selector-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border: 1px solid #E0E0E0;
+    border-radius: 40px;
+    background: white;
+    cursor: pointer;
+}
+
+.emoji-picker-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+    z-index: 1000;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Цвет */
+.color-selector-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border: 1px solid #E0E0E0;
+    border-radius: 40px;
+    background: white;
+    cursor: pointer;
+    width: 100%;
+}
+
+.color-preview {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+.color-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 8px;
+    background: white;
+    border: 1px solid #2D268C;
+    border-radius: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.color-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+}
+
+.color-option:hover {
+    background: #ECEFFE;
+}
+
+.color-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+/* Кнопки */
+.edit-panel-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-cancel, .btn-save {
+    flex: 1;
+    padding: 12px;
+    border-radius: 40px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background: #F5F5F5;
+    border: none;
+    color: #757575;
+}
+
+.btn-cancel:hover {
+    background: #E0E0E0;
+}
+
+.btn-save {
+    background: #2D268C;
+    border: none;
+    color: white;
+}
+
+.btn-save:hover {
+    background: #AEBCFE;
+    color: #2D268C;
+}
+
+
 
 
