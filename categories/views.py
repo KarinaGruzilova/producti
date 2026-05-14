@@ -1,5 +1,3 @@
-# categories/views.py
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from datetime import date
@@ -9,6 +7,9 @@ from .models import Category, Task
 import plotly.express as px
 import pandas as pd
 from django.shortcuts import render, get_object_or_404
+
+from django.http import JsonResponse
+from .models import User
 
 
 COLOR_CHOICES = [
@@ -315,8 +316,3 @@ def tasks_calendar(request):
         'today': today,
     }
     return render(request, 'categories/tasks_calendar.html', context)
-
-
-
-
-

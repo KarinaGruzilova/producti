@@ -324,64 +324,50 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // ========== 10. ВЫБОР ЦВЕТА ==========
-    function initColorSelector() {
-        const colorBtn = document.getElementById('colorSelectorBtn');
-        const colorDropdown = document.getElementById('colorDropdown');
-        let colorOptions = document.querySelectorAll('.color-option');
-        
-        if (!colorBtn || !colorDropdown) return false;
-        
-        if (colorOptions.length === 0) {
-            if (retryCount < MAX_RETRIES) {
-                retryCount++;
-                setTimeout(() => initColorSelector(), 200);
-                return false;
-            }
-            return false;
+ // ========== ВЫБОР ЦВЕТА (делегирование) ==========
+document.addEventListener('click', function(e) {
+    // Открытие выпадающего списка
+    const colorBtn = e.target.closest('#editColorSelectorBtn');
+    if (colorBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const dropdown = document.getElementById('editColorDropdown');
+        if (dropdown) {
+            const isOpen = dropdown.style.display === 'block';
+            dropdown.style.display = isOpen ? 'none' : 'block';
         }
-        
-        const newColorBtn = colorBtn.cloneNode(true);
-        colorBtn.parentNode.replaceChild(newColorBtn, colorBtn);
-        
-        newColorBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            colorDropdown.style.display = colorDropdown.style.display === 'block' ? 'none' : 'block';
-        });
-        
-        colorOptions = document.querySelectorAll('.color-option');
-        colorOptions.forEach(option => {
-            const newOption = option.cloneNode(true);
-            option.parentNode.replaceChild(newOption, option);
-            
-            newOption.addEventListener('click', function() {
-                const selectedColor = this.dataset.color;
-                const selectedName = this.dataset.name;
-                
-                const previewEl = document.getElementById('selectedColorPreview');
-                const nameEl = document.getElementById('selectedColorName');
-                const inputEl = document.getElementById('colorInput');
-                
-                if (previewEl) previewEl.style.backgroundColor = selectedColor;
-                if (nameEl) nameEl.textContent = selectedName;
-                if (inputEl) inputEl.value = selectedColor;
-                
-                document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
-                this.classList.add('selected');
-                colorDropdown.style.display = 'none';
-            });
-        });
-        
-        document.addEventListener('click', function(e) {
-            if (!newColorBtn.contains(e.target) && !colorDropdown.contains(e.target)) {
-                colorDropdown.style.display = 'none';
-            }
-        });
-        
-        colorSelectorInitialized = true;
-        return true;
+        return;
     }
+    
+    // Выбор цвета
+    const colorOption = e.target.closest('#editColorDropdown .color-option');
+    if (colorOption) {
+        e.preventDefault();
+        e.stopPropagation();
+        const selectedColor = colorOption.dataset.color;
+        const selectedName = colorOption.dataset.name;
+        
+        const preview = document.getElementById('editColorPreview');
+        const nameSpan = document.getElementById('editColorName');
+        const input = document.getElementById('editColorInput');
+        
+        if (preview) preview.style.backgroundColor = selectedColor;
+        if (nameSpan) nameSpan.textContent = selectedName;
+        if (input) input.value = selectedColor;
+        
+        const dropdown = document.getElementById('editColorDropdown');
+        if (dropdown) dropdown.style.display = 'none';
+    }
+});
+
+// Закрытие при клике вне
+document.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('editColorDropdown');
+    const btn = document.getElementById('editColorSelectorBtn');
+    if (dropdown && btn && !btn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+    }
+});
     
     // ========== 11. ВЫБОР ЭМОДЗИ ==========
     function initEmojiPicker() {

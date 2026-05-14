@@ -429,12 +429,13 @@ body, h1, h2, h3, h4, h5, h6 {
     flex-direction: column;
     background-color: #fff;
     border-radius: 40px;
-    padding: 40px 60px;
+    padding: 32px 20px;
     gap: 32px;
+    height: 300px;
 }
 
 .activity-container h2 {
-    font-size: 32px;
+    font-size: 16px;
     font-weight: 500;
     color: #2a2a2a;
 }
@@ -448,7 +449,7 @@ body, h1, h2, h3, h4, h5, h6 {
     display: flex;
     justify-content: space-around;
     align-items: flex-end;
-    gap: 16px;
+    gap: 11px;
     height: 200px;
 }
 
@@ -1082,33 +1083,189 @@ body, h1, h2, h3, h4, h5, h6 {
     font-size: 10px;
     color: #757575;
 }
-
-
-/* график активности за месяц */
 /* Контейнер графика */
 .trend-chart-container {
+    width: 100%;
+    max-width: 600px;
+    height: 400px;                     /* ← фиксированная высота всего блока */
     background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FF 100%);
     border-radius: 32px;
     padding: 24px;
-    margin-top: 32px;
     box-shadow: 0 20px 35px -10px rgba(45, 38, 140, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .trend-chart-container h3 {
     font-size: 18px;
     font-weight: 700;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     padding-left: 8px;
     background: linear-gradient(135deg, #2D268C, #AEBCFE);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     display: inline-block;
+    flex-shrink: 0;                   /* ← заголовок не сжимается */
 }
 
+/* Обёртка с прокруткой по вертикали */
 .chart-wrapper {
+    flex: 1;                          /* ← занимает оставшееся пространство */
+    overflow-y: auto;                 /* ← вертикальная прокрутка при переполнении */
+    overflow-x: hidden;
+    min-height: 0;                    /* ← важно для корректной работы flex */
+}
+
+/* Канвас */
+#monthlyTrendChart {
     width: 100%;
-    height: auto;
-    padding: 8px;
+    height: 200px; 
+}
+
+
+
+
+
+
+
+
+
+
+/* График */
+.trend-chart-container {
+    flex: 1;
+    min-width: 300px;
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FF 100%);
+    border-radius: 32px;
+    padding: 24px;
+    box-shadow: 0 20px 35px -10px rgba(45, 38, 140, 0.1);
+}
+
+/* Карточка тарифа */
+.tariff-card {
+    width: 440px;
+    min-width: 320px;
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FF 100%);
+    border-radius: 32px;
+    padding: 24px;
+    box-shadow: 0 20px 35px -10px rgba(45, 38, 140, 0.1);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* PRO тариф */
+.tariff-pro {
+    text-align: center;
+}
+
+.tariff-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #2D268C, #AEBCFE);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 40px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.tariff-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.tariff-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #2D268C;
+    margin-bottom: 8px;
+}
+
+.tariff-date {
+    font-size: 14px;
+    color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 40px;
+    margin-bottom: 20px;
+}
+
+/* FREE тариф */
+.tariff-free {
+    text-align: center;
+}
+
+.tariff-badge-free {
+    display: inline-block;
+    background: #E0E0E0;
+    color: #757575;
+    padding: 6px 16px;
+    border-radius: 40px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.tariff-desc {
+    color: #757575;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* Список возможностей */
+.tariff-features {
+    text-align: left;
+    margin: 20px 0;
+    padding: 0 8px;
+}
+
+.feature {
+    padding: 8px 0;
+    font-size: 14px;
+    color: #2A2A2A;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.feature:last-child {
+    border-bottom: none;
+}
+
+/* Кнопки */
+.tariff-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+    margin-top: auto;
+    text-align: center;
+}
+
+.tariff-btn-primary {
+    background: #2D268C;
+    color: white;
+}
+
+.tariff-btn-primary:hover {
+    background: #AEBCFE;
+    color: #2D268C;
+    transform: translateY(-2px);
+}
+
+.tariff-btn-secondary {
+    background: transparent;
+    color: #2D268C;
+    border: 1px solid #2D268C;
+}
+
+.tariff-btn-secondary:hover {
+    background: #2D268C;
+    color: white;
+    transform: translateY(-2px);
 }

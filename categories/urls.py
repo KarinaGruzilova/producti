@@ -8,4 +8,5 @@ urlpatterns = [
     path('tasks/calendar/', views.tasks_calendar, name='tasks_calendar'),
     path('<int:category_id>/', views.category_detail, name='category_detail'),
 
+
 ]

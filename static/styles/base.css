@@ -1601,7 +1601,7 @@ emoji-picker {
     position: fixed;
     top: 54%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-20%, -50%);
     z-index: 100;
     width: 480px;
     background-color: transparent;
@@ -1736,3 +1736,6 @@ emoji-picker {
     font-family: 'DVDDS', sans-serif;
     box-shadow: 0 2px 10px rgba(76, 175, 80, 0.3);
 }
+
+
+

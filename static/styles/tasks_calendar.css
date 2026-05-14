@@ -178,11 +178,13 @@
 
 
 
-
+/* Контейнер контента */
 .content-container {
     position: relative;
+    transition: all 0.3s ease;
 }
 
+/* Затемнение — внутри контейнера, но скрыто по умолчанию */
 .modal-overlay {
     display: none;
     position: absolute;
@@ -190,49 +192,52 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    border-top-left-radius: 40px;
-    z-index: 100;
+    background: rgba(0, 0, 0, 0.0);
+    border-radius: 40px;
+    z-index: 90;
 }
 
+/* Класс затемнения для контейнера */
+.content-container.dimmed {
+    overflow: hidden;
+}
+
+.content-container.dimmed .modal-overlay {
+    display: block;
+}
+
+/* Модальное окно */
 .modal {
     display: none;
-    position: absolute;
-    transform: translate(0%, -170%);
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 85%;
-    max-width: 520px;
-    height: fit-content;
-    max-height: 90%;
-    margin: auto;
-    z-index: 999;
+    position: fixed;
+    top: 54%;
+    left: 50%;
+    transform: translate(-20%, -50%);
+    z-index: 100;
+    width: 480px;
+    max-width: 90%;
+    max-height: 85vh;
+    background: white;
+    border-radius: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.0);
     overflow-y: auto;
 }
 
 .modal-content {
-    background: white;
-    border-radius: 40px;
-    padding: 40px;
-    box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.15);
-    gap: 20px;
+    padding: 40px 32px;
+    position: relative;
+    gap:20px;
 }
-
-
-
-
-
-
-
-
 
 .date-chose {
     display: flex;
     align-items: center;
     gap: 12px;
     margin: 20px 0;
+}
+.date-chose span {
+    width: 120px;
+
 }
 .date-input, .time-input {
     flex: 1;

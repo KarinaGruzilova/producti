@@ -54,34 +54,19 @@ document.addEventListener('DOMContentLoaded', function() {
         'хобби': '🎨'
     };
     
-    // ========== 4. ФУНКЦИИ УПРАВЛЕНИЯ ЗАТЕМНЕНИЕМ ==========
-    function dimContentContainer() {
-        if (contentContainer) {
-            contentContainer.classList.add('dimmed');
-        }
-    }
-    
-    function undimContentContainer() {
-        if (contentContainer) {
-            contentContainer.classList.remove('dimmed');
-        }
-    }
-    
-    // ========== 5. ФУНКЦИИ УПРАВЛЕНИЯ ОКНОМ ==========
+    // ========== 4. УПРАВЛЕНИЕ ОКНОМ И ЗАТЕМНЕНИЕМ ==========
     function openModal() {
-        if (modal) {
+        if (modal && contentContainer) {
             modal.style.display = 'block';
-            if (modalOverlay) modalOverlay.style.display = 'block';
-            dimContentContainer();
+            contentContainer.classList.add('dimmed');  // затемнение контейнера
             document.body.style.overflow = 'hidden';
         }
     }
     
     function closeModal() {
-        if (modal) {
+        if (modal && contentContainer) {
             modal.style.display = 'none';
-            if (modalOverlay) modalOverlay.style.display = 'none';
-            undimContentContainer();
+            contentContainer.classList.remove('dimmed');  // убираем затемнение
             document.body.style.overflow = '';
             resetForm();
         }
@@ -104,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (categoryDropdown) categoryDropdown.style.display = 'none';
     }
     
-    // ========== 6. ОТКРЫТИЕ/ЗАКРЫТИЕ ==========
+    // ========== 5. ОТКРЫТИЕ/ЗАКРЫТИЕ ==========
     if (openModalBtn) {
         openModalBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -126,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // ========== 7. ВЫБОР КАТЕГОРИИ ==========
+    // ========== 6. ВЫБОР КАТЕГОРИИ ==========
     categoryButtons.forEach(btn => {
         btn.addEventListener('click', function() {
             categoryButtons.forEach(b => b.classList.remove('selected'));
@@ -178,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // ========== 8. ПОЛУЧЕНИЕ ДАННЫХ КАТЕГОРИИ ==========
+    // ========== 7. ПОЛУЧЕНИЕ ДАННЫХ КАТЕГОРИИ ==========
     function getSelectedCategoryData() {
         let categoryData = {
             name: null,
@@ -186,17 +171,13 @@ document.addEventListener('DOMContentLoaded', function() {
             isStandard: false
         };
         
-        // Проверяем обычные кнопки (первые 4 категории)
         const selectedStandardBtn = document.querySelector('.categories-row .category.selected:not(.category-select-btn)');
         if (selectedStandardBtn) {
-            // Пытаемся получить ID из data-id
             if (selectedStandardBtn.dataset.id) {
-                // Это категория из БД
                 categoryData.id = parseInt(selectedStandardBtn.dataset.id);
                 categoryData.name = selectedStandardBtn.querySelector('span')?.textContent;
                 categoryData.isStandard = false;
             } else {
-                // Это стандартная категория (учеба, чтение, работа, хобби) без ID
                 const spanElement = selectedStandardBtn.querySelector('span');
                 categoryData.name = spanElement ? spanElement.textContent : 'категория';
                 categoryData.isStandard = true;
@@ -204,7 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Проверяем выбранную из выпадающего списка
         if (!categoryData.name && categorySelectBtn?.classList.contains('selected')) {
             const spanElement = categorySelectBtn.querySelector('span');
             if (spanElement && spanElement.textContent !== 'выбрать') {
@@ -224,17 +204,14 @@ document.addEventListener('DOMContentLoaded', function() {
         return categoryData;
     }
     
-    // ========== 9. СОЗДАНИЕ СТАНДАРТНОЙ КАТЕГОРИИ (если нет в БД) ==========
+    // ========== 8. СОЗДАНИЕ СТАНДАРТНОЙ КАТЕГОРИИ ==========
     async function createStandardCategoryIfNeeded(categoryName) {
         const csrftoken = getCookie('csrftoken');
         
         try {
             const response = await fetch('/api/categories/', {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken,
-                }
+                headers: { 'X-CSRFToken': csrftoken }
             });
             
             if (response.ok) {
@@ -268,15 +245,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('✅ Создана новая стандартная категория:', data);
                 return data.id;
             }
-            
         } catch (error) {
-            console.error('Ошибка при работе с категорией:', error);
+            console.error('Ошибка:', error);
         }
-        
         return null;
     }
     
-    // ========== 10. ПРОВЕРКА ДАТЫ ==========
+    // ========== 9. ПРОВЕРКА ДАТЫ ==========
     function isValidDueDate(dateString) {
         if (!dateString) return true;
         const selectedDate = new Date(dateString);
@@ -289,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return true;
     }
     
-    // ========== 11. СОЗДАНИЕ ЗАДАЧИ ==========
+    // ========== 10. СОЗДАНИЕ ЗАДАЧИ ==========
     if (submitTaskBtn) {
         submitTaskBtn.addEventListener('click', async function() {
             const title = taskTitleInput?.value.trim();
@@ -303,8 +278,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const categoryData = getSelectedCategoryData();
-            console.log('Выбранная категория:', categoryData);
-            
             if (!categoryData.name) {
                 alert('Выберите категорию');
                 return;
@@ -314,7 +287,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             let categoryId = categoryData.id;
             
-            // Если это стандартная категория (учеба, чтение, работа, хобби) и нет ID
             if (categoryData.isStandard && !categoryId) {
                 categoryId = await createStandardCategoryIfNeeded(categoryData.name);
                 if (!categoryId) {
@@ -323,7 +295,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
-            // Проверяем, что есть ID для создания задачи
             if (!categoryId) {
                 alert('Категория не найдена. Пожалуйста, выберите категорию из списка');
                 return;
@@ -352,24 +323,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 const data = await response.json();
-                console.log('Ответ сервера:', data);
                 
                 if (response.ok && data.id) {
                     alert('✅ Задача создана!');
                     closeModal();
                     location.reload();
                 } else {
-                    let errorMsg = '❌ Ошибка:\n';
-                    if (data.errors) {
-                        for (let field in data.errors) {
-                            errorMsg += `\n${field}: ${data.errors[field].join(', ')}`;
-                        }
-                    } else if (data.error) {
-                        errorMsg += data.error;
-                    } else {
-                        errorMsg += 'Неизвестная ошибка';
-                    }
-                    alert(errorMsg);
+                    alert('❌ Ошибка при создании задачи');
                 }
             } catch (error) {
                 console.error('Ошибка:', error);
@@ -378,18 +338,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // ========== 12. КНОПКА "НОВАЯ КАТЕГОРИЯ" ==========
+    // ========== 11. КНОПКА "НОВАЯ КАТЕГОРИЯ" ==========
     if (addCategoryBtn) {
         addCategoryBtn.addEventListener('click', function() {
             closeModal();
-            if (typeof window.openCreateCategoryModal === 'function') {
+            const categoryModal = document.getElementById('createCategoryModal');
+            if (categoryModal && typeof window.openCreateCategoryModal === 'function') {
                 window.openCreateCategoryModal();
-            } else {
-                const categoryModal = document.getElementById('createCategoryModal');
-                if (categoryModal) {
-                    categoryModal.style.display = 'block';
-                    dimContentContainer();
-                }
+            } else if (categoryModal) {
+                categoryModal.style.display = 'block';
+                contentContainer?.classList.add('dimmed');
             }
         });
     }

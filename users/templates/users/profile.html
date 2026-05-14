@@ -59,7 +59,7 @@
 
         <!-- ГРАФИК АКТИВНОСТИ -->
         <div class="activity-container">
-            <h2><span>Активность</span> по месяцам</h2>
+            <h2><span>Активность по месяцам</span></h2>
             <div class="activity-chart">
                 {% for month in months_data %}
                 <div class="chart-bar-wrapper">
@@ -77,76 +77,113 @@
                 <canvas id="monthlyTrendChart" width="600" height="300"></canvas>
             </div>
         </div>
-    <!-- Выезжающая панель -->
-    <div class="profile-edit-panel" id="profileEditPanel">
-        <div class="profile-edit-header">
-            <h3>Редактирование профиля</h3>
-            <button class="profile-edit-close" id="closeEditPanelBtn">×</button>
+
+        <!-- Блок о тарифе -->
+        <div class="tariff-card">
+            {% if user.is_pro and user.subscription_until %}
+                <!-- Продвинутый тариф -->
+                <div class="tariff-pro">
+                    <div class="tariff-badge">PRO</div>
+                    <div class="tariff-icon"></div>
+                    <div class="tariff-title">Продвинутый тариф</div>
+                    <div class="tariff-date">Активен до {{ user.subscription_until|date:"d.m.Y" }}</div>
+                    <div class="tariff-features">
+                        <div class="feature">Безлимит категорий</div>
+                        <div class="feature">Безлимит задач</div>
+                        <div class="feature">Расширенная аналитика</div>
+                        <div class="feature">Экспорт данных</div>
+                    </div>
+                    <a href="{% url 'main:proversion' %}" class="tariff-btn tariff-btn-secondary">Управление подпиской</a>
+                </div>
+            {% else %}
+                <!-- Бесплатный тариф — рекламируем PRO -->
+                <div class="tariff-free">
+                    <div class="tariff-badge-free">FREE</div>
+                    <div class="tariff-icon">💎</div>
+                    <div class="tariff-title">Расширьте возможности</div>
+                    <div class="tariff-desc">Оформите PRO подписку и получите доступ ко всем функциям</div>
+                    <div class="tariff-features">
+                        <div class="feature">Безлимит категорий</div>
+                        <div class="feature">Расширенная аналитика</div>
+                        <div class="feature">Экспорт данных</div>
+                        <div class="feature">Умные уведомления</div>
+                    </div>
+                    <a href="{% url 'pricing' %}" class="tariff-btn tariff-btn-primary">Оформить PRO</a>
+                </div>
+            {% endif %}
         </div>
-        
-        <form id="profileEditForm" class="profile-edit-form">
-            {% csrf_token %}
-            
-            <div class="form-group">
-                <label>Имя</label>
-                <input type="text" id="editFirstName" name="first_name" placeholder="Введите имя">
+
+        <!-- СТАТИСТИКА -->
+        <div class="stats-container">
+            <h2><span>Моя</span> статистика</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">{{ total_hours }}</div>
+                    <div class="stat-label">всего часов</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ tasks_count }}</div>
+                    <div class="stat-label">выполненных задач</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ categories_count }}</div>
+                    <div class="stat-label">активных категорий</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ streak_days }}</div>
+                    <div class="stat-label">дней в серии 🔥</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ completed_goals }}</div>
+                    <div class="stat-label">достигнутых целей</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Выезжающая панель -->
+        <div class="profile-edit-panel" id="profileEditPanel">
+            <div class="profile-edit-header">
+                <h3>Редактирование профиля</h3>
+                <button class="profile-edit-close" id="closeEditPanelBtn">×</button>
             </div>
             
-            <div class="form-group">
-                <label>Логин</label>
-                <input type="text" id="editUsername" name="username" placeholder="Введите логин" required>
-                <div class="error-message" id="usernameError" style="display: none;"></div>
-            </div>
-            
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="editEmail" name="email" placeholder="Введите email">
-            </div>
-            
-            <div class="form-group">
-                <label>Новый пароль</label>
-                <input type="password" id="editPassword" name="password" placeholder="Оставьте пустым, если не хотите менять">
-                <div class="error-message" id="passwordError" style="display: none;"></div>
-            </div>
-            
-            <div class="form-group">
-                <label>Подтверждение пароля</label>
-                <input type="password" id="editConfirmPassword" placeholder="Повторите пароль">
-            </div>
-            
-            <div class="profile-edit-buttons">
-                <button type="button" class="btn-cancel" id="cancelEditBtn">Отмена</button>
-                <button type="submit" class="btn-save">Сохранить</button>
-            </div>
-        </form>
-    </div>
+            <form id="profileEditForm" class="profile-edit-form">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label>Имя</label>
+                    <input type="text" id="editFirstName" name="first_name" placeholder="Введите имя">
+                </div>
+                
+                <div class="form-group">
+                    <label>Логин</label>
+                    <input type="text" id="editUsername" name="username" placeholder="Введите логин" required>
+                    <div class="error-message" id="usernameError" style="display: none;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="editEmail" name="email" placeholder="Введите email">
+                </div>
+                
+                <div class="form-group">
+                    <label>Новый пароль</label>
+                    <input type="password" id="editPassword" name="password" placeholder="Оставьте пустым, если не хотите менять">
+                    <div class="error-message" id="passwordError" style="display: none;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Подтверждение пароля</label>
+                    <input type="password" id="editConfirmPassword" placeholder="Повторите пароль">
+                </div>
+                
+                <div class="profile-edit-buttons">
+                    <button type="button" class="btn-cancel" id="cancelEditBtn">Отмена</button>
+                    <button type="submit" class="btn-save">Сохранить</button>
+                </div>
+            </form>
+        </div>
     
-    <!-- СТАТИСТИКА -->
-    <div class="stats-container">
-        <h2><span>Моя</span> статистика</h2>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">{{ total_hours }}</div>
-                <div class="stat-label">всего часов</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ tasks_count }}</div>
-                <div class="stat-label">выполненных задач</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ categories_count }}</div>
-                <div class="stat-label">активных категорий</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ streak_days }}</div>
-                <div class="stat-label">дней в серии 🔥</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ completed_goals }}</div>
-                <div class="stat-label">достигнутых целей</div>
-            </div>
-        </div>
-    </div>
     
     
     

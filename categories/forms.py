@@ -48,3 +48,43 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ['category', 'title', 'description', 'due_date', 'duration_seconds']
+
+
+from categories.models import Category
+
+
+from django import forms
+from .models import Task
+from categories.models import Category
+
+
+class TaskAdminForm(forms.ModelForm):
+
+    class Meta:
+        model = Task
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['category'].queryset = Category.objects.none()
+
+        # Редактирование существующего объекта
+        if self.instance.pk and self.instance.user:
+            self.fields['category'].queryset = Category.objects.filter(
+                user=self.instance.user,
+                is_active=True
+            )
+
+        # Создание / POST из admin
+        elif self.data.get('user'):
+            try:
+                user_id = int(self.data.get('user'))
+
+                self.fields['category'].queryset = Category.objects.filter(
+                    user_id=user_id,
+                    is_active=True
+                )
+
+            except (ValueError, TypeError):
+                pass

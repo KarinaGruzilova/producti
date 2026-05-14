@@ -477,62 +477,21 @@ function renderTrendChart(data) {
         options: {
             responsive: true,
             maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        boxWidth: 12,
-                        boxHeight: 12,
-                        usePointStyle: true,
-                        pointStyle: 'circle',
-                        font: { size: 11 }
+            scales: {
+                x: {
+                    ticks: {
+                        maxRotation: 45,     // поворот подписей при тесноте
+                        minRotation: 45,
+                        autoSkip: true,      // автоматически пропускать часть подписей
+                        maxTicksLimit: 10    // максимум подписей на оси X
                     }
-                },
+                }
+            },
+            plugins: {
                 tooltip: {
                     mode: 'index',
-                    intersect: false,
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.dataset.label}: ${context.raw} задач`;
-                        }
-                    }
+                    intersect: false
                 }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Количество задач',
-                        font: { size: 12 }
-                    },
-                    ticks: {
-                        stepSize: 1,
-                        precision: 0
-                    },
-                    grid: {
-                        color: '#F0F0F0'
-                    }
-                },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Дни месяца',
-                        font: { size: 12 }
-                    },
-                    ticks: {
-                        maxRotation: 45,
-                        minRotation: 45
-                    },
-                    grid: {
-                        display: false
-                    }
-                }
-            },
-            interaction: {
-                mode: 'nearest',
-                axis: 'x',
-                intersect: false
             }
         }
     });

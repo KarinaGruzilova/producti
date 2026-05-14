@@ -1,7 +1,10 @@
 # categories/admin.py
 from django.contrib import admin
+from django import forms
 from django.utils.html import format_html
-from .models import Category, Task  
+from django.contrib.admin.widgets import ForeignKeyRawIdWidget
+from .models import Category, Task
+from users.models import User
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -10,7 +13,6 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ['name', 'user__username']
     list_editable = ['is_active']
     
-    # Отображение цвета в списке
     def color_display(self, obj):
         return format_html(
             '<span style="display: inline-block; width: 20px; height: 20px; '
@@ -19,20 +21,42 @@ class CategoryAdmin(admin.ModelAdmin):
         )
     color_display.short_description = 'Цвет'
     
-    # Количество задач в категории
     def Task_count(self, obj):
         return obj.Tasks.count()
     Task_count.short_description = 'Задач'
-
+    
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """Обычный пользователь видит только себя при выборе владельца"""
+        if db_field.name == "user":
+            if not request.user.is_superuser:
+                kwargs["queryset"] = User.objects.filter(id=request.user.id)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    
+    def save_model(self, request, obj, form, change):
+        """Автоматически назначаем владельца при создании категории"""
+        if not obj.pk:  # Только при создании
+            obj.user = request.user
+        super().save_model(request, obj, form, change)
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ['title', 'category', 'user', 'duration_formatted', 'completed', 'created_at']
+
+    list_display = ['title', 'category', 'user', 'duration_seconds', 'completed', 'created_at']
     list_filter = ['category', 'completed', 'user', 'created_at']
     search_fields = ['title', 'description', 'category__name']
-    
-    def duration_formatted(self, obj):
-        hours = obj.duration_seconds // 3600
-        minutes = (obj.duration_seconds % 3600) // 60
-        return f"{hours}ч {minutes}м"
-    duration_formatted.short_description = 'Время'
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "category":
+            if not request.user.is_superuser:
+                kwargs["queryset"] = Category.objects.filter(user=request.user)
+
+        if db_field.name == "user":
+            if not request.user.is_superuser:
+                kwargs["queryset"] = User.objects.filter(id=request.user.id)
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def save_model(self, request, obj, form, change):
+        if not obj.user_id:
+            obj.user = request.user
+        super().save_model(request, obj, form, change)
