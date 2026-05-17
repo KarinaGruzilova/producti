@@ -99,7 +99,7 @@
                         {% elif user.is_pro %}
                             <button class="btn-current btn-tarif" disabled>Текущий тариф</button>
                         {% else %}
-                            <button class="btn-pro btn-tarif" id="upgradeProBtn">Оформить Pro</button>
+                            <button class="btn-upgrade btn-pro btn-tarif" id="subscribeBtn">Оформить Pro</button>
                         {% endif %}
                         <div class="capabilities">
                             <div class="capability">
@@ -146,8 +146,47 @@
         </div>
     </main>
 
+    <script>
+document.getElementById('subscribeBtn')?.addEventListener('click', function() {
+    fetch('/api/users/create-payment/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify({ plan: 'monthly' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.confirmation_url) {
+            window.location.href = data.confirmation_url;
+        } else {
+            alert('Ошибка при создании платежа');
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        alert('Ошибка сети');
+    });
+});
 
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
     <script src="{% static 'js/priceing.js' %}"></script>
+    
 </body>
 </html>
 

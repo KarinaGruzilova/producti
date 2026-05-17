@@ -62,7 +62,7 @@ from django.contrib import messages
 from django.db.models import Sum, Count
 from django.utils import timezone
 from datetime import datetime, timedelta
-from .models import User
+from .models import ProPromoCode, User
 from categories.models import Category, Task
 
 @login_required
@@ -282,29 +282,29 @@ def get_task_status(task):
 
 # users/views.py
 
-def get_task_status(task):
-    """Определяет статус задачи"""
-    today = timezone.now().date()
+# def get_task_status(task):
+#     """Определяет статус задачи"""
+#     today = timezone.now().date()
     
-    # Задачи с потраченным временем (из фокуса)
-    if task.duration_seconds > 0:
-        if task.completed:
-            return 'Выполнена (фокус)'
-        else:
-            return 'Прервана (фокус)'
+#     # Задачи с потраченным временем (из фокуса)
+#     if task.duration_seconds > 0:
+#         if task.completed:
+#             return 'Выполнена (фокус)'
+#         else:
+#             return 'Прервана (фокус)'
     
-    # Плановые задачи (без времени)
-    due_date = task.due_date
-    compare_date = due_date if due_date else task.created_at.date()
+#     # Плановые задачи (без времени)
+#     due_date = task.due_date
+#     compare_date = due_date if due_date else task.created_at.date()
     
-    if task.completed:
-        return 'Выполнена'
-    elif compare_date < today:
-        return 'Просрочена'
-    elif compare_date == today:
-        return 'На сегодня'
-    else:
-        return 'В планах'
+#     if task.completed:
+#         return 'Выполнена'
+#     elif compare_date < today:
+#         return 'Просрочена'
+#     elif compare_date == today:
+#         return 'На сегодня'
+#     else:
+#         return 'В планах'
 
 
 @login_required
@@ -406,3 +406,170 @@ def export_tasks(request):
     response = HttpResponse(output.getvalue().encode('utf-8-sig'), content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
+
+
+
+
+
+    # users/api_views.py
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+import json
+
+@csrf_exempt
+@require_POST
+def yookassa_webhook(request):
+    """Обработка уведомлений от YooKassa"""
+    event = json.loads(request.body)
+    
+    if event.get('event') == 'payment.succeeded':
+        payment_id = event['object']['id']
+        metadata = event['object']['metadata']
+        
+        user_id = int(metadata.get('user_id'))
+        plan_type = metadata.get('plan_type', 'monthly')
+        
+        from .models import User
+        from django.utils import timezone
+        from datetime import timedelta
+        
+        try:
+            user = User.objects.get(id=user_id)
+            user.is_pro = True
+            
+            if plan_type == 'monthly':
+                user.subscription_until = timezone.now() + timedelta(days=30)
+            else:
+                user.subscription_until = timezone.now() + timedelta(days=365)
+            
+            user.save()
+            
+            print(f"✅ Платеж {payment_id} подтверждён. Пользователь {user.username} получил Pro-подписку до {user.subscription_until}")
+            
+        except User.DoesNotExist:
+            print(f"❌ Пользователь с ID {user_id} не найден")
+    
+    return JsonResponse({'status': 'ok'})
+
+
+
+# from .models import ProPromoCode
+# from django.utils import timezone
+
+# def activate_promo(request):
+#     if request.method == 'POST':
+#         code = request.POST.get('promo_code', '').strip()
+        
+#         try:
+#             promo = ProPromoCode.objects.get(code=code, user=request.user)
+            
+#             if promo.used:
+#                 return JsonResponse({'error': 'Промокод уже использован'}, status=400)
+            
+#             if promo.expires_at < timezone.now():
+#                 return JsonResponse({'error': 'Промокод истёк'}, status=400)
+            
+#             # Активируем Pro
+#             promo.user.is_pro = True
+#             promo.user.subscription_until = timezone.now() + timedelta(days=30)
+#             promo.user.save()
+            
+#             # Отмечаем промокод как использованный
+#             promo.used = True
+#             promo.save()
+            
+#             return JsonResponse({'success': 'Pro-подписка активирована!'})
+            
+#         except ProPromoCode.DoesNotExist:
+#             return JsonResponse({'error': 'Неверный промокод'}, status=400)
+    
+#     return JsonResponse({'error': 'Метод не поддерживается'}, status=405)
+
+
+
+# from django.shortcuts import render
+
+# def payment(request):
+#     """Страница после успешной оплаты с промокодом"""
+#     promo_code = request.session.get('pending_promo', {}).get('code', '')
+    
+#     # Очищаем сессию после отображения
+#     if promo_code:
+#         # Можно сохранить промокод в БД со статусом "не использован"
+#         # Но лучше дождаться вебхука или ручного ввода
+#         pass
+    
+#     return render(request, 'payment.html', {'promo_code': promo_code})
+
+
+
+from django.shortcuts import render
+from .models import ProPromoCode
+from django.utils import timezone
+from datetime import timedelta
+
+def payment(request):
+    """Страница после успешной оплаты с промокодом"""
+    promo_data = request.session.get('pending_promo', {})
+    promo_code = promo_data.get('code', '')
+    user_id = promo_data.get('user_id')
+    
+    # Если промокод есть в сессии и пользователь авторизован
+    if promo_code and user_id and request.user.is_authenticated:
+        # Проверяем, существует ли уже такой промокод в БД
+        exists = ProPromoCode.objects.filter(code=promo_code, user=request.user).exists()
+        
+        if not exists:
+            # Сохраняем промокод в БД
+            expires_at = promo_data.get('expires_at')
+            if expires_at:
+                # Если дата есть в сессии
+                from datetime import datetime
+                expires_at = datetime.fromisoformat(expires_at)
+            else:
+                expires_at = timezone.now() + timedelta(days=1)
+            
+            ProPromoCode.objects.create(
+                code=promo_code,
+                user=request.user,
+                used=False,
+                expires_at=expires_at
+            )
+    
+    return render(request, 'payment.html', {'promo_code': promo_code})
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.utils import timezone
+from datetime import timedelta  # ← ДОБАВИТЬ ЭТУ СТРОКУ
+from .models import ProPromoCode
+
+@csrf_exempt
+@require_POST
+def activate_promo(request):
+    """Активация промокода"""
+    code = request.POST.get('promo_code', '').strip().upper()
+    
+    try:
+        promo = ProPromoCode.objects.get(code=code, user=request.user)
+        
+        if promo.used:
+            return JsonResponse({'error': 'Промокод уже использован'}, status=400)
+        
+        if promo.expires_at < timezone.now():
+            return JsonResponse({'error': 'Промокод истёк'}, status=400)
+        
+        # Активируем Pro
+        promo.user.is_pro = True
+        promo.user.subscription_until = timezone.now() + timedelta(days=30)
+        promo.user.save()
+        
+        # Отмечаем промокод как использованный
+        promo.used = True
+        promo.save()
+        
+        return JsonResponse({'success': 'Pro-подписка активирована!'})
+        
+    except ProPromoCode.DoesNotExist:
+        return JsonResponse({'error': 'Неверный промокод'}, status=400)

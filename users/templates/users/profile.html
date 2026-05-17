@@ -108,10 +108,19 @@
                         <div class="feature">Экспорт данных</div>
                         <div class="feature">Умные уведомления</div>
                     </div>
-                    <a href="{% url 'pricing' %}" class="tariff-btn tariff-btn-primary">Оформить PRO</a>
+                    <a href="{% url 'main:proversion' %}" class="tariff-btn tariff-btn-primary">Оформить PRO</a>
                 </div>
             {% endif %}
         </div>
+      <div class="promo-section">
+        <h3>Активировать промокод</h3>
+        <input type="text" id="promoCode" placeholder="Введите промокод">
+        <button onclick="activatePromo()">Активировать</button>
+        <div id="promoResult"></div>
+    </div>  
+
+
+
 
         <!-- СТАТИСТИКА -->
         <div class="stats-container">
@@ -320,4 +329,50 @@
     <script src="{% static 'js/user.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{% static 'js/trend-chart.js' %}"></script>
+
+
+
+
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function activatePromo() {
+    const code = document.getElementById('promoCode').value;
+    
+    fetch('/user/activate-promo/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: 'promo_code=' + encodeURIComponent(code)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('promoResult').innerHTML = '<span style="color:green">✅ ' + data.success + '</span>';
+            location.reload();
+        } else {
+            document.getElementById('promoResult').innerHTML = '<span style="color:red">❌ ' + data.error + '</span>';
+        }
+    })
+    .catch(error => {
+        document.getElementById('promoResult').innerHTML = '<span style="color:red">❌ Ошибка сети</span>';
+    });
+}
+</script>
 {% endblock %}

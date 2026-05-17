@@ -211,5 +211,88 @@ def monthly_trends(self, request):
     return Response(result)
 
 
+# users/api_views.py
+from yookassa import Configuration, Payment
+from django.conf import settings
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+import uuid
+import random
+import string
+from django.shortcuts import render
+from .models import ProPromoCode
+from django.utils import timezone
+from datetime import timedelta
+
+# Настройка YooKassa
+Configuration.account_id = settings.YOKASSA_SHOP_ID
+Configuration.secret_key = settings.YOKASSA_SECRET_KEY
+
+
+def generate_promo_code():
+    """Генерация уникального промокода"""
+    prefix = "PRO"
+    random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+    return f"{prefix}-{random_part}"
+
+
+class CreatePaymentView(APIView):
+    """Создание платежа для подписки Pro"""
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        user = request.user
+        plan_type = request.data.get('plan', 'monthly')
+        
+        prices = {
+            'monthly': 299,
+            'yearly': 2990,
+        }
+        
+        amount = prices.get(plan_type, 299)
+        
+        # ГЕНЕРИРУЕМ ПРОМОКОД ЗДЕСЬ
+        promo_code = generate_promo_code()
+        
+        # Сохраняем в сессию (или сразу в БД со статусом pending)
+        request.session['pending_promo'] = {
+            'code': promo_code,
+            'user_id': user.id,
+            'plan_type': plan_type,
+            'expires_at': (timezone.now() + timedelta(days=1)).isoformat()
+        }
+        
+        idempotence_key = str(uuid.uuid4())
+        
+        # Добавляем промокод в метаданные платежа
+        payment = Payment.create({
+            "amount": {
+                "value": str(amount),
+                "currency": "RUB"
+            },
+            "payment_method_data": {
+                "type": "bank_card"
+            },
+            "confirmation": {
+                "type": "redirect",
+                "return_url": f"http://127.0.0.1:8000/user/payment/"
+            },
+            "description": f"Подписка Pro ({plan_type}) для {user.email}",
+            "metadata": {
+                "user_id": user.id,
+                "username": user.username,
+                "plan_type": plan_type,
+                "promo_code": promo_code  # ← сохраняем промокод в метаданные
+            }
+        }, idempotence_key)
+        
+        return JsonResponse({
+            'success': True,
+            'confirmation_url': payment.confirmation.confirmation_url,
+            'payment_id': payment.id,
+            'promo_code': promo_code  # ← возвращаем промокод на фронт
+        })
+    
 
 

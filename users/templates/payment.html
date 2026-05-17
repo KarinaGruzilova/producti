@@ -1,0 +1,36 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Оплата успешна</title>
+    <style>
+        body { font-family: Arial; text-align: center; padding: 50px; }
+        .promo-box { font-size: 28px; font-weight: bold; padding: 15px; background: #f0f0f0; display: inline-block; margin: 20px; border-radius: 10px; }
+        .btn { background: #6c5ce7; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>✅ Оплата прошла успешно!</h1>
+    <p>Ваш персональный промокод для активации Pro-подписки:</p>
+    <div class="promo-box" id="promoCode">{{ promo_code }}</div>
+    <button onclick="copyCode()" style="margin-left: 10px;">📋 Скопировать</button>
+    <p><strong>Внимание!</strong> Промокод действителен в течение 24 часов и только для вашего аккаунта.</p>
+    <a href="{% url "users:profile" %}" class="btn">Перейти в профиль и активировать</a>
+    
+    <script>
+        function copyCode() {
+            const code = document.getElementById('promoCode').innerText;
+            navigator.clipboard.writeText(code);
+            alert('Промокод скопирован!');
+        }
+    </script>
+</body>
+</html>
