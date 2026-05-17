@@ -1269,3 +1269,125 @@ body, h1, h2, h3, h4, h5, h6 {
     color: white;
     transform: translateY(-2px);
 }
+
+
+
+/* ===== БЛОК ЭКСПОРТА ===== */
+.export-section {
+    background: white;
+    border-radius: 40px;
+    padding: 28px 32px;
+    margin-top: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.export-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2A2A2A;
+    margin-bottom: 8px;
+}
+
+.export-header p {
+    font-size: 14px;
+    color: #757575;
+    margin-bottom: 24px;
+}
+
+.export-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.btn-export {
+    padding: 12px 28px;
+    background: #2D268C;
+    color: white;
+    border: none;
+    border-radius: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-export:hover {
+    background: #AEBCFE;
+    color: #2D268C;
+    transform: translateY(-2px);
+}
+
+.export-filters {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 20px 0;
+    border-top: 1px solid #F0F0F0;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-size: 14px;
+    color: #2A2A2A;
+}
+
+.filter-date {
+    padding: 8px 16px;
+    border: 1px solid #E0E0E0;
+    border-radius: 40px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+}
+
+.filter-date:focus {
+    outline: none;
+    border-color: #2D268C;
+}
+
+.btn-filter, .btn-filter-clear {
+    padding: 8px 24px;
+    border-radius: 40px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-filter {
+    background: #2D268C;
+    color: white;
+    border: none;
+}
+
+.btn-filter:hover {
+    background: #AEBCFE;
+    color: #2D268C;
+}
+
+.btn-filter-clear {
+    background: transparent;
+    border: 1px solid #E0E0E0;
+    color: #757575;
+}
+
+.btn-filter-clear:hover {
+    background: #F0F0F0;
+}
+
+.export-note {
+    margin-top: 16px;
+}
+
+.export-note small {
+    font-size: 12px;
+    color: #757575;
+}

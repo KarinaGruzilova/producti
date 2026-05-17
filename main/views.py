@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from datetime import timedelta, datetime
 from django.db.models import Sum
@@ -38,6 +38,9 @@ def truncate_text(text, max_length=40):
 # ========== ОСНОВНЫЕ VIEWS ==========
 
 def index(request):
+    # Если пользователь уже авторизован — перенаправляем на дашборд
+    if request.user.is_authenticated:
+        return redirect('main:dashboard')
     return render(request, 'main/index.html')
 
 def proversion(request):
@@ -237,7 +240,7 @@ def save_timer_result(request):
     try:
         # Парсим JSON из тела запроса
         data = json.loads(request.body)
-        print(f"📦 Полученные данные: {data}")
+        print(f"Полученные данные: {data}")
         
         # Получаем данные
         category_id = data.get('category_id')
@@ -247,10 +250,10 @@ def save_timer_result(request):
         completed_early = data.get('completed_early', False)
         distracted = data.get('distracted', False)
         
-        print(f"👤 Пользователь: {request.user.username}")
-        print(f"📊 Категория ID: {category_id}")
-        print(f"⏱️ Время: {duration_seconds} сек")
-        print(f"✅ Выполнена: {completed}")
+        print(f"Пользователь: {request.user.username}")
+        print(f"Категория ID: {category_id}")
+        print(f"Время: {duration_seconds} сек")
+        print(f"Выполнена: {completed}")
         
         # Проверяем наличие категории
         if not category_id:

@@ -13,5 +13,7 @@ urlpatterns = [
     path('registration/', views.registration, name='registration'),
     path('profile/', views.profile, name='profile'),
     path('logout/', views.logout, name='logout'),
+    path('export/', views.export_tasks, name='export_tasks'),
     path('', include(router.urls)),
+    
 ]

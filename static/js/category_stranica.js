@@ -1,8 +1,4 @@
-// static/js/category-edit.js
-
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // ========== 1. УДАЛЕНИЕ КАТЕГОРИИ ==========
     const deleteCategoryBtn = document.querySelector('.btn-hero-delete');
     
     if (deleteCategoryBtn) {
@@ -13,12 +9,12 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             
-            const confirmed = confirm(`⚠️ Вы уверены, что хотите удалить категорию "${categoryName}"?\n\nВсе задачи в этой категории также будут удалены. Это действие нельзя отменить.`);
+            const confirmed = confirm(`Вы уверены, что хотите удалить категорию "${categoryName}"?\n\nВсе задачи в этой категории также будут удалены. Это действие нельзя отменить.`);
             
             if (!confirmed) return;
             
             const originalText = deleteCategoryBtn.innerHTML;
-            deleteCategoryBtn.innerHTML = '⏳ Удаление...';
+            deleteCategoryBtn.innerHTML = 'Удаление...';
             deleteCategoryBtn.disabled = true;
             
             const csrftoken = getCookie('csrftoken');
@@ -33,15 +29,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 if (response.status === 204 || response.ok) {
-                    alert('✅ Категория успешно удалена!');
+                    alert('Категория успешно удалена!');
                     window.location.href = '/categories/';
                 } else {
                     const data = await response.json().catch(() => ({}));
-                    alert(`❌ Ошибка при удалении: ${data.error || data.message || 'Неизвестная ошибка'}`);
+                    alert(`Ошибка при удалении: ${data.error || data.message || 'Неизвестная ошибка'}`);
                 }
             } catch (error) {
                 console.error('Ошибка:', error);
-                alert('❌ Произошла ошибка сети');
+                alert('Произошла ошибка сети');
             } finally {
                 deleteCategoryBtn.innerHTML = originalText;
                 deleteCategoryBtn.disabled = false;

@@ -95,6 +95,17 @@ class Task(models.Model):
     due_time = models.TimeField(verbose_name='Время выполнения', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    SOURCE_CHOICES = [
+        ('focus', 'Фокус (таймер)'),
+        ('planned', 'Плановая'),
+    ]
+    source = models.CharField(
+        max_length=20, 
+        choices=SOURCE_CHOICES, 
+        default='focus',
+        verbose_name='Источник создания'
+    )
     
     class Meta:
         ordering = ['-created_at']

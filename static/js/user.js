@@ -1,4 +1,3 @@
-// profile.js
 document.addEventListener('DOMContentLoaded', function() {
     
     const avatarEditBtn = document.getElementById('avatarEditBtn');
@@ -499,3 +498,4 @@ function renderTrendChart(data) {
 
 // Запускаем загрузку
 document.addEventListener('DOMContentLoaded', loadMonthlyTrends);
+

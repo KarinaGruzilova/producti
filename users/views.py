@@ -1,12 +1,24 @@
-from django.http import HttpResponseRedirect
+import csv
+import io
+
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib import auth
 from django.urls import reverse
+from openpyxl import Workbook
 
 from users.forms import UserLoginForm
 from users.forms import UserRegistrationForm
 
 from django.contrib import messages
+
+
+
+try:
+    from openpyxl import Workbook
+    OPENPYXL_AVAILABLE = True
+except ImportError:
+    OPENPYXL_AVAILABLE = False
 
 def login(request):
     if request.method == 'POST':
@@ -49,7 +61,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.db.models import Sum, Count
 from django.utils import timezone
-from datetime import timedelta
+from datetime import datetime, timedelta
 from .models import User
 from categories.models import Category, Task
 
@@ -241,3 +253,156 @@ class UserProfileViewSet(viewsets.ViewSet):
             'avatar_url': avatar_url,
             'message': 'Аватар успешно обновлён'
         }, status=status.HTTP_200_OK)
+    
+
+
+    # users/views.py (исправленная функция get_task_status)
+
+from django.utils import timezone
+
+
+def get_task_status(task):
+    """Определяет статус задачи"""
+    today = timezone.now().date()
+    
+    # Если есть потраченное время — задача выполнена через фокус
+    if task.duration_seconds > 0:
+        return 'Выполнена (фокус)'
+    
+    # Для плановых задач (без времени) определяем статус по дате
+    due_date = task.due_date
+    compare_date = due_date if due_date else task.created_at.date()
+    
+    if compare_date < today:
+        return 'Просрочена'
+    elif compare_date == today:
+        return 'На сегодня'
+    else:
+        return 'В планах'
+
+# users/views.py
+
+def get_task_status(task):
+    """Определяет статус задачи"""
+    today = timezone.now().date()
+    
+    # Задачи с потраченным временем (из фокуса)
+    if task.duration_seconds > 0:
+        if task.completed:
+            return 'Выполнена (фокус)'
+        else:
+            return 'Прервана (фокус)'
+    
+    # Плановые задачи (без времени)
+    due_date = task.due_date
+    compare_date = due_date if due_date else task.created_at.date()
+    
+    if task.completed:
+        return 'Выполнена'
+    elif compare_date < today:
+        return 'Просрочена'
+    elif compare_date == today:
+        return 'На сегодня'
+    else:
+        return 'В планах'
+
+
+@login_required
+def export_tasks(request):
+    """Экспорт задач пользователя с расширенной информацией"""
+    format_type = request.GET.get('format', 'csv')
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+    
+    tasks = Task.objects.filter(user=request.user).select_related('category')
+    
+    if date_from:
+        tasks = tasks.filter(created_at__date__gte=date_from)
+    if date_to:
+        tasks = tasks.filter(created_at__date__lte=date_to)
+    
+    export_data = []
+    for task in tasks:
+        # Определяем тип задачи
+        if task.duration_seconds > 0:
+            task_type = 'Фокус (таймер)'
+        else:
+            task_type = 'Плановая'
+        
+        # Получаем статус
+        task_status = get_task_status(task)
+        
+        export_data.append({
+            'id': task.id,
+            'category': task.category.name,
+            'title': task.title,
+            'duration_hours': round(task.duration_seconds / 3600, 2),
+            'duration_formatted': task.duration_formatted,
+            'completed': 'Да' if task.completed else 'Нет',
+            'task_type': task_type,
+            'status': task_status,
+            'due_date': task.due_date.strftime('%Y-%m-%d') if task.due_date else '',
+            'created_at': task.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        })
+    
+    # JSON
+    if format_type == 'json':
+        import json
+        filename = f"tasks_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        response = HttpResponse(json.dumps(export_data, ensure_ascii=False, indent=2), content_type='application/json')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+    
+    # Excel
+    if format_type == 'xlsx' and OPENPYXL_AVAILABLE:
+        filename = f"tasks_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        wb = Workbook()
+        ws = wb.active
+        ws.title = 'Задачи'
+        
+        if export_data:
+            headers = ['ID', 'Категория', 'Название', 'Часы', 'Длительность', 'Выполнена', 'Тип задачи', 'Статус', 'Дедлайн', 'Дата создания']
+            ws.append(headers)
+            for row in export_data:
+                ws.append([
+                    row['id'], row['category'], row['title'],
+                    row['duration_hours'], row['duration_formatted'], row['completed'],
+                    row['task_type'], row['status'],
+                    row['due_date'], row['created_at']
+                ])
+            
+            for col in ws.columns:
+                max_length = 0
+                col_letter = col[0].column_letter
+                for cell in col:
+                    try:
+                        if len(str(cell.value)) > max_length:
+                            max_length = len(str(cell.value))
+                    except:
+                        pass
+                ws.column_dimensions[col_letter].width = min(max_length + 2, 30)
+        
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        wb.save(response)
+        return response
+    
+    # CSV
+    filename = f"tasks_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+    output = io.StringIO()
+    writer = csv.writer(output, delimiter=';')
+    
+    if export_data:
+        headers = ['ID', 'Категория', 'Название', 'Часы', 'Длительность', 'Выполнена', 'Тип задачи', 'Статус', 'Дедлайн', 'Дата создания']
+        writer.writerow(headers)
+        for row in export_data:
+            writer.writerow([
+                row['id'], row['category'], row['title'],
+                row['duration_hours'], row['duration_formatted'], row['completed'],
+                row['task_type'], row['status'],
+                row['due_date'], row['created_at']
+            ])
+    
+    response = HttpResponse(output.getvalue().encode('utf-8-sig'), content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response

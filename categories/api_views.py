@@ -9,9 +9,15 @@ from datetime import timedelta
 from .models import Category, Task
 from .serializers import CategorySerializer, TaskSerializer
 
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from django.http import HttpResponse
+from datetime import datetime
+import csv
+import json
+import io
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    """API для управления категориями"""
     
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
@@ -78,38 +84,38 @@ class TaskViewSet(viewsets.ModelViewSet):
         
         return queryset.order_by('-created_at')
     
-def perform_create(self, serializer):
-    user = self.request.user
-    current_count = Task.objects.filter(user=user, completed=False).count()
-    
-    # Бесплатный тариф: максимум 10 активных задач
-    if not user.is_pro and current_count >= 10:
-        from rest_framework import serializers
-        raise serializers.ValidationError({
-            'error': 'Достигнут лимит активных задач (10). Оформите Pro-подписку для безлимита.'
-        })
-    
-    serializer.save(user=user)
-    
-    @action(detail=False, methods=['get'])
-    def today(self, request):
-        """Задачи за сегодня"""
-        today = timezone.now().date()
-        tasks = Task.objects.filter(
-            user=request.user,
-            created_at__date=today
-        ).order_by('-created_at')
-        serializer = self.get_serializer(tasks, many=True)
-        return Response(serializer.data)
-    
-    @action(detail=False, methods=['get'])
-    def recent(self, request):
-        """Последние 10 задач"""
-        tasks = Task.objects.filter(
-            user=request.user
-        ).order_by('-created_at')[:10]
-        serializer = self.get_serializer(tasks, many=True)
-        return Response(serializer.data)
+    def perform_create(self, serializer):
+        user = self.request.user
+        current_count = Task.objects.filter(user=user, completed=False).count()
+        
+        # Бесплатный тариф: максимум 10 активных задач
+        if not user.is_pro and current_count >= 10:
+            from rest_framework import serializers
+            raise serializers.ValidationError({
+                'error': 'Достигнут лимит активных задач (10). Оформите Pro-подписку для безлимита.'
+            })
+        
+        serializer.save(user=user)
+        
+        @action(detail=False, methods=['get'])
+        def today(self, request):
+            """Задачи за сегодня"""
+            today = timezone.now().date()
+            tasks = Task.objects.filter(
+                user=request.user,
+                created_at__date=today
+            ).order_by('-created_at')
+            serializer = self.get_serializer(tasks, many=True)
+            return Response(serializer.data)
+        
+        @action(detail=False, methods=['get'])
+        def recent(self, request):
+            """Последние 10 задач"""
+            tasks = Task.objects.filter(
+                user=request.user
+            ).order_by('-created_at')[:10]
+            serializer = self.get_serializer(tasks, many=True)
+            return Response(serializer.data)
 
 
 class StatsViewSet(viewsets.ViewSet):
@@ -355,3 +361,4 @@ class StatsViewSet(viewsets.ViewSet):
             })
         
         return Response(result)
+    

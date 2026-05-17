@@ -184,7 +184,42 @@
             </form>
         </div>
     
+        <!-- Блок экспорта данных -->
+<div class="export-section">
+    <div class="export-header">
+        <h3>Экспорт данных</h3>
+        <p>Выгрузите все ваши задачи в удобном формате</p>
+    </div>
     
+    <div class="export-buttons">
+        <button class="btn-export" id="exportCsvBtn">
+            CSV
+        </button>
+        <button class="btn-export" id="exportJsonBtn">
+            JSON
+        </button>
+        <button class="btn-export" id="exportExcelBtn">
+            Excel
+        </button>
+    </div>
+    
+    <div class="export-filters">
+        <div class="filter-group">
+            <label>Дата от:</label>
+            <input type="date" id="exportDateFrom" class="filter-date">
+        </div>
+        <div class="filter-group">
+            <label>Дата до:</label>
+            <input type="date" id="exportDateTo" class="filter-date">
+        </div>
+        <button id="applyDateFilter" class="btn-filter">Применить фильтр</button>
+        <button id="clearDateFilter" class="btn-filter-clear">Сбросить</button>
+    </div>
+    
+    <div class="export-note">
+        <small>Экспортируются все задачи, включая невыполненные.</small>
+    </div>
+</div>
     
     
 
@@ -281,7 +316,7 @@
 {% endblock %}
 
 {% block scripts %}
-    <!-- Подключаем только category.js, dashboard-modal.js не подключается -->
+    <script src="{% static 'js/export.js' %}"></script>
     <script src="{% static 'js/user.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{% static 'js/trend-chart.js' %}"></script>

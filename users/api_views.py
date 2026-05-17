@@ -12,12 +12,10 @@ from datetime import datetime
 
 
 class UserProfileViewSet(viewsets.ViewSet):
-    """API для работы с профилем пользователя"""
     permission_classes = [IsAuthenticated]
     
     @action(detail=False, methods=['post'], url_path='upload-avatar')
     def upload_avatar(self, request):
-        """Загрузка аватара пользователя"""
         user = request.user
         
         if 'avatar' not in request.FILES:
@@ -211,3 +209,7 @@ def monthly_trends(self, request):
     print(f"Результат: {result}")
     
     return Response(result)
+
+
+
+
