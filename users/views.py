@@ -452,58 +452,6 @@ def yookassa_webhook(request):
     
     return JsonResponse({'status': 'ok'})
 
-
-
-# from .models import ProPromoCode
-# from django.utils import timezone
-
-# def activate_promo(request):
-#     if request.method == 'POST':
-#         code = request.POST.get('promo_code', '').strip()
-        
-#         try:
-#             promo = ProPromoCode.objects.get(code=code, user=request.user)
-            
-#             if promo.used:
-#                 return JsonResponse({'error': 'Промокод уже использован'}, status=400)
-            
-#             if promo.expires_at < timezone.now():
-#                 return JsonResponse({'error': 'Промокод истёк'}, status=400)
-            
-#             # Активируем Pro
-#             promo.user.is_pro = True
-#             promo.user.subscription_until = timezone.now() + timedelta(days=30)
-#             promo.user.save()
-            
-#             # Отмечаем промокод как использованный
-#             promo.used = True
-#             promo.save()
-            
-#             return JsonResponse({'success': 'Pro-подписка активирована!'})
-            
-#         except ProPromoCode.DoesNotExist:
-#             return JsonResponse({'error': 'Неверный промокод'}, status=400)
-    
-#     return JsonResponse({'error': 'Метод не поддерживается'}, status=405)
-
-
-
-# from django.shortcuts import render
-
-# def payment(request):
-#     """Страница после успешной оплаты с промокодом"""
-#     promo_code = request.session.get('pending_promo', {}).get('code', '')
-    
-#     # Очищаем сессию после отображения
-#     if promo_code:
-#         # Можно сохранить промокод в БД со статусом "не использован"
-#         # Но лучше дождаться вебхука или ручного ввода
-#         pass
-    
-#     return render(request, 'payment.html', {'promo_code': promo_code})
-
-
-
 from django.shortcuts import render
 from .models import ProPromoCode
 from django.utils import timezone

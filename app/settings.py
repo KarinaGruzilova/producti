@@ -171,3 +171,12 @@ LOGOUT_REDIRECT_URL = '/'
 YOKASSA_SHOP_ID = '1360286'
 YOKASSA_SECRET_KEY = 'test_2YVIuF2elpzgjhsAS65gyHymMO86R1FKpVaKDiIPyG8'
 YOKASSA_TEST_MODE = True
+
+
+
+
+
+
+
+# Для разработки (письма будут выводиться в консоль)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

@@ -151,7 +151,7 @@
         <div class="tasks-section pending-tasks">
             <div class="tasks-header">
                 <h3>Ожидают выполнения</h3>
-                <button class="btn-add-task" data-category-id="{{ category.id }}">+ Добавить задачу</button>
+                {% comment %} <button class="btn-add-task" data-category-id="{{ category.id }}">+ Добавить задачу</button> {% endcomment %}
             </div>
             <div class="task-list">
                 {% for task in pending_tasks %}
@@ -181,7 +181,6 @@
                 {% empty %}
                 <div class="empty-state">
                     <p>Нет запланированных задач</p>
-                    <button class="btn-add-task" data-category-id="{{ category.id }}">+ Создать задачу</button>
                 </div>
                 {% endfor %}
             </div>

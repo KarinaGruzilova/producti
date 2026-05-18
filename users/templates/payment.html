@@ -6,10 +6,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-<!DOCTYPE html>
-<html>
-<head>
     <title>Оплата успешна</title>
     <style>
         body { font-family: Arial; text-align: center; padding: 50px; }
@@ -21,7 +17,7 @@
     <h1>✅ Оплата прошла успешно!</h1>
     <p>Ваш персональный промокод для активации Pro-подписки:</p>
     <div class="promo-box" id="promoCode">{{ promo_code }}</div>
-    <button onclick="copyCode()" style="margin-left: 10px;">📋 Скопировать</button>
+    <button onclick="copyCode()" style="margin-left: 10px;">Скопировать</button>
     <p><strong>Внимание!</strong> Промокод действителен в течение 24 часов и только для вашего аккаунта.</p>
     <a href="{% url "users:profile" %}" class="btn">Перейти в профиль и активировать</a>
     

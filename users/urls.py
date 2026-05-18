@@ -16,7 +16,6 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('export/', views.export_tasks, name='export_tasks'),
     path('webhook/', views.yookassa_webhook, name='yookassa_webhook'),
-    # users/urls.py
     path('activate-promo/', views.activate_promo, name='activate_promo'),
     path('', include(router.urls)),
 ]
