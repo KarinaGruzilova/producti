@@ -1,4 +1,4 @@
-{% load static %}
+{% comment %} {% load static %}
 
 
 <!DOCTYPE html>
@@ -26,6 +26,249 @@
             const code = document.getElementById('promoCode').innerText;
             navigator.clipboard.writeText(code);
             alert('Промокод скопирован!');
+        }
+    </script>
+</body>
+</html> {% endcomment %}
+
+
+
+
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата успешна — Producti</title>
+    <link rel="stylesheet" href="{% static 'styles/index.css' %}">
+    <style>
+        /* Компактные стили для страницы успешной оплаты */
+        .success-container {
+            min-height: calc(100vh - 100px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 32px;
+            padding: 32px 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0px 15px 35px rgba(45, 38, 140, 0.12);
+            transition: all 0.3s ease;
+        }
+
+        .success-card:hover {
+            box-shadow: 0px 20px 40px rgba(45, 38, 140, 0.2);
+        }
+
+        .success-icon {
+            width: 56px;
+            height: 56px;
+            background: #2D268C;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .success-icon svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .success-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2D268C;
+            margin-bottom: 8px;
+        }
+
+        .success-subtitle {
+            font-size: 14px;
+            color: #5D5D5D;
+            margin-bottom: 24px;
+        }
+
+        .promo-box {
+            background: linear-gradient(135deg, #F5F3FF 0%, #ECEFFE 100%);
+            border: 1.5px solid #2D268C;
+            border-radius: 50px;
+            padding: 12px 20px;
+            margin: 16px 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .promo-code {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #2D268C;
+            font-family: monospace;
+            background: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            flex: 1;
+        }
+
+        .copy-btn {
+            background: #2D268C;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            background: #AEBCFE;
+            color: #2D268C;
+        }
+
+        .warning-note {
+            background: #FFF8E7;
+            border-left: 3px solid #FFB800;
+            padding: 10px 16px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .warning-note p {
+            margin: 0;
+            color: #856404;
+            font-size: 12px;
+        }
+
+        .btn-profile {
+            display: inline-block;
+            background: #2D268C;
+            color: white;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-profile:hover {
+            background: #AEBCFE;
+            color: #2D268C;
+            transform: translateY(-1px);
+        }
+
+        .header {
+            margin: 20px 120px 0 120px;
+        }
+        body {
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* Или только вертикальный скролл */
+body {
+    overflow-y: hidden;
+}
+    </style>
+</head>
+<body data-user-authenticated="true">
+    <main>
+        <img src="{% static 'images/fon-proversion.png' %}" class="hero_bg" alt="">
+
+        <header class="header">
+            <a href="{% url 'main:index' %}" class="logo">
+                <svg width="12" height="17" viewBox="0 0 12 17" fill="none">
+                    <path d="M3.24995 16.5H8.74986M5.9999 0.5C2.96239 0.5 0.5 2.88781 0.5 5.83333C0.5 6.91289 0.830767 7.91753 1.39939 8.75715C2.27379 10.0483 2.7106 10.6934 2.76735 10.7899C3.27221 11.6476 3.17925 11.3451 3.24279 12.3307C3.24993 12.4415 3.24995 12.6092 3.24995 12.9444C3.24995 13.4354 3.66035 13.8333 4.1666 13.8333L7.83321 13.8333C8.33946 13.8333 8.74986 13.4354 8.74986 12.9444C8.74986 12.6092 8.74986 12.4415 8.757 12.3307C8.82053 11.3451 8.72704 11.6476 9.2319 10.7899C9.28865 10.6934 9.72621 10.0483 10.6006 8.75715C11.1692 7.91753 11.5 6.91289 11.5 5.83333C11.5 2.88781 9.03742 0.5 5.9999 0.5Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Producti</span>
+            </a>
+            <nav class="nav">
+                <a href="{% url 'main:proversion' %}" class="nav__link">Pro-версия</a>
+                <a href="{% url 'users:profile' %}" class="nav__link">Мой профиль</a>
+                <a href="{% url 'users:logout' %}" class="nav__link">Выйти</a>
+            </nav>
+        </header>
+
+        <div class="success-container">
+            <div class="success-card">
+                <div class="success-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+
+                <h1 class="success-title">Оплата прошла успешно!</h1>
+                <p class="success-subtitle">Ваш промокод для активации Pro:</p>
+
+                <div class="promo-box">
+                    <span class="promo-code" id="promoCode">{{ promo_code }}</span>
+                    <button onclick="copyCode()" class="copy-btn">📋 Скопировать</button>
+                </div>
+
+                <div class="warning-note">
+                    <p>⚠️ Промокод действителен 24 часа. Только для вашего аккаунта.</p>
+                </div>
+
+                <a href="{% url 'users:profile' %}" class="btn-profile">Активировать в профиле →</a>
+            </div>
+        </div>
+    </main>
+
+    <div class="messages-container" id="messagesContainer"></div>
+
+    <script>
+        function copyCode() {
+            const codeElement = document.getElementById('promoCode');
+            const code = codeElement.innerText;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                showMessage('Промокод скопирован!', 'success');
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Скопировано!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            }).catch(() => {
+                showMessage('Не удалось скопировать', 'error');
+            });
+        }
+
+        function showMessage(message, type) {
+            const container = document.getElementById('messagesContainer');
+            if (!container) return;
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${type}`;
+            messageDiv.innerHTML = `
+                <span>${message}</span>
+                <button class="message-close" onclick="this.parentElement.remove()">×</button>
+            `;
+            container.appendChild(messageDiv);
+
+            setTimeout(() => {
+                if (messageDiv && messageDiv.parentElement) {
+                    messageDiv.remove();
+                }
+            }, 4000);
         }
     </script>
 </body>

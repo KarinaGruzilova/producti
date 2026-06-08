@@ -40,7 +40,7 @@
                 </form>
                 
                 <div class="auth-links">
-                    <a href="#" class="auth-link">Забыли пароль?</a>
+                    <a href="{% url "password_reset" %}" class="auth-link">Забыли пароль?</a>
                     <p class="auth-link">
                         Еще нет аккаунта? 
                         <a href="{% url "users:registration" %}" class="auth-link-accent">Зарегистрироваться</a>

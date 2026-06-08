@@ -30,11 +30,9 @@ def activities(request):
     user = request.user
     today = timezone.now().date()
     month_ago = today - timedelta(days=30)
-    
-    # Получаем все активные категории пользователя
+
     categories = Category.objects.filter(user=user, is_active=True)
     
-    # Собираем данные по каждой категории за месяц
     chart_data = []
     for category in categories:
         tasks = Task.objects.filter(
@@ -55,7 +53,6 @@ def activities(request):
     # Сортируем по часам
     chart_data.sort(key=lambda x: x['hours'], reverse=True)
     
-    # Берём топ-5 категорий
     TOP_LIMIT = 5
     top_categories = chart_data[:TOP_LIMIT]
     other_categories = chart_data[TOP_LIMIT:]
@@ -69,7 +66,6 @@ def activities(request):
         completed=False
     ).count()
     
-    # Формируем данные для графика
     pie_data = []
     
     for cat in top_categories:
@@ -92,7 +88,7 @@ def activities(request):
     
     center_number = len(pie_data)
     
-    # Генерируем график
+    # График
     if pie_data:
         df = pd.DataFrame(pie_data)
         fig = px.pie(
@@ -140,30 +136,24 @@ def activities(request):
 
 @login_required
 def category_detail(request, category_id):
-    """Детальная страница категории"""
     
     category = get_object_or_404(Category, id=category_id, user=request.user, is_active=True)
     
-    # ========== СТАТИСТИКА ==========
-    
-    # Только задачи с duration_seconds > 0 (реальные сеансы)
     tasks_with_time = Task.objects.filter(
         user=request.user,
         category=category,
         duration_seconds__gt=0
     ).order_by('-created_at')
     
-    # Общее время (всегда)
     total_seconds = tasks_with_time.aggregate(Sum('duration_seconds'))['duration_seconds__sum'] or 0
     total_hours = round(total_seconds / 3600, 1)
     
-    # Количество выполненных задач
     tasks_count = tasks_with_time.count()
     
     # Среднее время на задачу
     avg_hours = round(total_hours / tasks_count, 1) if tasks_count > 0 else 0
     
-    # ========== ЧАСЫ ЗА ПОСЛЕДНИЕ 30 ДНЕЙ ==========
+    # ЧАСЫ ЗА ПОСЛЕДНИЕ 30 ДНЕЙ
     today = timezone.now().date()
     thirty_days_ago = today - timedelta(days=30)
     
@@ -172,7 +162,6 @@ def category_detail(request, category_id):
     ).aggregate(Sum('duration_seconds'))['duration_seconds__sum'] or 0
     recent_hours = round(recent_seconds / 3600, 1)
     
-    # ========== РАСЧЁТ ПРОЦЕНТА ИЗМЕНЕНИЯ МЕЖДУ МЕСЯЦАМИ ==========
     # Текущий месяц
     start_of_current_month = today.replace(day=1)
     current_month_seconds = tasks_with_time.filter(
@@ -214,7 +203,7 @@ def category_detail(request, category_id):
         trend_icon = '→'
         trend_text = '0% к прошлому месяцу'
     
-    # ========== ГРАФИК ЗА НЕДЕЛЮ ==========
+    #ГРАФИК ЗА НЕДЕЛЮ
     start_of_week = today - timedelta(days=today.weekday())
     
     week_data = []
@@ -244,10 +233,10 @@ def category_detail(request, category_id):
     best_day_name = max(hours_by_day, key=hours_by_day.get) if hours_by_day else 'Нет данных'
     best_day_hours = hours_by_day.get(best_day_name, 0)
     
-    # ========== ПОСЛЕДНИЕ ЗАДАЧИ ==========
+    #ПОСЛЕДНИЕ ЗАДАЧИ
     recent_completed_tasks = tasks_with_time[:10]
     
-    # ========== НЕВЫПОЛНЕННЫЕ ЗАДАЧИ ==========
+    #НЕВЫПОЛНЕННЫЕ ЗАДАЧИ
     pending_tasks = Task.objects.filter(
         user=request.user,
         category=category,
@@ -291,18 +280,15 @@ def tasks_calendar(request):
     # Все невыполненные задачи
     all_tasks = Task.objects.filter(user=user, completed=False)
     
-    # Просроченные: due_date < сегодня ИЛИ (due_date нет И created_at < сегодня)
     overdue_tasks = all_tasks.filter(
         Q(due_date__lt=today)
     )
     
-    # Активные (сегодняшние): due_date = сегодня ИЛИ (due_date нет И created_at = сегодня)
     active_tasks = all_tasks.filter(
         Q(due_date=today) | 
         Q(due_date__isnull=True, created_at__date=today)
     )
     
-    # Запланированные: due_date > сегодня
     planned_tasks = all_tasks.filter(
         Q(due_date__gt=today) |
         Q(due_date__isnull=True, created_at__date__lt=today))

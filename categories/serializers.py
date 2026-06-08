@@ -2,7 +2,6 @@ from rest_framework import serializers
 from .models import Category, Task
 
 class CategorySerializer(serializers.ModelSerializer):
-    """Сериализатор для категорий"""
     
     total_time_formatted = serializers.SerializerMethodField()
     task_count = serializers.SerializerMethodField()
@@ -28,7 +27,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    """Сериализатор для задач"""
     
     duration_formatted = serializers.SerializerMethodField()
     category_name = serializers.ReadOnlyField(source='category.name')
@@ -52,7 +50,6 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
 class WeekStatsSerializer(serializers.Serializer):
-    """Сериализатор для статистики за неделю"""
     day = serializers.CharField()
     hours = serializers.FloatField()
     tasks_count = serializers.IntegerField()

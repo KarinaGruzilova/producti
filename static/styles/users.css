@@ -162,6 +162,12 @@ body, h1, h2, h3, h4, h5, h6 {
     margin-top: 32px;
     text-align: center;
 }
+.reg-link {
+    color: #757575;
+    font-size: 16px;
+    transition: color 0.3s ease;
+    margin-top: 20px;
+}
 
 .auth-link {
     color: #757575;
@@ -390,9 +396,10 @@ body, h1, h2, h3, h4, h5, h6 {
 
 .stats-grid {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     justify-content: space-between;
     gap: 20px;
+    width: 280px;
 }
 
 .stat-card {
@@ -489,6 +496,7 @@ body, h1, h2, h3, h4, h5, h6 {
     border-radius: 40px;
     padding: 40px 60px;
     gap: 32px;
+    width: 626px;
 }
 
 .settings-container h2 {
@@ -982,7 +990,6 @@ body, h1, h2, h3, h4, h5, h6 {
 
 .calendar__day-numbers-row {
     display: flex;
-    justify-content: space-between;
     gap: 4px;
 }
 
@@ -1126,7 +1133,114 @@ body, h1, h2, h3, h4, h5, h6 {
 
 
 
+/* ── ПРОМОКОД ── */
+.promo-section {
+    background: #FFFFFF;
+    border-radius: 28px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(45,38,140,0.07);
+    border: 1.5px solid #E8E8FF;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 210px;
+    height: 300px;
+}
 
+.promo-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.promo-header h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2D268C;
+    margin: 0;
+}
+
+.promo-input-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.promo-input {
+    flex: 1;
+    padding: 11px 18px;
+    border: 1.5px solid #E8E8EE;
+    border-radius: 50px;
+    font-size: 13px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    color: #2A2A2A;
+    background: #FAFAFA;
+    outline: none;
+    transition: border-color 0.15s;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.promo-input:focus {
+    border-color: #2D268C;
+    background: #fff;
+}
+
+.promo-input::placeholder {
+    color: #BDBDBD;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+}
+
+.promo-btn {
+    padding: 11px 20px;
+    background: #2D268C;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Manrope', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.promo-btn:hover {
+    background: #AEBCFE;
+    color: #2D268C;
+    transform: translateY(-1px);
+}
+
+.promo-result {
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 20px;
+    transition: all 0.2s;
+}
+
+.promo-success {
+    color: #2E7D32;
+    background: #F0FFF1;
+    padding: 8px 14px;
+    border-radius: 12px;
+}
+
+.promo-error {
+    color: #8B0000;
+    background: #FFF0F0;
+    padding: 8px 14px;
+    border-radius: 12px;
+}
+
+.promo-loading {
+    color: #757575;
+    background: #F5F5F7;
+    padding: 8px 14px;
+    border-radius: 12px;
+}
 
 
 
@@ -1277,7 +1391,6 @@ body, h1, h2, h3, h4, h5, h6 {
     background: white;
     border-radius: 40px;
     padding: 28px 32px;
-    margin-top: 32px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 

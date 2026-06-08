@@ -32,7 +32,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
         user = self.request.user
         current_count = Category.objects.filter(user=user, is_active=True).count()
     
-        # Бесплатный тариф: максимум 5 категорий
         if not user.is_pro and current_count >= 5:
             from rest_framework import serializers
             raise serializers.ValidationError({
@@ -43,7 +42,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['get'])
     def tasks(self, request, pk=None):
-        """Получить все задачи категории"""
         category = self.get_object()
         tasks = Task.objects.filter(category=category, user=request.user)
         serializer = TaskSerializer(tasks, many=True)
@@ -51,15 +49,12 @@ class CategoryViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['post'])
     def archive(self, request, pk=None):
-        """Архивировать категорию"""
         category = self.get_object()
         category.is_active = False
         category.save()
-        return Response({'status': 'archived', 'id': category.id})
-    
+        return Response({'status': 'archived', 'id': category.id})   
 
     def perform_destroy(self, instance):
-        """При удалении категории удаляются все связанные задачи (cascade)"""
         instance.delete()
 
 
@@ -72,12 +67,10 @@ class TaskViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Task.objects.filter(user=self.request.user)
         
-        # Фильтр по категории
         category_id = self.request.query_params.get('category', None)
         if category_id:
             queryset = queryset.filter(category_id=category_id)
         
-        # Фильтр по дате
         date = self.request.query_params.get('date', None)
         if date:
             queryset = queryset.filter(created_at__date=date)
@@ -88,7 +81,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         user = self.request.user
         current_count = Task.objects.filter(user=user, completed=False).count()
         
-        # Бесплатный тариф: максимум 10 активных задач
         if not user.is_pro and current_count >= 10:
             from rest_framework import serializers
             raise serializers.ValidationError({
@@ -99,7 +91,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         
         @action(detail=False, methods=['get'])
         def today(self, request):
-            """Задачи за сегодня"""
             today = timezone.now().date()
             tasks = Task.objects.filter(
                 user=request.user,
@@ -110,7 +101,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         
         @action(detail=False, methods=['get'])
         def recent(self, request):
-            """Последние 10 задач"""
             tasks = Task.objects.filter(
                 user=request.user
             ).order_by('-created_at')[:10]
@@ -125,7 +115,6 @@ class StatsViewSet(viewsets.ViewSet):
     
     @action(detail=False, methods=['get'])
     def week(self, request):
-        """Статистика за текущую неделю (для графика)"""
         today = timezone.now().date()
         start_of_week = today - timedelta(days=today.weekday())
         
@@ -189,7 +178,6 @@ class StatsViewSet(viewsets.ViewSet):
         
         total_hours_all = sum(c['hours'] for c in categories_stats)
         
-        # Топ-5 + Остальное
         top_categories = categories_stats[:5]
         other_categories = categories_stats[5:]
         other_hours = sum(c['hours'] for c in other_categories)
@@ -303,19 +291,17 @@ class StatsViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['get'], url_path='monthly-trends')
     def monthly_trends(self, request):
-        """
-        Линейная диаграмма: топ-6 категорий по количеству задач за месяц
-        """
+        """Tоп-6 категорий по количеству задач за месяц"""
         user = request.user
         today = timezone.now().date()
         first_day = today.replace(day=1)
         
-        # Формируем список дат от 1-го числа до сегодня
+        # Cписок дат от 1-го числа до сегодня
         days_range = (today - first_day).days + 1
         date_range = [first_day + timedelta(days=i) for i in range(days_range)]
         date_labels = [d.strftime('%d.%m') for d in date_range]
         
-        # Собираем статистику по категориям за месяц
+        # Cтатистику по категориям за месяц
         categories = Category.objects.filter(user=user, is_active=True)
         
         category_stats = []
@@ -334,11 +320,9 @@ class StatsViewSet(viewsets.ViewSet):
                     'total': tasks_count
                 })
         
-        # Берём топ-6 категорий
         category_stats.sort(key=lambda x: x['total'], reverse=True)
         top_categories = category_stats[:6]
         
-        # Формируем данные для графика
         result = {
             'dates': date_labels,
             'categories': []

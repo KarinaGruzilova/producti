@@ -1,7 +1,6 @@
 from django.db import models
 from users.models import User
-
-import emoji
+# import emoji
 
 class Category(models.Model):
     PASTEL_COLORS = [
@@ -26,8 +25,6 @@ class Category(models.Model):
         ('#FF847C', 'Лососевый'),
         ('#E84A5F', 'Малиновый'),
     ]
-    
-
     
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='categories')
     name = models.CharField(max_length=100, verbose_name='Название категории')
@@ -78,8 +75,7 @@ class Category(models.Model):
     @property
     def task_count(self):
         return self.Tasks.count()
-
-
+    
 class Task(models.Model):
     category = models.ForeignKey(
         Category, 

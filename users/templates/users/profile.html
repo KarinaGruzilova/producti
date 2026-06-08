@@ -104,23 +104,67 @@
                     <div class="tariff-desc">Оформите PRO подписку и получите доступ ко всем функциям</div>
                     <div class="tariff-features">
                         <div class="feature">Безлимит категорий</div>
+                        <div class="feature">Безлимит задач</div>
                         <div class="feature">Расширенная аналитика</div>
                         <div class="feature">Экспорт данных</div>
-                        <div class="feature">Умные уведомления</div>
                     </div>
                     <a href="{% url 'main:proversion' %}" class="tariff-btn tariff-btn-primary">Оформить PRO</a>
                 </div>
             {% endif %}
         </div>
-      <div class="promo-section">
-        <h3>Активировать промокод</h3>
-        <input type="text" id="promoCode" placeholder="Введите промокод">
-        <button onclick="activatePromo()">Активировать</button>
-        <div id="promoResult"></div>
-    </div>  
 
+                <!-- Блок экспорта данных -->
+        <div class="export-section">
+            <div class="export-header">
+                <h3>Экспорт данных</h3>
+                <p>Выгрузите все ваши задачи в удобном формате</p>
+            </div>
+            
+            <div class="export-buttons">
+                <button class="btn-export" id="exportCsvBtn">
+                    CSV
+                </button>
+                <button class="btn-export" id="exportJsonBtn">
+                    JSON
+                </button>
+                <button class="btn-export" id="exportExcelBtn">
+                    Excel
+                </button>
+            </div>
+            
+            <div class="export-filters">
+                <div class="filter-group">
+                    <label>Дата от:</label>
+                    <input type="date" id="exportDateFrom" class="filter-date">
+                </div>
+                <div class="filter-group">
+                    <label>Дата до:</label>
+                    <input type="date" id="exportDateTo" class="filter-date">
+                </div>
+                <button id="applyDateFilter" class="btn-filter">Применить фильтр</button>
+                <button id="clearDateFilter" class="btn-filter-clear">Сбросить</button>
+            </div>
+            
+            <div class="export-note">
+                <small>Экспортируются все задачи, включая невыполненные.</small>
+            </div>
+        </div>
 
-
+            <!-- Промокод -->
+            <div class="promo-section">
+                <div class="promo-header">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2D268C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                        <line x1="7" y1="7" x2="7.01" y2="7"/>
+                    </svg>
+                    <h3>Активировать промокод</h3>
+                </div>
+                <div class="promo-input-row">
+                    <input type="text" id="promoCode" placeholder="Введите промокод" class="promo-input">
+                    <button onclick="activatePromo()" class="promo-btn">Применить</button>
+                </div>
+                <div id="promoResult" class="promo-result"></div>
+            </div>
 
         <!-- СТАТИСТИКА -->
         <div class="stats-container">
@@ -142,10 +186,10 @@
                     <div class="stat-number">{{ streak_days }}</div>
                     <div class="stat-label">дней в серии 🔥</div>
                 </div>
-                <div class="stat-card">
+                {% comment %} <div class="stat-card">
                     <div class="stat-number">{{ completed_goals }}</div>
                     <div class="stat-label">достигнутых целей</div>
-                </div>
+                </div> {% endcomment %}
             </div>
         </div>
 
@@ -192,43 +236,6 @@
                 </div>
             </form>
         </div>
-    
-        <!-- Блок экспорта данных -->
-<div class="export-section">
-    <div class="export-header">
-        <h3>Экспорт данных</h3>
-        <p>Выгрузите все ваши задачи в удобном формате</p>
-    </div>
-    
-    <div class="export-buttons">
-        <button class="btn-export" id="exportCsvBtn">
-            CSV
-        </button>
-        <button class="btn-export" id="exportJsonBtn">
-            JSON
-        </button>
-        <button class="btn-export" id="exportExcelBtn">
-            Excel
-        </button>
-    </div>
-    
-    <div class="export-filters">
-        <div class="filter-group">
-            <label>Дата от:</label>
-            <input type="date" id="exportDateFrom" class="filter-date">
-        </div>
-        <div class="filter-group">
-            <label>Дата до:</label>
-            <input type="date" id="exportDateTo" class="filter-date">
-        </div>
-        <button id="applyDateFilter" class="btn-filter">Применить фильтр</button>
-        <button id="clearDateFilter" class="btn-filter-clear">Сбросить</button>
-    </div>
-    
-    <div class="export-note">
-        <small>Экспортируются все задачи, включая невыполненные.</small>
-    </div>
-</div>
     
     
 
