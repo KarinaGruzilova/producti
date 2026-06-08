@@ -108,6 +108,7 @@ DATABASES = {
         default='postgresql://producti:producti@localhost:5432/producti'
     )
 }
+CSRF_TRUSTED_ORIGINS = ['https://producti-production.up.railway.app']
 
 
 # Password validation
