@@ -276,7 +276,7 @@ class CreatePaymentView(APIView):
             },
             "confirmation": {
                 "type": "redirect",
-                "return_url": f"http://127.0.0.1:8000/user/payment/"
+                "return_url": "https://producti-production.up.railway.app/user/payment/"
             },
             "description": f"Подписка Pro ({plan_type}) для {user.email}",
             "metadata": {
