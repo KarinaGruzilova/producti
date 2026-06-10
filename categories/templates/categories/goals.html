@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+{% load static %}
+ 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'styles/goals.css' %}">
+{% endblock %}
+ 
+{% block content %}
+<div class="content-container">
+ 
+    <!-- ШАПКА -->
+    <div class="goals-header">
+        <div class="goals-title-block">
+            <h1>Мои цели</h1>
+            <p>Ставьте цели по категориям и отслеживайте прогресс</p>
+        </div>
+        <button class="btn-add-goal" id="openGoalModal">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            Новая цель
+        </button>
+    </div>
+ 
+    <!-- АКТИВНЫЕ ЦЕЛИ -->
+    <div class="section-heading">Активные цели</div>
+    <div class="goals-grid" id="activeGoalsGrid">
+        <!-- Заглушка при загрузке -->
+        <div class="goals-empty" id="goalsEmptyState" style="display:none;">
+            <div class="goals-empty-icon">🎯</div>
+            <p>У вас пока нет активных целей.<br>Создайте первую цель и начните отслеживать прогресс!</p>
+            <button class="btn-empty-add" id="openGoalModalEmpty">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                Создать цель
+            </button>
+        </div>
+    </div>
+ 
+    <!-- АРХИВ -->
+    <button class="goals-archive-toggle" id="archiveToggle">
+        <span>Выполненные цели</span>
+        <span class="archive-count" id="archiveCount">0</span>
+        <svg class="archive-arrow" id="archiveArrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M6 9l6 6 6-6"/>
+        </svg>
+    </button>
+    <div class="goals-archive-grid" id="archiveGrid"></div>
+ 
+</div>
+ 
+<!-- ОВЕРЛЕЙ -->
+<div class="goal-modal-overlay" id="goalModalOverlay"></div>
+ 
+<!-- МОДАЛЬНОЕ ОКНО СОЗДАНИЯ ЦЕЛИ -->
+<div class="goal-modal" id="goalModal">
+    <div class="goal-modal-content">
+        <button class="goal-modal-close" id="closeGoalModal">&times;</button>
+        <h3>Новая цель</h3>
+ 
+        <!-- Тип цели -->
+        <span class="goal-modal-label">Тип цели</span>
+        <div class="goal-type-row">
+            <button class="goal-type-btn selected" data-type="time">
+                ⏱ По времени (часы)
+            </button>
+            <button class="goal-type-btn" data-type="tasks">
+                ✅ По задачам (шт.)
+            </button>
+        </div>
+ 
+        <!-- Категория -->
+        <span class="goal-modal-label">Категория</span>
+        <div class="goal-cat-row" id="goalCatRow">
+            {% for category in categories %}
+            <button class="goal-cat-pill" data-id="{{ category.id }}" data-name="{{ category.name }}">
+                {{ category.emoji }} {{ category.name }}
+            </button>
+            {% empty %}
+            <p style="font-size:13px;color:#757575;">Сначала создайте категорию</p>
+            {% endfor %}
+        </div>
+ 
+        <!-- Название -->
+        <span class="goal-modal-label">Название цели</span>
+        <input type="text" class="goal-input" id="goalTitle" placeholder="Например: 20 часов учёбы за неделю">
+ 
+        <!-- Целевое значение -->
+        <span class="goal-modal-label" id="targetLabel">Целевое значение (часов)</span>
+        <input type="number" class="goal-input" id="goalTarget" placeholder="20" min="0.1" step="0.5">
+ 
+        <!-- Период -->
+        <span class="goal-modal-label">Период</span>
+        <div class="goal-period-row">
+            <button class="goal-period-btn selected" data-period="week">Неделя</button>
+            <button class="goal-period-btn" data-period="month">Месяц</button>
+            <button class="goal-period-btn" data-period="custom">Своя дата</button>
+        </div>
+ 
+        <!-- Дедлайн (только для своей даты) -->
+        <div class="goal-deadline-wrap" id="deadlineWrap">
+            <span class="goal-modal-label">Дата выполнения</span>
+            <input type="date" class="goal-input" id="goalDeadline" style="margin-bottom:0;">
+        </div>
+ 
+        <button class="goal-submit-btn" id="submitGoal">Создать цель</button>
+    </div>
+</div>
+ 
+{% endblock %}
+ 
+{% block scripts %}
+<script>
+const GOALS_API = '/api/goals/';
+ 
+// ── STATE ──
+let selectedType = 'time';
+let selectedPeriod = 'week';
+let selectedCategoryId = null;
+ 
+// ── OPEN / CLOSE MODAL ──
+function openModal() {
+    document.getElementById('goalModal').classList.add('active');
+    document.getElementById('goalModalOverlay').classList.add('active');
+}
+ 
+function closeModal() {
+    document.getElementById('goalModal').classList.remove('active');
+    document.getElementById('goalModalOverlay').classList.remove('active');
+    resetForm();
+}
+ 
+document.getElementById('openGoalModal').addEventListener('click', openModal);
+document.getElementById('openGoalModalEmpty')?.addEventListener('click', openModal);
+document.getElementById('closeGoalModal').addEventListener('click', closeModal);
+document.getElementById('goalModalOverlay').addEventListener('click', closeModal);
+ 
+// ── TYPE BUTTONS ──
+document.querySelectorAll('.goal-type-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.goal-type-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedType = btn.dataset.type;
+        document.getElementById('targetLabel').textContent =
+            selectedType === 'time' ? 'Целевое значение (часов)' : 'Целевое значение (задач)';
+        document.getElementById('goalTarget').placeholder = selectedType === 'time' ? '20' : '10';
+        document.getElementById('goalTarget').step = selectedType === 'time' ? '0.5' : '1';
+    });
+});
+ 
+// ── PERIOD BUTTONS ──
+document.querySelectorAll('.goal-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.goal-period-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedPeriod = btn.dataset.period;
+        const deadlineWrap = document.getElementById('deadlineWrap');
+        deadlineWrap.classList.toggle('visible', selectedPeriod === 'custom');
+    });
+});
+ 
+// ── CATEGORY PILLS ──
+document.querySelectorAll('.goal-cat-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+        document.querySelectorAll('.goal-cat-pill').forEach(p => p.classList.remove('selected'));
+        pill.classList.add('selected');
+        selectedCategoryId = pill.dataset.id;
+    });
+});
+ 
+// ── SUBMIT ──
+document.getElementById('submitGoal').addEventListener('click', async () => {
+    const title = document.getElementById('goalTitle').value.trim();
+    const target = document.getElementById('goalTarget').value;
+    const deadline = document.getElementById('goalDeadline').value;
+ 
+    // Сброс ошибок
+    ['goalTitle','goalTarget','goalDeadline'].forEach(id => {
+        document.getElementById(id).classList.remove('error-border');
+    });
+ 
+    let valid = true;
+    if (!title) { document.getElementById('goalTitle').classList.add('error-border'); valid = false; }
+    if (!target || parseFloat(target) <= 0) { document.getElementById('goalTarget').classList.add('error-border'); valid = false; }
+    if (!selectedCategoryId) { valid = false; showMessage('Выберите категорию', 'error'); }
+    if (selectedPeriod === 'custom' && !deadline) { document.getElementById('goalDeadline').classList.add('error-border'); valid = false; }
+    if (!valid) return;
+ 
+    const body = {
+        title,
+        goal_type: selectedType,
+        category_id: selectedCategoryId,
+        target_value: parseFloat(target),
+        period: selectedPeriod,
+        deadline: selectedPeriod === 'custom' ? deadline : null,
+    };
+ 
+    try {
+        const res = await fetch(GOALS_API, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        if (res.status === 201) {
+            closeModal();
+            loadGoals();
+            showMessage('Цель создана!', 'success');
+        } else {
+            showMessage(data.error || 'Ошибка создания', 'error');
+        }
+    } catch (e) {
+        showMessage('Ошибка сети', 'error');
+    }
+});
+ 
+// ── LOAD GOALS ──
+async function loadGoals() {
+    try {
+        const [activeRes, archiveRes] = await Promise.all([
+            fetch(GOALS_API),
+            fetch(GOALS_API + 'archive/'),
+        ]);
+        const active = await activeRes.json();
+        const archive = await archiveRes.json();
+ 
+        renderActive(active);
+        renderArchive(archive);
+    } catch (e) {
+        console.error('Ошибка загрузки целей:', e);
+    }
+}
+ 
+function renderActive(goals) {
+    const grid = document.getElementById('activeGoalsGrid');
+    const empty = document.getElementById('goalsEmptyState');
+ 
+    // Очищаем старые карточки
+    Array.from(grid.children).forEach(c => {
+        if (c.id !== 'goalsEmptyState') c.remove();
+    });
+ 
+    if (goals.length === 0) {
+        empty.style.display = 'block';
+        return;
+    }
+    empty.style.display = 'none';
+ 
+    goals.forEach(goal => {
+        grid.insertBefore(createGoalCard(goal, false), empty);
+    });
+}
+ 
+function renderArchive(goals) {
+    const grid = document.getElementById('archiveGrid');
+    const count = document.getElementById('archiveCount');
+    grid.innerHTML = '';
+    count.textContent = goals.length;
+ 
+    if (goals.length === 0) {
+        grid.innerHTML = '<p style="grid-column:1/-1;font-size:13px;color:#757575;padding:16px 0;">Выполненных целей пока нет</p>';
+        return;
+    }
+ 
+    goals.forEach(goal => grid.appendChild(createGoalCard(goal, true)));
+}
+ 
+function createGoalCard(goal, archived) {
+    const card = document.createElement('div');
+    card.className = `goal-card ${goal.status}`;
+    card.style.setProperty('--cat-color', goal.category_color);
+ 
+    // Вычисляем hex с прозрачностью для фона категории
+    const bgColor = goal.category_color + '30';
+    card.style.setProperty('--cat-bg', bgColor);
+ 
+    const statusLabels = { active: 'В процессе', completed: '✅ Выполнено', failed: '❌ Просрочено' };
+    const periodLabel = goal.period === 'week' ? '📅 Неделя' : goal.period === 'month' ? '📅 Месяц' : '📅 До ' + (goal.deadline || '—');
+ 
+    card.innerHTML = `
+        <div class="goal-card-header">
+            <div class="goal-card-left">
+                <span class="goal-category">${goal.category_emoji} ${goal.category_name}</span>
+                <div class="goal-title">${goal.title}</div>
+            </div>
+            ${!archived ? `
+            <button class="goal-delete" data-id="${goal.id}" title="Удалить">
+                <svg width="11" height="12" viewBox="0 0 12 13" fill="none">
+                    <path d="M7.375 5.16667V9.83333M4.625 5.16667V9.83333M1.875 2.5V10.3667C1.875 11.1134 1.875 11.4865 2.02487 11.7717C2.15669 12.0226 2.36689 12.227 2.62561 12.3548C2.91945 12.5 3.30431 12.5 4.07288 12.5H7.92712C8.69569 12.5 9.07999 12.5 9.37383 12.3548C9.63256 12.227 9.84345 12.0226 9.97528 11.7717C10.125 11.4868 10.125 11.114 10.125 10.3687V2.5M1.875 2.5H3.25M1.875 2.5H0.5M3.25 2.5H8.75M8.75 2.5H10.125M10.125 2.5H11.5" stroke="#757575" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>` : ''}
+        </div>
+ 
+        <div class="goal-progress-wrap">
+            <div class="goal-progress-bar-bg">
+                <div class="goal-progress-bar-fill" style="width:${goal.progress_percent}%"></div>
+            </div>
+            <div class="goal-progress-meta">
+                <span class="goal-progress-value">${goal.current_value} / ${goal.target_value} ${goal.unit}</span>
+                <span class="goal-progress-percent">${goal.progress_percent}%</span>
+            </div>
+        </div>
+ 
+        <div class="goal-card-footer">
+            <span class="goal-period-badge">${periodLabel}</span>
+            <span class="goal-status-badge ${goal.status}">${statusLabels[goal.status]}</span>
+        </div>
+    `;
+ 
+    // Удаление
+    const delBtn = card.querySelector('.goal-delete');
+    if (delBtn) {
+        delBtn.addEventListener('click', () => deleteGoal(goal.id));
+    }
+ 
+    return card;
+}
+ 
+async function deleteGoal(id) {
+    if (!confirm('Удалить эту цель?')) return;
+    try {
+        await fetch(GOALS_API + id + '/', {
+            method: 'DELETE',
+            headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        });
+        loadGoals();
+        showMessage('Цель удалена', 'success');
+    } catch (e) {
+        showMessage('Ошибка удаления', 'error');
+    }
+}
+ 
+// ── АРХИВ TOGGLE ──
+document.getElementById('archiveToggle').addEventListener('click', () => {
+    const grid = document.getElementById('archiveGrid');
+    const arrow = document.getElementById('archiveArrow');
+    grid.classList.toggle('open');
+    arrow.classList.toggle('open');
+});
+ 
+// ── RESET FORM ──
+function resetForm() {
+    selectedType = 'time';
+    selectedPeriod = 'week';
+    selectedCategoryId = null;
+ 
+    document.getElementById('goalTitle').value = '';
+    document.getElementById('goalTarget').value = '';
+    document.getElementById('goalDeadline').value = '';
+ 
+    document.querySelectorAll('.goal-type-btn').forEach((b,i) => b.classList.toggle('selected', i===0));
+    document.querySelectorAll('.goal-period-btn').forEach((b,i) => b.classList.toggle('selected', i===0));
+    document.querySelectorAll('.goal-cat-pill').forEach(p => p.classList.remove('selected'));
+    document.getElementById('deadlineWrap').classList.remove('visible');
+    document.getElementById('targetLabel').textContent = 'Целевое значение (часов)';
+ 
+    ['goalTitle','goalTarget','goalDeadline'].forEach(id => {
+        document.getElementById(id).classList.remove('error-border');
+    });
+}
+ 
+// ── HELPERS ──
+function getCookie(name) {
+    let value = null;
+    document.cookie.split(';').forEach(c => {
+        const [k,v] = c.trim().split('=');
+        if (k === name) value = decodeURIComponent(v);
+    });
+    return value;
+}
+ 
+function showMessage(msg, type) {
+    const container = document.getElementById('messagesContainer');
+    if (!container) return;
+    const div = document.createElement('div');
+    div.className = `message message-${type}`;
+    div.innerHTML = `<span>${msg}</span><button class="message-close" onclick="this.parentElement.remove()">×</button>`;
+    container.appendChild(div);
+    setTimeout(() => div.remove(), 4000);
+}
+ 
+// ── INIT ──
+loadGoals();
+</script>
+{% endblock %}
+ 

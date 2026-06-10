@@ -346,3 +346,114 @@ class StatsViewSet(viewsets.ViewSet):
         
         return Response(result)
     
+
+
+
+
+    from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+from .models import Goal
+ 
+ 
+class GoalViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+ 
+    def list(self, request):
+        """Активные цели пользователя"""
+        goals = Goal.objects.filter(user=request.user, status='active')
+        data = []
+        for goal in goals:
+            # Автоматически проверяем выполнение
+            if goal.progress_percent >= 100:
+                goal.status = 'completed'
+                goal.completed_at = timezone.now()
+                goal.save()
+                continue
+            if goal.is_overdue:
+                goal.status = 'failed'
+                goal.save()
+                continue
+ 
+            data.append(self._serialize(goal))
+        return Response(data)
+ 
+    @action(detail=False, methods=['get'])
+    def archive(self, request):
+        """Выполненные и просроченные цели"""
+        goals = Goal.objects.filter(
+            user=request.user,
+            status__in=['completed', 'failed']
+        ).order_by('-completed_at', '-created_at')
+        return Response([self._serialize(g) for g in goals])
+ 
+    def create(self, request):
+        user = request.user
+        data = request.data
+ 
+        category_id = data.get('category_id')
+        title = data.get('title', '').strip()
+        goal_type = data.get('goal_type', 'time')
+        target_value = data.get('target_value')
+        period = data.get('period', 'week')
+        deadline = data.get('deadline') or None
+ 
+        if not title:
+            return Response({'error': 'Введите название цели'}, status=400)
+        if not category_id:
+            return Response({'error': 'Выберите категорию'}, status=400)
+        if not target_value or float(target_value) <= 0:
+            return Response({'error': 'Укажите целевое значение больше 0'}, status=400)
+        if period == 'custom' and not deadline:
+            return Response({'error': 'Укажите дату дедлайна'}, status=400)
+ 
+        try:
+            from categories.models import Category
+            category = Category.objects.get(id=category_id, user=user, is_active=True)
+        except Category.DoesNotExist:
+            return Response({'error': 'Категория не найдена'}, status=404)
+ 
+        goal = Goal.objects.create(
+            user=user,
+            category=category,
+            title=title,
+            goal_type=goal_type,
+            target_value=float(target_value),
+            period=period,
+            deadline=deadline if period == 'custom' else None,
+        )
+        return Response(self._serialize(goal), status=201)
+ 
+    def destroy(self, request, pk=None):
+        try:
+            goal = Goal.objects.get(id=pk, user=request.user)
+            goal.delete()
+            return Response({'status': 'deleted'})
+        except Goal.DoesNotExist:
+            return Response({'error': 'Цель не найдена'}, status=404)
+ 
+    def _serialize(self, goal):
+        unit = 'ч' if goal.goal_type == 'time' else 'зад.'
+        period_labels = {'week': 'Неделя', 'month': 'Месяц', 'custom': 'До ' + (str(goal.deadline) if goal.deadline else '—')}
+        return {
+            'id': goal.id,
+            'title': goal.title,
+            'goal_type': goal.goal_type,
+            'category_name': goal.category.name,
+            'category_emoji': goal.category.emoji,
+            'category_color': goal.category.color,
+            'target_value': goal.target_value,
+            'current_value': goal.current_value,
+            'progress_percent': goal.progress_percent,
+            'period': goal.period,
+            'period_label': period_labels.get(goal.period, ''),
+            'deadline': str(goal.deadline) if goal.deadline else None,
+            'end_date': str(goal.end_date) if goal.end_date else None,
+            'status': goal.status,
+            'unit': unit,
+            'is_overdue': goal.is_overdue,
+        }
+ 
+    

@@ -302,3 +302,26 @@ def tasks_calendar(request):
         'today': today,
     }
     return render(request, 'categories/tasks_calendar.html', context)
+
+
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.utils import timezone
+from categories.models import Category, Task
+from django.db.models import Sum
+ 
+ 
+@login_required
+def goals(request):
+    user = request.user
+    categories = Category.objects.filter(user=user, is_active=True)
+ 
+    total_incomplete = Task.objects.filter(user=user, completed=False).count()
+ 
+    context = {
+        'categories': categories,
+        'total_incomplete': total_incomplete,
+    }
+    return render(request, 'categories/goals.html', context)

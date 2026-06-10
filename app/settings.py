@@ -168,9 +168,9 @@ AUTH_USER_MODEL = 'users.User'
 
 
 # Добавить в конец файла
-if DEBUG:
-    import debug_toolbar
-    MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
+# if DEBUG:
+#     import debug_toolbar
+#     MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 
 
 LOGIN_URL = '/user/login/'
