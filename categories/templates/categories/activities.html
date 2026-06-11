@@ -3,14 +3,11 @@
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'styles/activities.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/modals.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="content-container">
-    <!-- Затемнение фона -->
-    <div id="modalOverlay" class="modal-overlay"></div>
-
-
     <!-- БЛОК С КРУГОВОЙ ДИАГРАММОЙ -->
     <div class="categories-stats">
         <div class="categories-stats__wrapper">
@@ -20,8 +17,6 @@
   <path d="M834.729 0C770.383 36.3802 720.309 89.5266 710 159.282C710 212.885 738.736 262.205 781.491 302.551C780.522 303.524 779.364 304.335 778.179 305H40C17.9086 305 0 287.091 0 265V40C3.70498e-06 17.9086 17.9086 3.22922e-07 40 0H834.729ZM1339.43 0C1361.52 0 1379.43 17.9086 1379.43 40V265C1379.43 287.091 1361.52 305 1339.43 305H1259.89C1299.1 264.984 1325 216.478 1325 165.357C1325 63.97 1312.56 37.2977 1242.69 0H1339.43Z" fill="white" fill-opacity="0.8"/>
   </svg>
 </div>
-            
-
             <div class="categories-stats__content">
                 <div class="categories-stats__row">
                     
@@ -119,7 +114,7 @@
     <!-- Модальное окно2 - Создание категории -->
     <div id="createCategoryModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn close-mod2">&times;</span>
+            <button class="close-mod2">&times;</button>
             <h3>Создать новую категорию</h3>
             
             <form class="category-form" id="createCategoryForm" method="post">
@@ -200,7 +195,7 @@
 <!-- Выезжающая панель редактирования категории -->
 <div id="editCategoryPanel" class="edit-category-panel">
     <div class="edit-panel-header">
-        <h3>✏️ Редактирование категории</h3>
+        <h3>Редактирование категории</h3>
         <button class="close-edit-panel" id="closeEditPanelBtn">×</button>
     </div>
     

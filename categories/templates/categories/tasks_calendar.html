@@ -20,34 +20,30 @@
                     <span class="count">{{ total_incomplete }}</span>
                 </div>
             </div>
-        <button class="btn-create" id="openCreateTaskModal">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-            Запланировать <br> задачу
-        </button>
+        <div class="stat-info-tasks">
+            <div class="stats-strip">
+                <div class="stat-pill">
+                    <div class="dot dot-red"></div>
+                    Просроченные
+                    <span class="count">{{ overdue_tasks.count }}</span>
+                </div>
+                <div class="stat-pill">
+                    <div class="dot dot-green"></div>
+                    Активные
+                    <span class="count">{{ active_tasks.count }}</span>
+                </div>
+                <div class="stat-pill">
+                    <div class="dot dot-blue"></div>
+                    Запланированные
+                    <span class="count">{{ planned_tasks.count }}</span>
+                </div>
+            </div>
 
 
-
-
-            <!-- STATS STRIP -->
-    <div class="stats-strip">
-        <div class="stat-pill">
-            <div class="dot dot-red"></div>
-            Просроченные
-            <span class="count">{{ overdue_tasks.count }}</span>
+            <button class="btn-create" id="openCreateTaskModal">
+                + Запланировать задачу
+            </button>
         </div>
-        <div class="stat-pill">
-            <div class="dot dot-green"></div>
-            Активные
-            <span class="count">{{ active_tasks.count }}</span>
-        </div>
-        <div class="stat-pill">
-            <div class="dot dot-blue"></div>
-            Запланированные
-            <span class="count">{{ planned_tasks.count }}</span>
-        </div>
-    </div>
     </div>
 
 
@@ -85,7 +81,6 @@
                 </div>
                 {% empty %}
                 <div class="empty-state">
-                    {% comment %} <div class="empty-icon">✅</div> {% endcomment %}
                     <p>Просроченных задач нет</p>
                 </div>
                 {% endfor %}

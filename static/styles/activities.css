@@ -1,55 +1,57 @@
+@font-face {
+    font-family: 'DVDDS';
+    src: url('../fonts/h1/dvdds.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 
+@font-face {
+    font-family: 'Unbounded';
+    src: url('../fonts/Unbounded-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 
+@font-face {
+    font-family: 'Unbounded';
+    src: url('../fonts/Unbounded-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
 
+@font-face {
+    font-family: 'Unbounded';
+    src: url('../fonts/Unbounded-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
 
+/* Базовый шрифт */
+*, *::before, *::after {
+    font-family: 'DVDDS', sans-serif;
+}
+
+/* Заголовки — Unbounded */
+h1, h2, h3 {
+    font-family: 'Unbounded', sans-serif;
+}
+
+h4, h5, h6 {
+    font-family: 'DVDDS', sans-serif;
+    font-weight: normal;
+}
 
 .content-container {
     display: flex;
     flex-direction: column;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Блок с круговой диаграммой */
-.categories-stats {
-    position: relative;
-}
+/* ── БЛОК С КРУГОВОЙ ДИАГРАММОЙ ── */
+.categories-stats { position: relative; }
 
 .categories-stats__wrapper {
     position: relative;
@@ -57,26 +59,18 @@
     height: 316px;
 }
 
-/* Декоративный SVG-фон */
 .categories-stats__bg {
     position: absolute;
-    left: 0;
-    top: 11px;
+    left: 0; top: 11px;
     z-index: 0;
 }
 
-.categories-stats__bg svg {
-    width: 619px;
-    height: 305px;
-}
+.categories-stats__bg svg { width: 619px; height: 305px; }
 
-/* Основной контент */
 .categories-stats__content {
     position: absolute;
-    left: 7.54px;
-    top: 0;
-    width: 959.46px;
-    height: 316px;
+    left: 7.54px; top: 0;
+    width: 959.46px; height: 316px;
     padding: 40px;
     border-radius: 40px;
     display: flex;
@@ -93,7 +87,6 @@
     width: 100%;
 }
 
-/* Левая колонка */
 .categories-stats__info {
     display: flex;
     flex-direction: column;
@@ -108,7 +101,9 @@
     gap: 0px;
 }
 
+/* h4 в заголовке блока — оставляем DVDDS как подпись */
 .zagolovok h4 {
+    font-family: 'DVDDS', sans-serif;
     color: #2A2A2A;
     font-size: 20px;
     font-weight: 400;
@@ -122,20 +117,24 @@
     gap: 0;
 }
 
+/* Большое число часов — Unbounded */
 .zagolovok .text span {
-    font-size: 40px;
-    color: black;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: #2A2A2A;
     margin: 0;
 }
 
 .zagolovok .text p {
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
-    color: black;
+    color: #2A2A2A;
     margin: 0;
     width: auto;
 }
 
-/* Легенда */
+/* ── ЛЕГЕНДА ── */
 .stats-legend {
     display: flex;
     flex-wrap: wrap;
@@ -143,87 +142,31 @@
     width: 600px;
 }
 
-.legend {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+.legend { display: flex; align-items: center; gap: 10px; }
 
-.legend-color {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-}
+.legend-color { width: 16px; height: 16px; border-radius: 50%; }
 
 .legend-text {
+    font-family: 'DVDDS', sans-serif;
     color: #2A2A2A;
     font-size: 13px;
 }
 
-/* Правая колонка: круговой график */
+/* ── КРУГОВОЙ ГРАФИК ── */
 .categories-stats__chart {
-    width: 260px;
-    height: 260px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 260px; height: 260px;
+    display: flex; align-items: center; justify-content: center;
 }
 
-/* График Plotly */
-.categories-stats__chart .plotly-graph-div {
-    width: 100% !important;
-    height: 100% !important;
-}
+.categories-stats__chart .plotly-graph-div { width: 100% !important; height: 100% !important; }
+.js-plotly-plot .plotly .main-svg { background: transparent !important; box-shadow: none !important; border: none !important; }
+.modebar { display: none !important; }
+.pie-slice path { stroke: none !important; stroke-width: 0 !important; }
 
-/* Убираем рамки и лишние элементы */
-.js-plotly-plot .plotly .main-svg {
-    background: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
-}
-
-/* Скрываем панель инструментов Plotly */
-.modebar {
-    display: none !important;
-}
-
-/* Убираем обводку у секторов */
-.pie-slice path {
-    stroke: none !important;
-    stroke-width: 0 !important;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* ── КНОПКА СОЗДАНИЯ ФОКУСА ── */
 .create-focus {
     position: absolute;
-    top: 28px;
-    right: 28px;
+    top: 28px; right: 28px;
     display: flex;
     align-items: center;
     border-radius: 40px;
@@ -232,9 +175,11 @@
     background: #eceffe;
     color: #2d268c;
     border: none;
-
+    font-family: 'DVDDS', sans-serif;
+    cursor: pointer;
 }
 
+/* ── СПИСОК КАТЕГОРИЙ ── */
 .categories {
     position: relative;
     display: flex;
@@ -245,11 +190,15 @@
     border-radius: 40px;
     padding: 28px;
 }
+
+/* Заголовок раздела категорий — Unbounded */
 h6 {
-    font-weight: 400;
-    font-size: 32px;
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
     color: #2a2a2a;
 }
+
 .activities {
     display: flex;
     flex-wrap: wrap;
@@ -257,79 +206,63 @@ h6 {
     margin-top: 20px;
     row-gap: 24px;
 }
-.activiti{
+
+.activiti {
     display: flex;
     justify-content: space-between;
     width: 440px;
 }
+
 .category-link {
     display: flex;
     align-items: center;
     gap: 20px;
 }
+
 .smail {
-    width: 48px;
-    height: 48px;
+    width: 48px; height: 48px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     font-size: 20px;
 }
+
 .text span {
+    font-family: 'DVDDS', sans-serif;
     font-weight: 400;
     font-size: 18px;
     text-align: center;
     color: #2a2a2a;
     margin-bottom: 12px;
 }
+
 .text p {
+    font-family: 'DVDDS', sans-serif;
     font-weight: 400;
     font-size: 14px;
     color: #757575;
 }
-.all-btn {
-    display: flex;
-    gap: 26px;
-}
-.all-btn button {
-    border: none;
-    background-color: #fff;
-}
-.two-btn {
-    display: flex;
-    gap: 16px;
-}
 
+.all-btn { display: flex; gap: 26px; }
+.all-btn button { border: none; background-color: #fff; cursor: pointer; }
+.two-btn { display: flex; gap: 16px; }
 
-
-
-
-
-
-
-
-/* Затемнение */
+/* ── ПАНЕЛЬ РЕДАКТИРОВАНИЯ ── */
 .edit-overlay {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0);
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0);
     z-index: 998;
 }
 
-/* Выезжающая панель (слева) */
 .edit-category-panel {
     position: fixed;
     top: 0;
     left: -400px;
-    width: 380px;
-    height: 100%;
+    width: 380px; height: 100%;
     background: white;
-    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 0 20px rgba(0,0,0,0.1);
     z-index: 999;
     transition: left 0.3s ease;
     overflow-y: auto;
@@ -337,9 +270,7 @@ h6 {
     box-sizing: border-box;
 }
 
-.edit-category-panel.open {
-    left: 0;
-}
+.edit-category-panel.open { left: 0; }
 
 .edit-panel-header {
     display: flex;
@@ -350,14 +281,16 @@ h6 {
     border-bottom: 1px solid #F0F0F0;
 }
 
+/* Заголовок панели — Unbounded */
 .edit-panel-header h3 {
-    font-size: 20px;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
     color: #2A2A2A;
 }
 
 .close-edit-panel {
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     border-radius: 50%;
     background: transparent;
     border: none;
@@ -367,10 +300,7 @@ h6 {
     transition: all 0.2s;
 }
 
-.close-edit-panel:hover {
-    background: #F0F0F0;
-    color: #2A2A2A;
-}
+.close-edit-panel:hover { background: #F0F0F0; color: #2A2A2A; }
 
 .edit-category-form {
     display: flex;
@@ -385,6 +315,7 @@ h6 {
 }
 
 .edit-category-form label {
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
     font-weight: 500;
     color: #2A2A2A;
@@ -395,6 +326,7 @@ h6 {
     padding: 12px 16px;
     border: 1px solid #E0E0E0;
     border-radius: 30px;
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
     transition: all 0.2s;
 }
@@ -403,10 +335,10 @@ h6 {
 .edit-category-form textarea:focus {
     outline: none;
     border-color: #2D268C;
-    box-shadow: 0 0 0 2px rgba(45, 38, 140, 0.1);
+    box-shadow: 0 0 0 2px rgba(45,38,140,0.1);
 }
 
-/* Эмодзи */
+/* ── ЭМОДЗИ ── */
 .emoji-selector-btn {
     display: flex;
     align-items: center;
@@ -416,20 +348,20 @@ h6 {
     border-radius: 40px;
     background: white;
     cursor: pointer;
+    font-family: 'DVDDS', sans-serif;
 }
 
 .emoji-picker-container {
     position: absolute;
-    top: 100%;
-    left: 0;
+    top: 100%; left: 0;
     margin-top: 8px;
     z-index: 1000;
     background: white;
     border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
-/* Цвет */
+/* ── ВЫБОР ЦВЕТА ── */
 .color-selector-btn {
     display: flex;
     align-items: center;
@@ -440,19 +372,14 @@ h6 {
     background: white;
     cursor: pointer;
     width: 100%;
+    font-family: 'DVDDS', sans-serif;
 }
 
-.color-preview {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-}
+.color-preview { width: 24px; height: 24px; border-radius: 50%; }
 
 .color-dropdown {
     position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
+    top: 100%; left: 0; right: 0;
     margin-top: 8px;
     background: white;
     border: 1px solid #2D268C;
@@ -468,54 +395,197 @@ h6 {
     gap: 12px;
     padding: 10px 16px;
     cursor: pointer;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 14px;
 }
 
-.color-option:hover {
-    background: #ECEFFE;
-}
+.color-option:hover { background: #ECEFFE; }
+.color-dot { width: 20px; height: 20px; border-radius: 50%; }
 
-.color-dot {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-}
-
-/* Кнопки */
-.edit-panel-buttons {
-    display: flex;
-    gap: 12px;
-    margin-top: 20px;
-}
+/* ── КНОПКИ ПАНЕЛИ ── */
+.edit-panel-buttons { display: flex; gap: 12px; margin-top: 20px; }
 
 .btn-cancel, .btn-save {
     flex: 1;
     padding: 12px;
     border-radius: 40px;
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
     cursor: pointer;
+    transition: all 0.2s;
 }
 
-.btn-cancel {
-    background: #F5F5F5;
-    border: none;
-    color: #757575;
+.btn-cancel { background: #F5F5F5; border: none; color: #757575; }
+.btn-cancel:hover { background: #E0E0E0; }
+.btn-save { background: #2D268C; border: none; color: white; }
+.btn-save:hover { background: #AEBCFE; color: #2D268C; }
+/* ── МОДАЛЬНОЕ ОКНО СОЗДАНИЯ КАТЕГОРИИ ── */
+.cat-modal-content {
+    padding: 44px 40px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
-.btn-cancel:hover {
-    background: #E0E0E0;
+.cat-modal-content h3 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #2A2A2A;
+    text-align: center;
+    margin-bottom: 8px;
 }
 
-.btn-save {
+/* Подпись поля */
+.cat-field-label {
+    font-family: 'DVDDS', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #ADADB8;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+/* Строка эмодзи + цвет */
+.cat-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 4px;
+}
+
+.cat-emoji-block,
+.cat-color-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.cat-color-block { flex: 1; }
+
+/* Кнопка эмодзи */
+.cat-emoji-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 18px;
+    border: 1.5px solid #EAEAF0;
+    border-radius: 50px;
+    background: #FAFAFA;
+    font-size: 22px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    white-space: nowrap;
+}
+
+.cat-emoji-btn:hover { border-color: #2D268C; background: #fff; }
+
+/* Кнопка выбора цвета */
+.cat-color-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 18px;
+    border: 1.5px solid #EAEAF0;
+    border-radius: 50px;
+    background: #FAFAFA;
+    width: 100%;
+    cursor: pointer;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 13px;
+    color: #2A2A2A;
+    transition: border-color 0.2s;
+}
+
+.cat-color-btn:hover { border-color: #2D268C; background: #fff; }
+
+.cat-color-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+.cat-color-name { flex: 1; text-align: left; }
+
+/* Выпадающий список цветов */
+.cat-color-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0; right: 0;
+    background: #fff;
+    border: 1.5px solid #EAEAF0;
+    border-radius: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1001;
+    box-shadow: 0 8px 24px rgba(45,38,140,0.12);
+    scrollbar-width: thin;
+    scrollbar-color: #AEBCFE #f0f0f0;
+}
+
+.cat-color-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 13px;
+    color: #2A2A2A;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid #F5F5F7;
+}
+
+.cat-color-option:last-child { border-bottom: none; }
+.cat-color-option:hover { background: #F0F1FF; color: #2D268C; }
+
+/* Инпут названия */
+.cat-name-input {
+    width: 100%;
+    padding: 13px 20px;
+    border: 1.5px solid #EAEAF0;
+    border-radius: 50px;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 14px;
+    color: #2A2A2A;
+    background: #FAFAFA;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    box-sizing: border-box;
+}
+
+.cat-name-input:focus { border-color: #2D268C; background: #fff; }
+.cat-name-input::placeholder { color: #C0C0CC; }
+
+/* Кнопка создания */
+.cat-submit-btn {
+    width: 100%;
+    height: 52px;
     background: #2D268C;
+    color: #fff;
     border: none;
-    color: white;
+    border-radius: 50px;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 4px;
 }
 
-.btn-save:hover {
-    background: #AEBCFE;
-    color: #2D268C;
+.cat-submit-btn:hover { background: #AEBCFE; color: #2D268C; transform: translateY(-2px); }
+.cat-submit-btn:active { transform: translateY(0); }
+.cat-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* Ошибка */
+.cat-error {
+    font-family: 'DVDDS', sans-serif;
+    font-size: 13px;
+    color: #8B0000;
+    background: #FFF0F0;
+    border-radius: 12px;
+    padding: 10px 16px;
+    text-align: center;
 }
-
-
-
-

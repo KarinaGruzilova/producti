@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 
 class User(AbstractUser):
     avatar = models.ImageField(
@@ -39,6 +40,10 @@ class PaymentHistory(models.Model):
     payment_id = models.CharField(max_length=100, unique=True)
     status = models.CharField(max_length=20, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Платеж'
+        verbose_name_plural = 'Платежи'
     
     def __str__(self):
         return f"{self.user.username} - {self.amount} руб. - {self.created_at}"
@@ -49,6 +54,10 @@ class ProPromoCode(models.Model):
     used = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
+
+    class Meta:
+        verbose_name = 'Промокод'
+        verbose_name_plural = 'Промокоды'
     
     def __str__(self):
         return f"Промокод {self.code} для {self.user.username} - {'Использован' if self.used else 'Активен'}"

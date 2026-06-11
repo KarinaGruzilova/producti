@@ -1,9 +1,3 @@
-/**
- * ================================================
- * ОСНОВНОЙ СКРИПТ УПРАВЛЕНИЯ МОДАЛЬНЫМИ ОКНАМИ И КАТЕГОРИЯМИ
- * ================================================
- */
-
 document.addEventListener('DOMContentLoaded', function() {
     // ========== 1. ПОЛУЧАЕМ ВСЕ НЕОБХОДИМЫЕ ЭЛЕМЕНТЫ ==========
     
@@ -396,8 +390,8 @@ function initColorSelector() {
                 formData.set('color', colorInput.value);
             }
             
-            // CSRF-токен
-            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+// CSRF-токен из куки
+            const csrftoken = getCookie('csrftoken');
             if (!csrftoken) {
                 alert('Ошибка безопасности: CSRF токен не найден');
                 if (submitBtn) {
@@ -406,22 +400,35 @@ function initColorSelector() {
                 }
                 return;
             }
-            
-            // Отправка запроса
-            fetch('/categories/create/', {
+
+            const finalEmoji = (selectedEmojiSpan && selectedEmojiSpan.textContent.trim())
+                ? selectedEmojiSpan.textContent.trim()
+                : '📁';
+            const finalColor = (colorInput && colorInput.value)
+                ? colorInput.value
+                : '#C7CEEA';
+
+            // Отправка JSON
+            fetch('/api/categories/', {
                 method: 'POST',
-                body: formData,
                 headers: {
+                    'Content-Type': 'application/json',
                     'X-CSRFToken': csrftoken,
                     'X-Requested-With': 'XMLHttpRequest'
-                }
+                },
+                body: JSON.stringify({
+                    name: categoryName,
+                    emoji: finalEmoji,
+                    color: finalColor,
+                    description: ''
+                })
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    console.log('✅ Категория создана:', data.category);
-                    
-                    alert(`Категория "${data.category.name}" успешно создана!`);
+                if (data.id) {
+                    console.log('✅ Категория создана:', data);
+
+                    alert(`Категория "${data.name}" успешно создана!`);
                     
                     // Очищаем форму
                     form.reset();
@@ -477,16 +484,15 @@ function initColorSelector() {
     function loadUserCategories() {
         console.log('📡 Загрузка категорий пользователя...');
         
-        fetch('/categories/api/list/', {
+        fetch('/api/categories/', {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
         .then(response => response.json())
         .then(data => {
-            console.log('📦 Получены категории:', data);
-            if (data.categories) {
-                updateCategoriesDropdown(data.categories);
+            if (Array.isArray(data)) {
+                updateCategoriesDropdown(data);
             }
         })
         .catch(error => console.error('❌ Ошибка загрузки категорий:', error));
@@ -720,7 +726,7 @@ if (createCategoryBtn) {
                 hideOverlay();
             }
             
-            alert('Таймер запущен!');
+            alert('Таймер завершен!');
             // Здесь можно добавить редирект на страницу таймера
             // window.location.href = '/timer/';
         });

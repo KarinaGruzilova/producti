@@ -7,7 +7,7 @@
     max-width: 400px;
     width: 100%;
 }
-
+ 
 .message {
     padding: 15px 20px;
     margin-bottom: 10px;
@@ -18,31 +18,31 @@
     align-items: center;
     justify-content: space-between;
 }
-
+ 
 .message-success {
     background: #d4edda;
     color: #155724;
     border-left: 4px solid #28a745;
 }
-
+ 
 .message-error {
     background: #f8d7da;
     color: #721c24;
     border-left: 4px solid #dc3545;
 }
-
+ 
 .message-info {
     background: #d1ecf1;
     color: #0c5460;
     border-left: 4px solid #17a2b8;
 }
-
+ 
 .message-warning {
     background: #fff3cd;
     color: #856404;
     border-left: 4px solid #ffc107;
 }
-
+ 
 .message-close {
     background: none;
     border: none;
@@ -52,11 +52,11 @@
     opacity: 0.7;
     margin-left: 10px;
 }
-
+ 
 .message-close:hover {
     opacity: 1;
 }
-
+ 
 @keyframes slideInRight {
     from {
         transform: translateX(100%);
@@ -67,7 +67,8 @@
         opacity: 1;
     }
 }
-
+ 
+/* ── ШРИФТЫ ── */
 @font-face {
     font-family: 'DVDDS';
     src: url('../fonts/h1/dvdds.ttf') format('truetype');
@@ -75,52 +76,84 @@
     font-style: normal;
     font-display: swap;
 }
-
-body, h1, h2, h3, h4, h5, h6, p {
+ 
+@font-face {
+    font-family: 'Unbounded';
+    src: url('../fonts/Unbounded-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+ 
+@font-face {
+    font-family: 'Unbounded';
+    src: url('../fonts/Unbounded-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+ 
+@font-face {
+    font-family: 'Unbounded';
+    src: url('../fonts/Unbounded-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+ 
+/* Базовый шрифт для всего текста */
+body, p, a, span, input, button, label,
+h4, h5, h6 {
     font-family: 'DVDDS', sans-serif;
     font-weight: normal;
     font-variant: normal;
     text-transform: none;
 }
+ 
+/* Заголовки — Unbounded */
+h1, h2, h3 {
+    font-family: 'Unbounded', sans-serif;
+}
+ 
 a {
     text-decoration: none;
 }
-
+ 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
+ 
 html, body {
     height: 100%;
 }
-
+ 
 h1 {
     font-size: 48px;
     font-weight: 600;
     color: #2a2a2a;
     margin-top: 20px;
 }
-
+ 
 h2 {
     font-size: 48px;
     font-weight: 600;
     color: #5d5d5d;
 }
-
+ 
 h3 {
     font-size: 48px;
     font-weight: 600;
     color: #2D268C;
 }
-
+ 
 h6 {
     font-size: 24px;
     font-weight: 500;
     color: #2a2a2a;
 }
-
+ 
 main {
     display: flex;
     flex-direction: column;
@@ -128,21 +161,21 @@ main {
     position: relative;
     padding:0 0  80px 0;
 }
-
-
+ 
+ 
 .hero_bg {
     position: absolute;
     width: 100%;
 }
-
+ 
 .hero_bg2 {
     position: absolute;
     bottom: 0;
     width: 100%;
     transform: rotate(180deg);
 }
-
-
+ 
+ 
 /* Шапка */
 .header {
     position: relative;
@@ -152,7 +185,7 @@ main {
     margin: 40px 120px 0 120px;
     border-radius: 60px;
 }
-
+ 
 .logo {
     display: flex;
     align-items: center;
@@ -161,12 +194,12 @@ main {
     font-size: 18px;
     font-weight: 600;
 }
-
+ 
 .logo svg {
     width: 14px;
     height: 20px;
 }
-
+ 
 .nav {
     display: flex;
     align-items: center;
@@ -180,7 +213,7 @@ main {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     padding: 4px;
 }
-
+ 
 .nav__link {
     position: relative;
     color: white;
@@ -193,19 +226,19 @@ main {
     white-space: nowrap;
     text-decoration: none;
 }
-
+ 
 .nav__link:hover {
     background: rgba(45, 38, 140, 0.9);
     backdrop-filter: blur(4px);
     transform: translateY(-1px);
     text-decoration: none;
 }
-
+ 
 .nav__link:not(:hover) {
     background: transparent;
 }
-
-
+ 
+ 
 /* Кнопки */
 .btn {
     border: none;
@@ -214,7 +247,7 @@ main {
     font-family: inherit;
     text-decoration: none;
 }
-
+ 
 .btn--primary {
     background: #2D268C;
     color: white;
@@ -222,17 +255,17 @@ main {
     border-radius: 40px;
     font-size: 16px;
 }
-
+ 
 .btn--primary:hover {
     background: #AEBCFE;
     color: #2D268C;
 }
-
+ 
 .btn--large {
     padding: 16px 32px;
     font-size: 18px;
 }
-
+ 
 .btn--gradient {
     display: inline-flex;
     align-items: center;
@@ -241,14 +274,14 @@ main {
     color: white;
     border-radius: 50px;
 }
-
+ 
 .btn--gradient:hover {
     background: #AEBCFE;
     color: #2D268C;
 }
-
-
-
+ 
+ 
+ 
 /* Контент */
 .container-0 {
     position: relative;
@@ -258,14 +291,19 @@ main {
     margin: 120px 0;
     z-index: 1;
 }
-
+ 
 .hero__content {
     text-align: center;
-    max-width: 940px;
     margin: 0 auto;
     padding: 0 20px;
 }
-
+.hero__content_price {
+    text-align: center;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+ 
 .badge {
     display: inline-flex;
     align-items: center;
@@ -276,12 +314,12 @@ main {
     border-radius: 40px;
     margin-bottom: 32px;
 }
-
+ 
 .badge span {
     color: white;
     font-size: 14px;
 }
-
+ 
 .hero__title {
     font-size: 56px;
     font-weight: 700;
@@ -289,7 +327,7 @@ main {
     margin-bottom: 24px;
     line-height: 1.2;
 }
-
+ 
 .hero__subtitle {
     font-size: 18px;
     color: rgba(255, 255, 255, 0.9);
@@ -312,16 +350,16 @@ main {
     transition: all 0.3s ease;
     text-decoration: none;
 }
-
+ 
 .btn-glass-dark span {
     color: white;
     font-size: 16px;
 }
-
+ 
 .btn-glass-dark svg path {
     fill: white;
 }
-
+ 
 .btn-glass-dark:hover {
     background: rgba(255, 255, 255, 0.2);
     box-shadow: inset 0px 0px 25px 0px rgba(255, 255, 255, 0.8);
@@ -333,7 +371,7 @@ main {
     justify-content: center;
     gap: 20px;
 }
-
+ 
 /* ========== КОНТЕЙНЕР 1 ========== */
 .container-1 {
     position: relative;
@@ -341,27 +379,27 @@ main {
     flex-direction: column;
     padding: 120px;
 }
-
+ 
 .promo {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     gap: 60px;
 }
-
+ 
 .glavnoe {
     display: flex;
     flex-direction: column;
     width: 600px;
 }
-
+ 
 .glavnoe p {
     color: #5d5d5d;
     font-size: 14px;
     font-weight: 100;
     margin: 16px 0 52px 0;
 }
-
+ 
 .glavnoe button {
     padding: 20px 40px;
     background-color: #2d268c;
@@ -373,44 +411,44 @@ main {
     cursor: pointer;
     transition: all 0.3s;
 }
-
+ 
 .glavnoe button:hover {
     background-color: #AEBCFE;
     color: #2D268C;
 }
-
+ 
 .privilege {
     display: flex;
     flex-direction: column;
     width: 620px;
     gap: 58px;
 }
-
+ 
 .priv1 {
     display: flex;
     flex-direction: row;
     gap: 20px;
 }
-
+ 
 .priv1 span, .priv2 span {
     color: #5d5d5d;
     font-size: 48px;
     font-weight: 300;
     min-width: max-content;
 }
-
+ 
 .priv1 p, .priv2 p {
     color: #5d5d5d;
     font-size: 16px;
     font-weight: 100;
 }
-
+ 
 .privilege > p {
     color: #5d5d5d;
     font-size: 20px;
     font-weight: 300;
 }
-
+ 
 /* ========== КОНТЕЙНЕР 2 ========== */
 .container-2 {
     display: flex;
@@ -420,14 +458,14 @@ main {
     gap: 32px;
     margin: 120px 0;
 }
-
+ 
 .why-we {
     display: flex;
     justify-content: space-between;
     gap: 24px;
     flex-wrap: wrap;
 }
-
+ 
 .why {
     display: flex;
     flex-direction: column;
@@ -440,17 +478,17 @@ main {
     position: relative;
     z-index: 10;
 }
-
+ 
 .why:hover {
     transform: scale(1.02);
     background: linear-gradient(to bottom, #fff, #ECEFFE);
 }
-
+ 
 .why:hover span {
     background-color: #2D268C;
     color: #fff;
 }
-
+ 
 .why span {
     padding: 8px 20px;
     background-color: #2a2a2a;
@@ -459,20 +497,20 @@ main {
     margin-bottom: 48px;
     width: max-content;
 }
-
+ 
 .why h6 {
     margin-bottom: 8px;
 }
-
+ 
 .why p {
     font-size: 14px;
     font-weight: 500;
     color: #757575;
     margin-top: 8px;
 }
-
-
-
+ 
+ 
+ 
 /* ========== КОНТЕЙНЕР 3 ========== */
 .container-3 {
     display: flex;
@@ -499,13 +537,13 @@ main {
     background: linear-gradient(to bottom, #fff, #ECEFFE);
     box-shadow: 0px 4px 40px #AEBCFE;
 }
-
+ 
 .feature-card__inner {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
 }
-
+ 
 .feature-card__content {
     flex: 1;
     max-width: 564px;
@@ -513,13 +551,13 @@ main {
     flex-direction: column;
     gap: 32px;
 }
-
+ 
 .feature-card__tag {
     color: #2D268C;
     font-size: 32px;
     font-weight: 600;
 }
-
+ 
 .feature-card__title {
     color: #2A2A2A;
     font-size: 40px;
@@ -527,7 +565,7 @@ main {
     margin: 0;
     line-height: 1.2;
 }
-
+ 
 .feature-card__desc {
     color: #5D5D5D;
     font-size: 24px;
@@ -535,7 +573,7 @@ main {
     line-height: 40px;
     margin-top: 16px;
 }
-
+ 
 .feature-card__img {
     position: absolute;
     right: 40px;
@@ -544,11 +582,8 @@ main {
     border-radius: 40px 40px 0 0;
     object-fit: cover;
 }
-
-
-
-
-
+ 
+ 
 /* СТРАНИЦА ТАРИФОВ */
 .tarifs {
     display: flex;
@@ -563,7 +598,7 @@ main {
     background-color: #fff;
     align-items: flex-start;
 }
-
+ 
 .title-tarif {
     display: flex;
     gap: 8px;
@@ -574,7 +609,7 @@ main {
     font-size: 24px;
     font-weight: 600;
 }
-
+ 
 .tarif p {
     color: #2a2a2a;
     font-weight: 400;
@@ -595,7 +630,7 @@ main {
     border: none;
     border-radius: 40px;
 }
-
+ 
 .capabilities {
     display: flex;
     flex-direction: column;
@@ -613,7 +648,7 @@ main {
     color: #2a2a2a;
     font-size: 16px;
 }
-                              
+ 
 .text-tarif {
     color: #2A2A2A;
     font-size: 16px;

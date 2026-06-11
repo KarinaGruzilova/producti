@@ -179,24 +179,24 @@ def create_category(request):
     Создание новой категории через AJAX
     """
     print("\n" + "="*50)
-    print("🔥 ЗАПРОС НА СОЗДАНИЕ КАТЕГОРИИ")
+    print("ЗАПРОС НА СОЗДАНИЕ КАТЕГОРИИ")
     print("="*50)
     
-    print(f"👤 Пользователь: {request.user.username} (ID: {request.user.id})")
-    print(f"📨 POST данные: {dict(request.POST)}")
+    print(f"Пользователь: {request.user.username} (ID: {request.user.id})")
+    print(f"POST данные: {dict(request.POST)}")
     
     form = CategoryCreateForm(request.POST)
     
     if form.is_valid():
-        print("✅ Форма валидна!")
-        print(f"📦 Очищенные данные: {form.cleaned_data}")
+        print("Форма валидна!")
+        print(f"Очищенные данные: {form.cleaned_data}")
         
         try:
             category = form.save(commit=False)
             category.user = request.user
             category.save()
             
-            print(f"✅ Категория сохранена в БД с ID: {category.id}")
+            print(f"Категория сохранена в БД с ID: {category.id}")
             
             response_data = {
                 'success': True,
@@ -210,14 +210,14 @@ def create_category(request):
             return JsonResponse(response_data)
             
         except Exception as e:
-            print(f"❌ Ошибка при сохранении в БД: {str(e)}")
+            print(f"Ошибка при сохранении в БД: {str(e)}")
             return JsonResponse({
                 'success': False,
                 'errors': {'database': [f'Ошибка базы данных: {str(e)}']}
             }, status=500)
     else:
-        print("❌ Форма невалидна!")
-        print(f"❌ Ошибки формы: {form.errors}")
+        print("Форма невалидна!")
+        print(f"Ошибки формы: {form.errors}")
         
         return JsonResponse({
             'success': False,
@@ -234,7 +234,7 @@ def save_timer_result(request):
     Сохранение результата таймера
     """
     print("\n" + "="*50)
-    print("⏱️ СОХРАНЕНИЕ РЕЗУЛЬТАТА ТАЙМЕРА")
+    print("СОХРАНЕНИЕ РЕЗУЛЬТАТА ТАЙМЕРА")
     print("="*50)
     
     try:
@@ -301,7 +301,7 @@ def save_timer_result(request):
                         emoji=category_emoji_map.get(category_id, '📁'),
                         description='Стандартная категория'
                     )
-                    print(f"✅ Создана стандартная категория: {category.name}")
+                    print(f"Создана стандартная категория: {category.name}")
         
         # Создаем задачу
         task_title = task_description if task_description else f"Фокус на {category.name if category else 'задаче'}"
@@ -315,8 +315,8 @@ def save_timer_result(request):
             completed=completed
         )
         
-        print(f"✅ Задача создана: {task.title} (ID: {task.id})")
-        print(f"⏱️ Потрачено времени: {duration_seconds // 60} мин {duration_seconds % 60} сек")
+        print(f"Задача создана: {task.title} (ID: {task.id})")
+        print(f"Потрачено времени: {duration_seconds // 60} мин {duration_seconds % 60} сек")
         
         # Формируем ответ
         response_data = {
@@ -330,20 +330,20 @@ def save_timer_result(request):
             }
         }
         
-        print(f"📤 Ответ: {response_data}")
+        print(f"Ответ: {response_data}")
         print("="*50 + "\n")
         
         return JsonResponse(response_data)
         
     except json.JSONDecodeError:
-        print("❌ Ошибка парсинга JSON")
+        print("Ошибка парсинга JSON")
         return JsonResponse({
             'success': False,
             'error': 'Неверный формат JSON'
         }, status=400)
         
     except Exception as e:
-        print(f"❌ Непредвиденная ошибка: {str(e)}")
+        print(f"Непредвиденная ошибка: {str(e)}")
         import traceback
         traceback.print_exc()
         return JsonResponse({

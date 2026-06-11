@@ -4,10 +4,12 @@ from users.models import User
 
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(
+        label='Имя пользователя',
         widget = forms.TextInput(attrs={"autofocus": True,
                                         'class': 'auth-input',
                                         'placeholder': 'Введите имя пользователя'}))
     password = forms.CharField(
+        label='Пароль',
         widget=forms.PasswordInput(attrs={"autocomplete": "current-password",
                                         'class': 'auth-input',
                                         'placeholder': 'Введите пароль'}),

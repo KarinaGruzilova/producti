@@ -1,7 +1,49 @@
+@font-face {
+    font-family: 'DVDDS';
+    src: url('../fonts/h1/dvdds.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 
+@font-face {
+    font-family: 'Unbounded';
+    src: url('../fonts/Unbounded-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 
+@font-face {
+    font-family: 'Unbounded';
+    src: url('../fonts/Unbounded-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
 
-/* ===== ВЕРХНЯЯ ПАНЕЛЬ С КАТЕГОРИЕЙ ===== */
+@font-face {
+    font-family: 'Unbounded';
+    src: url('../fonts/Unbounded-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+*, *::before, *::after {
+    font-family: 'DVDDS', sans-serif;
+}
+
+h1, h2, h3 {
+    font-family: 'Unbounded', sans-serif;
+}
+
+h4, h5, h6 {
+    font-family: 'DVDDS', sans-serif;
+    font-weight: normal;
+}
+
+/* ── ВЕРХНЯЯ ПАНЕЛЬ ── */
 .category-hero {
     border-radius: 40px;
     padding: 48px 60px;
@@ -12,10 +54,8 @@
 .category-hero::before {
     content: '';
     position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 300px;
-    height: 300px;
+    top: -50%; right: -20%;
+    width: 300px; height: 300px;
     border-radius: 50%;
     pointer-events: none;
 }
@@ -35,65 +75,47 @@
 }
 
 .category-hero-icon {
-    width: 80px;
-    height: 80px;
+    width: 80px; height: 80px;
     background: white;
     border-radius: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     font-size: 44px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
+/* Название категории — Unbounded */
 .category-hero-text h1 {
-    font-size: 36px;
-    font-weight: 500;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
     color: #2a2a2a;
     margin-bottom: 6px;
 }
 
 .category-hero-text p {
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
     color: #757575;
 }
 
-.category-hero-buttons {
-    display: flex;
-    gap: 12px;
-}
+.category-hero-buttons { display: flex; gap: 12px; }
 
 .btn-hero-edit, .btn-hero-delete {
     padding: 12px 28px;
     border-radius: 40px;
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
     border: none;
 }
 
-.btn-hero-edit {
-    background: #2D268C;
-    color: white;
-}
+.btn-hero-edit { background: #2D268C; color: white; }
+.btn-hero-edit:hover { background: #AEBCFE; color: #2D268C; }
+.btn-hero-delete { background: white; color: #FF4444; border: 1px solid #FF4444; }
+.btn-hero-delete:hover { background: #FF4444; color: white; }
 
-.btn-hero-edit:hover {
-    background: #AEBCFE;
-    color: #2D268C;
-}
-
-.btn-hero-delete {
-    background: white;
-    color: #FF4444;
-    border: 1px solid #FF4444;
-}
-
-.btn-hero-delete:hover {
-    background: #FF4444;
-    color: white;
-}
-
-/* ===== ТРИ КЛЮЧЕВЫЕ МЕТРИКИ ===== */
+/* ── МЕТРИКИ ── */
 .key-metrics {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -108,48 +130,40 @@
     transition: all 0.3s ease;
 }
 
-.metric-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-}
+.metric-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.05); }
 
+/* Числа метрик — Unbounded */
 .metric-value {
-    font-size: 48px;
-    font-weight: 600;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 40px;
+    font-weight: 800;
     color: #2D268C;
     line-height: 1;
     margin-bottom: 8px;
 }
 
 .metric-label {
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
     color: #757575;
 }
 
 .metric-trend {
-    font-size: 12px;
-    margin-top: 12px;
-    padding: 4px 12px;
-    background: #F2F2F2;
-    display: inline-block;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 11px;
+    margin-top: 8px;
+    padding: 4px 10px;
     border-radius: 20px;
+    display: inline-block;
 }
 
-.trend-up {
-    color: #4CAF50;
-}
+.trend-up { background-color: rgba(76,175,80,0.15); color: #4CAF50; }
+.trend-down { background-color: rgba(244,67,54,0.15); color: #F44336; }
+.trend-neutral { background-color: rgba(158,158,158,0.15); color: #757575; }
 
-.trend-down {
-    color: #FF4444;
-}
+/* ── ДВЕ КОЛОНКИ ── */
+.two-columns { display: flex; gap: 32px; }
 
-/* ===== ДВЕ КОЛОНКИ (ГРАФИК + ИНСАЙТЫ) ===== */
-.two-columns {
-    display: flex;
-    gap: 32px;
-}
-
-/* Левая колонка - график */
 .chart-column {
     flex: 2;
     background: white;
@@ -165,13 +179,16 @@
     border-bottom: 1px solid #F0F0F0;
 }
 
+/* Заголовок графика — Unbounded */
 .chart-header h3 {
-    font-size: 18px;
-    font-weight: 500;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
     color: #2a2a2a;
 }
 
 .chart-header span {
+    font-family: 'DVDDS', sans-serif;
     font-size: 12px;
     color: #757575;
 }
@@ -193,8 +210,7 @@
 }
 
 .chart-bar {
-    width: 100%;
-    max-width: 40px;
+    width: 100%; max-width: 40px;
     background: linear-gradient(180deg, #2D268C 0%, #AEBCFE 100%);
     border-radius: 20px;
     transition: height 0.3s ease;
@@ -202,17 +218,19 @@
 }
 
 .chart-day-name {
+    font-family: 'DVDDS', sans-serif;
     font-size: 12px;
     font-weight: 500;
     color: #2a2a2a;
 }
 
 .chart-hours {
+    font-family: 'DVDDS', sans-serif;
     font-size: 10px;
     color: #757575;
 }
 
-/* Правая колонка - инсайты */
+/* Инсайты */
 .insights-column {
     flex: 1;
     background: white;
@@ -226,9 +244,11 @@
     border-bottom: 1px solid #F0F0F0;
 }
 
+/* Заголовок инсайтов — Unbounded */
 .insights-header h3 {
-    font-size: 18px;
-    font-weight: 500;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
     color: #2a2a2a;
 }
 
@@ -240,37 +260,32 @@
     border-bottom: 1px solid #F0F0F0;
 }
 
-.insight-item:last-child {
-    border-bottom: none;
-}
+.insight-item:last-child { border-bottom: none; }
 
 .insight-icon {
-    width: 44px;
-    height: 44px;
+    width: 44px; height: 44px;
     border-radius: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     font-size: 20px;
 }
 
-.insight-text {
-    flex: 1;
-}
+.insight-text { flex: 1; }
 
 .insight-title {
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
     font-weight: 500;
     color: #2a2a2a;
 }
 
 .insight-desc {
+    font-family: 'DVDDS', sans-serif;
     font-size: 11px;
     color: #757575;
     margin-top: 2px;
 }
 
-/* ===== СПИСОК ЗАДАЧ ===== */
+/* ── СПИСОК ЗАДАЧ ── */
 .tasks-section {
     background: white;
     border-radius: 40px;
@@ -286,9 +301,11 @@
     border-bottom: 1px solid #F0F0F0;
 }
 
+/* Заголовок секции задач — Unbounded */
 .tasks-header h3 {
-    font-size: 18px;
-    font-weight: 500;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
     color: #2a2a2a;
 }
 
@@ -298,21 +315,15 @@
     color: white;
     border: none;
     border-radius: 40px;
+    font-family: 'DVDDS', sans-serif;
     font-size: 13px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
-.btn-add-task:hover {
-    background: #AEBCFE;
-    color: #2D268C;
-}
+.btn-add-task:hover { background: #AEBCFE; color: #2D268C; }
 
-.task-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
+.task-list { display: flex; flex-direction: column; gap: 12px; }
 
 .task-row {
     display: flex;
@@ -324,56 +335,56 @@
     transition: all 0.2s ease;
 }
 
-.task-row:hover {
-    background: linear-gradient(135deg, #F8F8F8, #F0F0FF);
-}
+.task-row:hover { background: linear-gradient(135deg, #F8F8F8, #F0F0FF); }
 
 .task-date {
     min-width: 90px;
+    font-family: 'DVDDS', sans-serif;
     font-size: 12px;
     color: #2D268C;
     font-weight: 500;
 }
 
-.task-info {
-    flex: 1;
-}
+.task-info { flex: 1; }
 
 .task-name {
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
     font-weight: 500;
     color: #2a2a2a;
 }
 
 .task-duration {
+    font-family: 'DVDDS', sans-serif;
     font-size: 11px;
     color: #757575;
     margin-top: 2px;
 }
 
-.task-actions {
-    display: flex;
-    gap: 8px;
+.task-description {
+    font-family: 'DVDDS', sans-serif;
+    font-size: 11px;
+    color: #757575;
+    margin-top: 4px;
 }
+
+.task-actions { display: flex; gap: 8px; }
 
 .btn-resume {
     padding: 6px 16px;
     background: transparent;
     border: 1px solid #2D268C;
     border-radius: 30px;
+    font-family: 'DVDDS', sans-serif;
     font-size: 11px;
     cursor: pointer;
     transition: all 0.2s;
 }
 
-.btn-resume:hover {
-    background: #2D268C;
-    color: white;
-}
+.btn-resume:hover { background: #2D268C; color: white; }
 
 .btn-edit-task {
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     background: transparent;
     border: none;
     border-radius: 50%;
@@ -382,11 +393,18 @@
     transition: all 0.2s;
 }
 
-.btn-edit-task:hover {
-    background: #F0F0F0;
+.btn-edit-task:hover { background: #F0F0F0; }
+
+.btn-delete-task {
+    border: 1px solid #ffffff;
+    border-radius: 40px;
+    padding: 10px;
+    font-size: 8px;
+    cursor: pointer;
+    font-family: 'DVDDS', sans-serif;
 }
 
-/* Пустое состояние */
+/* ── ПУСТОЕ СОСТОЯНИЕ ── */
 .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -395,15 +413,13 @@
 }
 
 .empty-state p {
+    font-family: 'DVDDS', sans-serif;
     color: #757575;
     margin-bottom: 20px;
 }
 
-/* Кнопка назад */
-.back-nav {
-    margin-top: 32px;
-    text-align: center;
-}
+/* ── КНОПКА НАЗАД ── */
+.back-nav { margin-top: 32px; text-align: center; }
 
 .btn-back {
     display: inline-flex;
@@ -414,22 +430,16 @@
     color: white;
     border: none;
     border-radius: 40px;
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
-.btn-back:hover {
-    background: #2D268C;
-}
+.btn-back:hover { background: #2D268C; }
 
-
-/* Две колонки для задач */
-.two-columns-tasks {
-    display: flex;
-    gap: 32px;
-    margin-bottom: 32px;
-}
+/* ── ДВЕ КОЛОНКИ ЗАДАЧ ── */
+.two-columns-tasks { display: flex; gap: 32px; margin-bottom: 32px; }
 
 .two-columns-tasks .tasks-section {
     flex: 1;
@@ -438,10 +448,7 @@
     padding: 32px;
 }
 
-/* Стили для невыполненных задач */
-.pending-tasks .task-date {
-    color: #FF8C00;
-}
+.pending-tasks .task-date { color: #FF8C00; }
 
 .pending-tasks .btn-start-task {
     background: #2D268C;
@@ -449,63 +456,22 @@
     border: none;
     padding: 6px 16px;
     border-radius: 30px;
+    font-family: 'DVDDS', sans-serif;
     font-size: 11px;
     cursor: pointer;
     transition: all 0.2s;
 }
 
-.pending-tasks .btn-start-task:hover {
-    background: #AEBCFE;
-    color: #2D268C;
-}
+.pending-tasks .btn-start-task:hover { background: #AEBCFE; color: #2D268C; }
 
-
-.task-description {
-    font-size: 11px;
-    color: #757575;
-    margin-top: 4px;
-}
-
-.btn-delete-task {
-    border: 1px solid #ffffff;
-    padding: 10px ;
-    border-radius: 40px;
-    padding: 10px;
-    font-size: 8px;
-    cursor: pointer;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Выезжающая панель — СЛЕВА */
+/* ── ПАНЕЛЬ РЕДАКТИРОВАНИЯ ── */
 .category-edit-panel {
     position: fixed;
     top: 0;
     left: -380px;
-    width: 312px;
-    height: 100%;
+    width: 312px; height: 100%;
     background: white;
-    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 0 20px rgba(0,0,0,0.1);
     z-index: 999;
     transition: left 0.3s ease;
     overflow-y: auto;
@@ -513,9 +479,7 @@
     box-sizing: border-box;
 }
 
-.category-edit-panel.open {
-    left: 0;
-}
+.category-edit-panel.open { left: 0; }
 
 .category-edit-header {
     display: flex;
@@ -526,14 +490,16 @@
     border-bottom: 1px solid #F0F0F0;
 }
 
+/* Заголовок панели редактирования — Unbounded */
 .category-edit-header h3 {
-    font-size: 20px;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
     color: #2A2A2A;
 }
 
 .category-edit-close {
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     border-radius: 50%;
     background: transparent;
     border: none;
@@ -543,24 +509,14 @@
     transition: all 0.2s;
 }
 
-.category-edit-close:hover {
-    background: #F0F0F0;
-    color: #2A2A2A;
-}
+.category-edit-close:hover { background: #F0F0F0; color: #2A2A2A; }
 
-.category-edit-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
+.category-edit-form { display: flex; flex-direction: column; gap: 20px; }
 
-.category-edit-form .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
+.category-edit-form .form-group { display: flex; flex-direction: column; gap: 8px; }
 
 .category-edit-form label {
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
     font-weight: 500;
     color: #2A2A2A;
@@ -571,27 +527,21 @@
     padding: 12px 16px;
     border: 1px solid #E0E0E0;
     border-radius: 30px;
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
     transition: all 0.2s;
-    font-family: inherit;
 }
 
 .category-edit-form input:focus,
 .category-edit-form textarea:focus {
     outline: none;
     border-color: #2D268C;
-    box-shadow: 0 0 0 2px rgba(45, 38, 140, 0.1);
+    box-shadow: 0 0 0 2px rgba(45,38,140,0.1);
 }
 
-.category-edit-form textarea {
-    border-radius: 20px;
-    resize: vertical;
-}
+.category-edit-form textarea { border-radius: 20px; resize: vertical; }
 
-/* Эмодзи кнопка */
-.emoji-select-wrapper {
-    position: relative;
-}
+.emoji-select-wrapper { position: relative; }
 
 .emoji-selector-btn {
     display: flex;
@@ -602,29 +552,24 @@
     border-radius: 40px;
     background: white;
     cursor: pointer;
+    font-family: 'DVDDS', sans-serif;
     font-size: 16px;
     transition: all 0.2s;
 }
 
-.emoji-selector-btn:hover {
-    border-color: #2D268C;
-}
+.emoji-selector-btn:hover { border-color: #2D268C; }
 
 .emoji-picker-container {
     position: absolute;
-    top: 100%;
-    left: 0;
+    top: 100%; left: 0;
     margin-top: 8px;
     z-index: 1000;
     background: white;
     border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
-/* Выбор цвета */
-.color-select-wrapper {
-    position: relative;
-}
+.color-select-wrapper { position: relative; }
 
 .color-selector-btn {
     display: flex;
@@ -636,25 +581,17 @@
     background: white;
     cursor: pointer;
     width: 100%;
+    font-family: 'DVDDS', sans-serif;
     transition: all 0.2s;
 }
 
-.color-selector-btn:hover {
-    border-color: #2D268C;
-}
+.color-selector-btn:hover { border-color: #2D268C; }
 
-.color-preview {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 1px solid #ddd;
-}
+.color-preview { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; }
 
 .color-dropdown {
     position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
+    top: 100%; left: 0; right: 0;
     margin-top: 8px;
     background: white;
     border: 1px solid #2D268C;
@@ -662,7 +599,7 @@
     max-height: 200px;
     overflow-y: auto;
     z-index: 1000;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
 .color-option {
@@ -674,94 +611,35 @@
     transition: background 0.2s;
 }
 
-.color-option:hover {
-    background: #ECEFFE;
-}
-
-.color-dot {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-}
+.color-option:hover { background: #ECEFFE; }
+.color-dot { width: 20px; height: 20px; border-radius: 50%; }
 
 .color-text {
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
     color: #2A2A2A;
 }
 
-/* Кнопки */
-.category-edit-buttons {
-    display: flex;
-    gap: 12px;
-    margin-top: 20px;
-}
+.category-edit-buttons { display: flex; gap: 12px; margin-top: 20px; }
 
 .category-edit-buttons .btn-cancel,
 .category-edit-buttons .btn-save {
     flex: 1;
     padding: 12px;
     border-radius: 40px;
+    font-family: 'DVDDS', sans-serif;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s;
 }
 
-.category-edit-buttons .btn-cancel {
-    background: #F5F5F5;
-    border: none;
-    color: #757575;
-}
-
-.category-edit-buttons .btn-cancel:hover {
-    background: #E0E0E0;
-}
-
-.category-edit-buttons .btn-save {
-    background: #2D268C;
-    border: none;
-    color: white;
-}
-
-.category-edit-buttons .btn-save:hover {
-    background: #AEBCFE;
-    color: #2D268C;
-}
+.category-edit-buttons .btn-cancel { background: #F5F5F5; border: none; color: #757575; }
+.category-edit-buttons .btn-cancel:hover { background: #E0E0E0; }
+.category-edit-buttons .btn-save { background: #2D268C; border: none; color: white; }
+.category-edit-buttons .btn-save:hover { background: #AEBCFE; color: #2D268C; }
 
 .error-message {
+    font-family: 'DVDDS', sans-serif;
     font-size: 12px;
     color: #FF4444;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-.metric-trend {
-    font-size: 11px;
-    margin-top: 8px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    display: inline-block;
-}
-
-.trend-up {
-    background-color: rgba(76, 175, 80, 0.15);
-    color: #4CAF50;
-}
-
-.trend-down {
-    background-color: rgba(244, 67, 54, 0.15);
-    color: #F44336;
-}
-
-.trend-neutral {
-    background-color: rgba(158, 158, 158, 0.15);
-    color: #757575;
 }

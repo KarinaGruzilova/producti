@@ -3,11 +3,25 @@
    ============================================================ */
  
 /* ── ШАПКА СТРАНИЦЫ ── */
+
+
+
+
+
+html, body {
+    overflow-y: auto !important;
+    height: auto !important;
+}
+
+.content-container {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+}
 .goals-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 28px;
 }
  
 .goals-title-block h1 {
@@ -64,7 +78,6 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 18px;
-    margin-bottom: 36px;
 }
  
 /* ── КАРТОЧКА ЦЕЛИ ── */
@@ -305,127 +318,144 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(42,42,42,0.35);
-    backdrop-filter: blur(4px);
+    background: rgba(20, 16, 60, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     z-index: 200;
 }
- 
+
 .goal-modal-overlay.active { display: block; }
- 
+
 .goal-modal {
     display: none;
     position: fixed;
-    top: 50%; left: 50%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     z-index: 300;
     width: 480px;
-    max-width: 95vw;
-    max-height: 90vh;
+    max-width: 94vw;
+    max-height: 88vh;
     overflow-y: auto;
     background: #fff;
-    border-radius: 32px;
-    box-shadow: 0 24px 64px rgba(45,38,140,0.18);
+    border-radius: 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.goal-modal.active {
+    display: block;
     animation: goalSlideUp 0.25s ease;
 }
- 
-.goal-modal.active { display: block; }
- 
+
 @keyframes goalSlideUp {
     from { opacity: 0; transform: translate(-50%, calc(-50% + 20px)); }
     to   { opacity: 1; transform: translate(-50%, -50%); }
 }
- 
-.goal-modal-content { padding: 36px 32px; position: relative; }
- 
+
+.goal-modal-content {
+    padding: 58px 32px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+}
+
 .goal-modal-close {
     position: absolute;
-    top: 16px; right: 20px;
-    background: #F5F5F7;
+    top: 20px; right: 40px;
+    background: none;
     border: none;
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    font-size: 18px;
+    font-size: 40px;
     cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: #757575;
-    transition: all 0.15s;
+    font-family: 'DVDDS', sans-serif;
+    color: #2a2a2a;
+    line-height: 1;
+    transition: color 0.15s;
 }
- 
-.goal-modal-close:hover { background: #FFF0F0; color: #8B0000; }
- 
+
+.goal-modal-close:hover { color: #2D268C; }
+
 .goal-modal h3 {
-    font-size: 20px;
-    font-weight: 800;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
     color: #2A2A2A;
-    margin-bottom: 24px;
+    text-align: center;
+    margin-bottom: 32px;
 }
- 
+
 /* Подписи секций */
 .goal-modal-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: #757575;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    margin-bottom: 10px;
-    margin-top: 4px;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 16px;
+    color: #2d268c;
+    margin-bottom: 8px;
+    margin-top: 16px;
     display: block;
+    width: 100%;
+    text-align: left;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
 }
  
 /* Тип цели */
 .goal-type-row {
     display: flex;
-    gap: 10px;
-    margin-bottom: 18px;
+    gap: 12px;
+    margin-bottom: 8px;
+    width: 100%;
 }
  
 .goal-type-btn {
     flex: 1;
-    padding: 12px;
-    border-radius: 16px;
-    border: 1.5px solid #E8E8EE;
+    padding: 10px 16px;
+    border-radius: 40px;
+    border: 1px solid #2d268c;
     background: #fff;
-    font-size: 13px;
-    font-weight: 700;
-    color: #2A2A2A;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #2d268c;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.2s;
     text-align: center;
 }
- 
+
 .goal-type-btn:hover,
 .goal-type-btn.selected {
-    border-color: #2D268C;
-    background: #F0F1FF;
-    color: #2D268C;
+    background: #eceffe;
+    box-shadow: 0 4px 4px 0 rgba(0,0,0,0.1);
 }
  
 /* Период */
 .goal-period-row {
     display: flex;
-    gap: 10px;
-    margin-bottom: 18px;
+    gap: 12px;
+    margin-bottom: 8px;
+    width: 100%;
 }
  
 .goal-period-btn {
     flex: 1;
-    padding: 10px;
-    border-radius: 50px;
-    border: 1.5px solid #E8E8EE;
+    padding: 10px 16px;
+    border-radius: 40px;
+    border: 1px solid #2d268c;
     background: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    color: #2A2A2A;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #2d268c;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.2s;
     text-align: center;
 }
- 
+
 .goal-period-btn:hover,
 .goal-period-btn.selected {
-    border-color: #2D268C;
-    background: #F0F1FF;
-    color: #2D268C;
+    background: #eceffe;
+    box-shadow: 0 4px 4px 0 rgba(0,0,0,0.1);
 }
  
 /* Категории */
@@ -460,26 +490,27 @@
  
 /* Инпуты */
 .goal-input {
-    width: 100%;
-    padding: 12px 18px;
-    border: 1.5px solid #E8E8EE;
-    border-radius: 50px;
-    font-size: 14px;
-    font-family: inherit;
-    font-weight: 500;
+    width: 82%;
+    padding: 12px 20px;
+    border: none;
+    border-bottom: 1px solid #757575;
+    border-radius: 0;
+    font-size: 16px;
+    font-family: 'DVDDS', sans-serif;
+    font-weight: 400;
     color: #2A2A2A;
-    background: #fff;
+    background: transparent;
     outline: none;
-    transition: border-color 0.15s;
-    margin-bottom: 14px;
+    transition: border-color 0.3s;
+    margin-bottom: 8px;
     box-sizing: border-box;
 }
- 
-.goal-input:focus { border-color: #2D268C; }
-.goal-input::placeholder { color: #BDBDBD; }
- 
+
+.goal-input:focus { border-bottom-color: #2D268C; }
+.goal-input::placeholder { color: #757575; }
+
 .goal-input.error-border {
-    border-color: #FF4444 !important;
+    border-bottom-color: #FF4444 !important;
 }
  
 /* Дата (скрыта по умолчанию) */
@@ -488,18 +519,74 @@
  
 /* Кнопка сабмита */
 .goal-submit-btn {
-    width: 100%;
-    padding: 14px;
-    background: #2D268C;
+    padding: 12px 32px;
+    background: #2d268c;
     color: #fff;
     border: none;
-    border-radius: 50px;
-    font-size: 15px;
-    font-weight: 700;
-    font-family: inherit;
+    border-radius: 40px;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 16px;
+    min-width: 180px;
+}
+
+.goal-submit-btn:hover { background: #eceffe; color: #2d268c; }
+
+/* ── СПИСОК КАТЕГОРИЙ С ПОИСКОМ ── */
+.goal-cat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 160px;
+    overflow-y: auto;
+    margin-bottom: 8px;
+    width: 82%;
+    scrollbar-width: thin;
+    scrollbar-color: #2d268c #f0f0f0;
+}
+
+.goal-cat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 16px;
+    border-radius: 40px;
+    border: 1px solid #2d268c;
+    background: #fff;
     cursor: pointer;
     transition: all 0.2s;
-    margin-top: 4px;
+    text-align: left;
+    font-family: 'DVDDS', sans-serif;
 }
- 
-.goal-submit-btn:hover { background: #AEBCFE; color: #2D268C; transform: translateY(-2px); }
+
+.goal-cat-item:hover { background: #eceffe; }
+
+.goal-cat-item.selected {
+    background: #eceffe;
+    box-shadow: 0 4px 4px 0 rgba(0,0,0,0.1);
+}
+
+.goal-cat-item-emoji { font-size: 16px; flex-shrink: 0; }
+
+.goal-cat-item-name {
+    font-family: 'DVDDS', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #2d268c;
+}
+
+.goal-cat-item.hidden { display: none; }
+
+.goal-cat-no-results {
+    font-family: 'DVDDS', sans-serif;
+    font-size: 14px;
+    color: #757575;
+    padding: 8px 16px;
+    display: none;
+}
+
+.goal-cat-no-results.visible { display: block; }

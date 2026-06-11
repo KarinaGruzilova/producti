@@ -15,39 +15,38 @@
             <p>Ставьте цели по категориям и отслеживайте прогресс</p>
         </div>
         <button class="btn-add-goal" id="openGoalModal">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-            Новая цель
+            + Новая цель
         </button>
     </div>
  
     <!-- АКТИВНЫЕ ЦЕЛИ -->
-    <div class="section-heading">Активные цели</div>
-    <div class="goals-grid" id="activeGoalsGrid">
-        <!-- Заглушка при загрузке -->
-        <div class="goals-empty" id="goalsEmptyState" style="display:none;">
-            <div class="goals-empty-icon">🎯</div>
-            <p>У вас пока нет активных целей.<br>Создайте первую цель и начните отслеживать прогресс!</p>
-            <button class="btn-empty-add" id="openGoalModalEmpty">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                </svg>
-                Создать цель
-            </button>
+    <div class="active">
+        <div class="section-heading">Активные цели</div>
+        <div class="goals-grid" id="activeGoalsGrid">
+            <!-- Заглушка при загрузке -->
+            <div class="goals-empty" id="goalsEmptyState" style="display:none;">
+                <div class="goals-empty-icon">🎯</div>
+                <p>У вас пока нет активных целей.<br>Создайте первую цель и начните отслеживать прогресс!</p>
+                <button class="btn-empty-add" id="openGoalModalEmpty">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                    Создать цель
+                </button>
+            </div>
         </div>
     </div>
  
-    <!-- АРХИВ -->
-    <button class="goals-archive-toggle" id="archiveToggle">
-        <span>Выполненные цели</span>
-        <span class="archive-count" id="archiveCount">0</span>
-        <svg class="archive-arrow" id="archiveArrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-            <path d="M6 9l6 6 6-6"/>
-        </svg>
-    </button>
-    <div class="goals-archive-grid" id="archiveGrid"></div>
- 
+    <div class="archive">
+        <button class="goals-archive-toggle" id="archiveToggle">
+            <span>Выполненные цели</span>
+            <span class="archive-count" id="archiveCount">0</span>
+            <svg class="archive-arrow" id="archiveArrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </button>
+        <div class="goals-archive-grid" id="archiveGrid"></div>
+    </div>
 </div>
  
 <!-- ОВЕРЛЕЙ -->
@@ -63,22 +62,27 @@
         <span class="goal-modal-label">Тип цели</span>
         <div class="goal-type-row">
             <button class="goal-type-btn selected" data-type="time">
-                ⏱ По времени (часы)
+                По времени (часы)
             </button>
             <button class="goal-type-btn" data-type="tasks">
-                ✅ По задачам (шт.)
+                По задачам (шт.)
             </button>
         </div>
  
         <!-- Категория -->
         <span class="goal-modal-label">Категория</span>
-        <div class="goal-cat-row" id="goalCatRow">
+        <input type="text" class="goal-input" id="catSearch" 
+            placeholder="Поиск категории..." style="margin-bottom:10px;">
+        <div class="goal-cat-list" id="goalCatRow">
             {% for category in categories %}
-            <button class="goal-cat-pill" data-id="{{ category.id }}" data-name="{{ category.name }}">
-                {{ category.emoji }} {{ category.name }}
+            <button class="goal-cat-item" 
+                data-id="{{ category.id }}" 
+                data-name="{{ category.name|lower }}">
+                <span class="goal-cat-item-emoji">{{ category.emoji }}</span>
+                <span class="goal-cat-item-name">{{ category.name }}</span>
             </button>
             {% empty %}
-            <p style="font-size:13px;color:#757575;">Сначала создайте категорию</p>
+            <p style="font-size:13px;color:#757575;padding:8px;">Сначала создайте категорию</p>
             {% endfor %}
         </div>
  
@@ -101,7 +105,7 @@
         <!-- Дедлайн (только для своей даты) -->
         <div class="goal-deadline-wrap" id="deadlineWrap">
             <span class="goal-modal-label">Дата выполнения</span>
-            <input type="date" class="goal-input" id="goalDeadline" style="margin-bottom:0;">
+            <input type="date" class="goal-input" id="goalDeadline">
         </div>
  
         <button class="goal-submit-btn" id="submitGoal">Создать цель</button>
@@ -166,6 +170,40 @@ document.querySelectorAll('.goal-cat-pill').forEach(pill => {
         document.querySelectorAll('.goal-cat-pill').forEach(p => p.classList.remove('selected'));
         pill.classList.add('selected');
         selectedCategoryId = pill.dataset.id;
+    });
+});
+
+// ── ПОИСК КАТЕГОРИЙ ──
+const catSearch = document.getElementById('catSearch');
+const noResults = document.createElement('p');
+noResults.className = 'goal-cat-no-results';
+noResults.textContent = 'Ничего не найдено';
+document.getElementById('goalCatRow').appendChild(noResults);
+
+catSearch.addEventListener('input', () => {
+    const q = catSearch.value.toLowerCase().trim();
+    const items = document.querySelectorAll('.goal-cat-item');
+    let visible = 0;
+
+    items.forEach(item => {
+        const name = item.dataset.name;
+        if (name.includes(q)) {
+            item.classList.remove('hidden');
+            visible++;
+        } else {
+            item.classList.add('hidden');
+        }
+    });
+
+    noResults.classList.toggle('visible', visible === 0);
+});
+
+// ── CATEGORY ITEMS ──
+document.querySelectorAll('.goal-cat-item').forEach(item => {
+    item.addEventListener('click', () => {
+        document.querySelectorAll('.goal-cat-item').forEach(p => p.classList.remove('selected'));
+        item.classList.add('selected');
+        selectedCategoryId = item.dataset.id;
     });
 });
  
@@ -278,8 +316,8 @@ function createGoalCard(goal, archived) {
     const bgColor = goal.category_color + '30';
     card.style.setProperty('--cat-bg', bgColor);
  
-    const statusLabels = { active: 'В процессе', completed: '✅ Выполнено', failed: '❌ Просрочено' };
-    const periodLabel = goal.period === 'week' ? '📅 Неделя' : goal.period === 'month' ? '📅 Месяц' : '📅 До ' + (goal.deadline || '—');
+    const statusLabels = { active: 'В процессе', completed: 'Выполнено', failed: 'Просрочено' };
+    const periodLabel = goal.period === 'week' ? 'Неделя' : goal.period === 'month' ? 'Месяц' : 'До ' + (goal.deadline || '—');
  
     card.innerHTML = `
         <div class="goal-card-header">
