@@ -400,7 +400,7 @@ main {
     margin: 16px 0 52px 0;
 }
  
-.glavnoe button {
+.glavnoe a button {
     padding: 20px 40px;
     background-color: #2d268c;
     color: #fff;
@@ -410,9 +410,10 @@ main {
     border-radius: 40px;
     cursor: pointer;
     transition: all 0.3s;
+    width: 100%;
 }
  
-.glavnoe button:hover {
+.glavnoe a button:hover {
     background-color: #AEBCFE;
     color: #2D268C;
 }

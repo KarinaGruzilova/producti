@@ -35,11 +35,11 @@ class Category(models.Model):
         default='#C7CEEA'
     )
     emoji = models.CharField(
-        max_length=10, 
+        max_length=4, 
         verbose_name='Эмодзи',
         default='📁'
     )
-    description = models.TextField(verbose_name='Описание категории', blank=True)
+    description = models.TextField(max_length=500, verbose_name='Описание категории', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True, verbose_name='Активна')
@@ -83,8 +83,8 @@ class Task(models.Model):
         related_name='Tasks' 
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Tasks')
-    title = models.CharField(max_length=200, verbose_name='Название задачи')
-    description = models.TextField(verbose_name='Описание задачи', blank=True)
+    title = models.CharField(max_length=100, verbose_name='Название задачи')
+    description = models.TextField(max_length=500, verbose_name='Описание задачи', blank=True)
     duration_seconds = models.IntegerField(verbose_name='Потраченное время (сек)', default=0)
     completed = models.BooleanField(default=False, verbose_name='Выполнена')
     due_date = models.DateField(verbose_name='Дата выполнения', null=True, blank=True)
@@ -155,7 +155,7 @@ class Goal(models.Model):
  
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='goals')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='goals')
-    title = models.CharField(max_length=200, verbose_name='Название цели')
+    title = models.CharField(max_length=100, verbose_name='Название цели')
     goal_type = models.CharField(max_length=10, choices=TYPE_CHOICES, default='time')
     target_value = models.FloatField(verbose_name='Целевое значение')
     period = models.CharField(max_length=10, choices=PERIOD_CHOICES, default='week')

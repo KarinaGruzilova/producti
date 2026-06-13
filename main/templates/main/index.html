@@ -40,13 +40,15 @@
                 
                 <p class="hero__subtitle">Трекер продуктивности с аналитикой, которая показывает, где ты растешь, а где теряешь часы.</p>
                 
-                <button class="btn btn--large btn--gradient">
-                    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                        <rect width="36" height="36" rx="18" fill="white"/>
-                        <path d="M18 10C18.1562 14.3519 21.6481 17.8438 26 18C21.6481 18.1562 18.1562 21.6481 18 26C17.8438 21.6481 14.3519 18.1562 10 18C14.3519 17.8438 17.8438 14.3519 18 10Z" fill="#2D268C"/>
-                    </svg>
-                    <span>начать бесплатно</span>
-                </button>
+                <a href="{% url 'main:proversion' %}">
+                    <button class="btn btn--large btn--gradient">
+                        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                            <rect width="36" height="36" rx="18" fill="white"/>
+                            <path d="M18 10C18.1562 14.3519 21.6481 17.8438 26 18C21.6481 18.1562 18.1562 21.6481 18 26C17.8438 21.6481 14.3519 18.1562 10 18C14.3519 17.8438 17.8438 14.3519 18 10Z" fill="#2D268C"/>
+                        </svg>
+                        <span>начать бесплатно</span>
+                    </button>
+                </a>
             </div>
         </div>
 
@@ -55,7 +57,9 @@
                 <div class="glavnoe">
                     <h2>Не очередной таймер, а твой личный коуч по времени</h2>
                     <p>Мы не просто считаем минуты — мы показываем, куда они уходят. Никакой воды, только ясная картина твоих привычек и настоящие инсайты.</p>
-                    <button>инструменты Free-версии</button>
+                    <a href="{% url 'main:proversion' %}">
+                        <button> доступные инструменты</button>
+                    </a>
                 </div>
                 <div class="privilege">
                     <div class="priv1">

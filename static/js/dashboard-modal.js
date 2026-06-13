@@ -558,7 +558,6 @@ function initColorSelector() {
             const newOption = document.createElement('div');
             newOption.className = 'category-option';
             newOption.setAttribute('data-value', 'add-new');
-            newOption.innerHTML = '+ создать категорию';
             
             newOption.addEventListener('click', function() {
                 if (typeof window.openCreateCategoryModal === 'function') {
@@ -718,17 +717,14 @@ if (createCategoryBtn) {
     // Кнопка начать в третьем окне
     if (btnStartBegin) {
         btnStartBegin.addEventListener('click', function() {
-            console.log('🚀 Таймер запущен!');
+            console.log('Задача завершена!');
             modal3.style.display = 'none';
             
-            // Убираем overlay
             if (!isAnyModalOpen()) {
                 hideOverlay();
             }
             
-            alert('Таймер завершен!');
-            // Здесь можно добавить редирект на страницу таймера
-            // window.location.href = '/timer/';
+            alert('Задача завершена!');
         });
     }
     
@@ -993,7 +989,34 @@ function getCookie(name) {
  * Сохранение результата таймера
  */
 function saveTimerResult(seconds, reason) {
-    const elapsedSeconds = timerTotalSeconds - seconds;
+
+
+        const elapsedSeconds = timerTotalSeconds - seconds;
+
+    // Если это режим 'start' — обновляем существующую задачу вместо создания новой
+    if (window._pendingTaskId) {
+        const csrftoken = getCookie('csrftoken');
+        fetch(`/api/tasks/${window._pendingTaskId}/`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                completed: true,
+                duration_seconds: elapsedSeconds
+            })
+        })
+        .then(r => r.json())
+        .then(() => {
+            window._pendingTaskId = null;
+            if (timerCompleteMessage) {
+                timerCompleteMessage.innerHTML = '<span>✅ Задача выполнена!</span>';
+                timerCompleteMessage.style.display = 'block';
+            }
+        });
+        return; // не идём дальше — новую задачу не создаём
+    }
     
     const data = {
         category_id: currentTimerData.categoryId,
@@ -1290,53 +1313,59 @@ function initResumeSession() {
             const categoryId = this.dataset.categoryId;
             const description = this.dataset.description || '';
             
-            console.log('🔄 Возобновление сеанса:', { categoryId, description });
+            // Загружаем актуальные категории
+            // Загружаем актуальные категории
+            if (typeof loadUserCategories === 'function') {
+                loadUserCategories();
+            } else if (typeof window.loadUserCategories === 'function') {
+                window.loadUserCategories();
+            }
             
-            // Находим категорию по ID и выбираем её
-            if (categoryId) {
-                // Ищем категорию в выпадающем списке
-                const categoryOption = document.querySelector(`.category-option[data-value="${categoryId}"]`);
+            // Открываем первое модальное окно
+            const modal1 = document.getElementById('modal');
+            const contentContainer = document.querySelector('.content-container');
+            if (modal1) {
+                modal1.style.display = 'block';
+                if (contentContainer) contentContainer.classList.add('dimmed');
+            }
+            
+            // Даём время на обновление списка категорий
+            setTimeout(() => {
+                // Снимаем выделение со всех стандартных кнопок
+                document.querySelectorAll('.categories-row .category:not(.category-select-btn)').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                
+                // Сбрасываем кнопку "выбрать"
+                const selectBtn = document.querySelector('.category-select-btn');
+                if (selectBtn) {
+                    const span = selectBtn.querySelector('span');
+                    if (span) span.textContent = 'выбрать';
+                    selectBtn.classList.remove('selected');
+                }
+                
+                // Ищем и выбираем нужную категорию в выпадающем списке
+                const categoryOption = document.querySelector(
+                    `.category-option[data-value="${categoryId}"], .category-option[data-id="${categoryId}"]`
+                );
                 if (categoryOption) {
                     categoryOption.click();
-                } else {
-                    // Если категория не найдена в списке, пробуем стандартные
-                    console.warn('Категория не найдена в списке, ID:', categoryId);
                 }
-            }
-            
-            // Заполняем описание задачи
-            const taskInput = document.querySelector('.mod1-tasks');
-            if (taskInput && description) {
-                taskInput.value = description;
-            }
-            
-            // Открываем модальное окно старта таймера
-            setTimeout(() => {
-                const startBtn = document.querySelector('.button-mod1 .start');
-                if (startBtn) {
-                    startBtn.click();
-                } else {
-                    console.error('Кнопка старта не найдена');
-                }
-            }, 100);
+                
+                // Заполняем описание
+                const taskInput = document.querySelector('.mod1-tasks');
+                if (taskInput) taskInput.value = description;
+                
+            }, 300);
         });
     });
 }
 
 // Вызываем после загрузки страницы
 document.addEventListener('DOMContentLoaded', function() {
-    // ... существующий код ...
     initResumeSession();
 });
 
-
-
-
-
-
-
-
-// static/js/search.js
 
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
@@ -1551,3 +1580,81 @@ document.addEventListener('DOMContentLoaded', function() {
     // Запускаем поиск
     initSearch();
 });
+
+
+    // ========== ОБРАБОТКА ПЕРЕХОДА С ДЕТАЛЬНОЙ СТРАНИЦЫ КАТЕГОРИИ ==========
+// Читаем sessionStorage при загрузке дашборда
+document.addEventListener('DOMContentLoaded', function() {
+    const stored = sessionStorage.getItem('resumeTask');
+    if (!stored) return;
+
+    let task;
+    try {
+        task = JSON.parse(stored);
+    } catch(e) {
+        sessionStorage.removeItem('resumeTask');
+        return;
+    }
+    sessionStorage.removeItem('resumeTask');
+
+    // Ждём пока loadUserCategories загрузит список
+    setTimeout(() => {
+        // Загружаем категории
+        const dropdown = document.querySelector('.category-dropdown');
+        if (!dropdown || !dropdown.children.length) {
+            // Если список пуст — загружаем принудительно
+            fetch('/api/categories/', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(r => r.json())
+                .then(cats => {
+                    if (typeof updateCategoriesDropdown === 'function') {
+                        updateCategoriesDropdown(cats);
+                    }
+                    openModalWithTask(task);
+                });
+        } else {
+            openModalWithTask(task);
+        }
+    }, 400);
+});
+
+function openModalWithTask(task) {
+    // Открываем первое модальное окно
+    const modal1 = document.getElementById('modal');
+    const contentContainer = document.querySelector('.content-container');
+    if (modal1) {
+        modal1.style.display = 'block';
+        if (contentContainer) contentContainer.classList.add('dimmed');
+    }
+
+    // Сохраняем taskId если режим 'start' — понадобится при завершении таймера
+    if (task.mode === 'start' && task.taskId) {
+        window._pendingTaskId = task.taskId;
+    } else {
+        window._pendingTaskId = null;
+    }
+
+    setTimeout(() => {
+        // Снимаем выделение со стандартных кнопок
+        document.querySelectorAll('.categories-row .category:not(.category-select-btn)').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+
+        // Сбрасываем кнопку "выбрать"
+        const selectBtn = document.querySelector('.category-select-btn');
+        if (selectBtn) {
+            const span = selectBtn.querySelector('span');
+            if (span) span.textContent = 'выбрать';
+            selectBtn.classList.remove('selected');
+        }
+
+        // Выбираем нужную категорию
+        const option = document.querySelector(
+            `.category-option[data-value="${task.categoryId}"], .category-option[data-id="${task.categoryId}"]`
+        );
+        if (option) option.click();
+
+        // Заполняем описание
+        const taskInput = document.querySelector('.mod1-tasks');
+        if (taskInput) taskInput.value = task.description || '';
+    }, 200);
+}

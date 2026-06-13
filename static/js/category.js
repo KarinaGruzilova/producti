@@ -4,7 +4,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ========== 1. ЭЛЕМЕНТЫ ==========
     const modal = document.getElementById('createCategoryModal');
-    const overlay = document.getElementById('modalOverlay');
+    // СТАЛО — если оверлея нет, создаём его динамически:
+let overlay = document.getElementById('modalOverlay');
+if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'modalOverlay';
+    overlay.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(20,16,60,0.55); backdrop-filter:blur(6px); z-index:200;';
+    document.body.appendChild(overlay);
+}
     const openBtn = document.getElementById('openCategoryModalBtn');
     const closeBtn = modal?.querySelector('.close-mod2');
     
@@ -77,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
             categoriesContainer.innerHTML = `
                 <div class="empty-state">
                     <p>У вас пока нет категорий</p>
-                    <button class="btn-create" id="emptyCreateBtn">Создать первую категорию</button>
                 </div>
             `;
             const emptyCreateBtn = document.getElementById('emptyCreateBtn');
@@ -246,6 +252,61 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+    function initColorSelector() {
+    if (!colorBtn || !colorDropdown || !colorOptions.length) {
+        console.log('⚠️ Элементы выбора цвета не найдены');
+        return;
+    }
+    
+    // Открытие/закрытие списка
+    colorBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        colorDropdown.style.display = colorDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+    
+    // Выбор цвета
+    colorOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            const selectedColor = this.dataset.color;
+            const selectedName = this.dataset.name;
+            
+            // Обновляем визуальные элементы
+            if (colorPreview) colorPreview.style.backgroundColor = selectedColor;
+            if (colorName) colorName.textContent = selectedName;
+            
+            // 🔥 ВАЖНО: обновляем скрытое поле colorInput
+            if (colorInput) {
+                colorInput.value = selectedColor;
+                console.log('🎨 Цвет сохранён в input:', selectedColor);
+            }
+            
+            // Убираем выделение с других опций
+            colorOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            // Закрываем выпадающий список
+            colorDropdown.style.display = 'none';
+        });
+    });
+    
+    // Закрытие при клике вне
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.color-selector-container')) {
+            colorDropdown.style.display = 'none';
+        }
+    });
+    
+    // 🔥 ДОБАВЛЯЕМ: устанавливаем дефолтный цвет при загрузке
+    if (colorInput && !colorInput.value) {
+        colorInput.value = '#C7CEEA';
+    }
+    if (colorPreview && !colorPreview.style.backgroundColor) {
+        colorPreview.style.backgroundColor = '#C7CEEA';
+    }
+    
+    console.log('✅ Инициализация выбора цвета завершена, текущий цвет:', colorInput?.value);
+}
     
     // ========== 8. УПРАВЛЕНИЕ МОДАЛЬНЫМ ОКНОМ СОЗДАНИЯ ==========
     function openModal() {
@@ -461,20 +522,22 @@ document.addEventListener('click', function(e) {
                 })
             })
             .then(response => response.json())
-            .then(data => {
-                if (data.id) {
-                    alert(`Категория "${data.name}" успешно создана!`);
-                    closeModal();
-                    loadCategories();
-                    nameInput.value = '';
-                    if (emojiSpan) emojiSpan.textContent = '🎨';
-                    const colorPreview = document.getElementById('selectedColorPreview');
-                    if (colorPreview) colorPreview.style.backgroundColor = '#C7CEEA';
-                    if (colorInputEl) colorInputEl.value = '#C7CEEA';
-                } else {
-                    alert('Ошибка при создании категории');
-                }
-            })
+.then(data => {
+    if (data.id) {
+        alert(`Категория "${data.name}" успешно создана!`);
+        closeModal();
+        loadCategories();
+        nameInput.value = '';
+        if (emojiSpan) emojiSpan.textContent = '🎨';
+        const colorPreview = document.getElementById('selectedColorPreview');
+        if (colorPreview) colorPreview.style.backgroundColor = '#C7CEEA';
+        if (colorInputEl) colorInputEl.value = '#C7CEEA';
+        return; // ← добавь это
+    }
+    // Показываем ошибку только если нет id
+    const errorMsg = data.error || data.name?.[0] || 'Ошибка при создании категории';
+    alert(errorMsg);
+})
             .catch(error => {
                 console.error('Ошибка:', error);
                 alert('Ошибка при создании категории');
@@ -487,10 +550,87 @@ document.addEventListener('click', function(e) {
             });
         });
     }
-    
+    // ── ВЫБОР ЦВЕТА ДЛЯ МОДАЛКИ СОЗДАНИЯ ──
+function initColorSelector() {
+    const btn      = document.getElementById('colorSelectorBtn');
+    const dropdown = document.getElementById('colorDropdown');
+    const preview  = document.getElementById('selectedColorPreview');
+    const input    = document.getElementById('colorInput');
+    if (!btn || !dropdown) return;
+
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    dropdown.querySelectorAll('.color-option').forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (preview) preview.style.backgroundColor = this.dataset.color;
+            if (input)   input.value = this.dataset.color;
+            dropdown.style.display = 'none';
+        });
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+    colorSelectorInitialized = true;
+}
+
+// ── ЭМОДЗИ ДЛЯ ПАНЕЛИ РЕДАКТИРОВАНИЯ ──
+function initEditEmojiPicker() {
+    const emojiBtn       = document.getElementById('editEmojiPickerBtn');
+    const emojiContainer = document.getElementById('editEmojiPickerContainer');
+    if (!emojiBtn || !emojiContainer) return;
+
+    const hasEmojiPicker = typeof customElements !== 'undefined' && customElements.get('emoji-picker');
+    if (!hasEmojiPicker) return;
+
+    try {
+        emojiContainer.innerHTML = '';
+        const picker = document.createElement('emoji-picker');
+        picker.classList.add('light');
+
+    picker.addEventListener('emoji-click', (event) => {
+        const emoji = event.detail.unicode;
+        const span  = document.getElementById('editSelectedEmoji');
+        const input = document.getElementById('editEmojiInput');
+        if (span)  span.textContent = emoji;
+        if (input) input.value = emoji;
+        emojiContainer.style.display = 'none';
+    });
+
+        emojiContainer.appendChild(picker);
+
+        const newBtn = emojiBtn.cloneNode(true);
+        emojiBtn.parentNode.replaceChild(newBtn, emojiBtn);
+
+        newBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            emojiContainer.style.display =
+                emojiContainer.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#editEmojiPickerContainer') &&
+                !e.target.closest('#editEmojiPickerBtn')) {
+                emojiContainer.style.display = 'none';
+            }
+        });
+    } catch(err) {
+        console.error('Ошибка эмодзи панели:', err);
+    }
+}
     // ========== 13. ЗАПУСК ==========
     loadCategories();
     initCategoryForm();
+    initColorSelector();      // ← добавь
+    initEditEmojiPicker(); 
     window.openEditModal = openEditModal;
     
     console.log('🚀 category.js загружен');

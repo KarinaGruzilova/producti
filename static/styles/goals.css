@@ -58,9 +58,7 @@ html, body {
     color: #2D268C;
     transform: translateY(-2px);
 }
- 
-.btn-add-goal svg { transition: transform 0.2s; }
-.btn-add-goal:hover svg { transform: rotate(90deg); }
+
  
 /* ── СЕКЦИЯ-ЗАГОЛОВОК ── */
 .section-heading {

@@ -225,7 +225,7 @@
                     <span id="editSelectedEmoji">🎨</span>
                     <span>выбрать эмодзи</span>
                 </button>
-                <div id="editEmojiPickerContainer" class="emoji-picker-container" style="display: none;"></div>
+                <div id="editEmojiPickerContainer" class="emoji-picker-container redact" style="display: none;"></div>
                 <input type="hidden" id="editEmojiInput" value="🎨">
             </div>
         </div>
@@ -271,7 +271,9 @@
 
 
 {% endblock %}
-
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/emoji-mart.js"></script>
+{% endblock %}
 {% block scripts %}
     <script src="{% static 'js/category_stranica.js' %}"></script>
 {% endblock %}

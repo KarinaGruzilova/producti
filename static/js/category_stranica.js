@@ -245,5 +245,112 @@ if (colorSelectorBtn && colorDropdown) {
         });
     }
     
+
+    // ========== УДАЛЕНИЕ ЗАДАЧ ==========
+    document.querySelectorAll('.btn-delete-task').forEach(btn => {
+        btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const taskId = this.dataset.taskId;
+            if (!confirm('Удалить задачу?')) return;
+            try {
+                const res = await fetch(`/api/tasks/${taskId}/`, {
+                    method: 'DELETE',
+                    headers: { 'X-CSRFToken': getCookie('csrftoken') }
+                });
+                if (res.ok) {
+                    this.closest('.task-row')?.remove();
+                } else {
+                    alert('Ошибка при удалении');
+                }
+            } catch(err) {
+                alert('Ошибка сети');
+            }
+        });
+    });
+
+    // ========== ВОЗОБНОВИТЬ (выполненные задачи) ==========
+    // Открывает дашборд с модальным окном таймера, заполненным данными задачи
+    document.querySelectorAll('.btn-resume').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const taskId     = this.dataset.taskId;
+            const taskRow    = this.closest('.task-row');
+            const title      = taskRow?.querySelector('.task-name')?.innerText || '';
+            const catId      = document.querySelector('.btn-hero-edit')?.dataset.id || '';
+
+            // Передаём данные через sessionStorage — дашборд их подберёт
+            sessionStorage.setItem('resumeTask', JSON.stringify({
+                categoryId:  catId,
+                description: title,
+                taskId:      taskId,
+                mode:        'resume'
+            }));
+
+            window.location.href = '/dashboard/';
+        });
+    });
+
+    // ========== НАЧАТЬ (невыполненные задачи) ==========
+    // То же самое но помечаем mode: 'start' — задача уже создана, только запускаем таймер
+    document.querySelectorAll('.btn-start-task').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const taskId  = this.dataset.taskId;
+            const taskRow = this.closest('.task-row');
+            const title   = taskRow?.querySelector('.task-name')?.innerText || '';
+            const catId   = document.querySelector('.btn-hero-edit')?.dataset.id || '';
+
+            sessionStorage.setItem('resumeTask', JSON.stringify({
+                categoryId:  catId,
+                description: title,
+                taskId:      taskId,
+                mode:        'start'   // отличие от resume
+            }));
+
+            window.location.href = '/dashboard/';
+        });
+    });
+
     console.log('✅ Панель редактирования категории инициализирована');
 });
+// ========== ОБРАБОТКА НА ДАШБОРДЕ ==========
+// Этот код запускается на дашборде и подбирает данные из sessionStorage
+(function() {
+    const stored = sessionStorage.getItem('resumeTask');
+    if (!stored) return;
+
+    // Только на дашборде
+    if (!document.getElementById('openModalBtn')) return;
+
+    sessionStorage.removeItem('resumeTask');
+    const task = JSON.parse(stored);
+
+    // Ждём загрузки категорий и открываем модалку
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            // Загружаем категории
+            if (typeof loadUserCategories === 'function') loadUserCategories();
+
+            // Открываем первое модальное окно
+            const modal1 = document.getElementById('modal');
+            const contentContainer = document.querySelector('.content-container');
+            if (modal1) {
+                modal1.style.display = 'block';
+                if (contentContainer) contentContainer.classList.add('dimmed');
+            }
+
+            setTimeout(() => {
+                // Выбираем категорию
+                const option = document.querySelector(
+                    `.category-option[data-value="${task.categoryId}"], .category-option[data-id="${task.categoryId}"]`
+                );
+                if (option) option.click();
+
+                // Заполняем описание
+                const taskInput = document.querySelector('.mod1-tasks');
+                if (taskInput) taskInput.value = task.description;
+            }, 400);
+        }, 300);
+    });
+})();

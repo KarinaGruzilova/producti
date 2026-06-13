@@ -34,3 +34,18 @@ class UserRegistrationForm(UserCreationForm):
     email = forms.CharField()
     password1 = forms.CharField()
     password2 = forms.CharField()
+
+
+
+from django import forms
+from django.contrib.auth.forms import PasswordResetForm
+
+class CustomPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(
+        label='Email',
+        widget=forms.EmailInput(attrs={
+            'placeholder': 'example@mail.ru',
+            'class': 'reset-input',
+            'autofocus': True
+        })
+    )

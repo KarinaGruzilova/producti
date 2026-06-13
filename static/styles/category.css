@@ -469,7 +469,7 @@ h4, h5, h6 {
     position: fixed;
     top: 0;
     left: -380px;
-    width: 312px; height: 100%;
+    width: 380px; height: 100%;
     background: white;
     box-shadow: 2px 0 20px rgba(0,0,0,0.1);
     z-index: 999;
@@ -561,7 +561,9 @@ h4, h5, h6 {
 
 .emoji-picker-container {
     position: absolute;
-    top: 100%; left: 0;
+    top: 100%;
+    left: auto;
+    right: -20px;
     margin-top: 8px;
     z-index: 1000;
     background: white;
@@ -612,7 +614,14 @@ h4, h5, h6 {
 }
 
 .color-option:hover { background: #ECEFFE; }
-.color-dot { width: 20px; height: 20px; border-radius: 50%; }
+.color-dot {
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 50% !important;
+    display: inline-block !important;
+    flex-shrink: 0 !important;
+    min-width: 20px !important;
+}
 
 .color-text {
     font-family: 'DVDDS', sans-serif;

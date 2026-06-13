@@ -267,6 +267,7 @@ def category_detail(request, category_id):
         'recent_tasks': recent_completed_tasks,
         'pending_tasks': pending_tasks,
         'total_incomplete': total_incomplete,
+        'color_choices': Category.PASTEL_COLORS,
     }
     
     return render(request, 'categories/category_detail.html', context)

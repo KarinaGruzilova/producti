@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 
 class User(AbstractUser):
+    first_name = models.CharField(max_length=50, blank=True, verbose_name='Имя')
     avatar = models.ImageField(
         upload_to='users_images', 
         blank=True, 
