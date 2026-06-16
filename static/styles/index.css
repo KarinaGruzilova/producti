@@ -654,3 +654,139 @@ main {
     color: #2A2A2A;
     font-size: 16px;
 }
+
+
+
+
+
+
+
+
+
+
+
+/* ── ФУТЕР ── */
+.site-footer {
+    background: #2A2A2A;
+    color: #fff;
+    position: relative;
+    z-index: 10;
+}
+
+.footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 0px 32px 0;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 60px;
+}
+
+/* ── БРЕНД ── */
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: #fff;
+    margin-bottom: 16px;
+}
+
+.footer-logo span:first-child { color: #AEBCFE; }
+.footer-logo span:last-child  { color: #fff; }
+
+.footer-desc {
+    font-family: 'DVDDS', sans-serif;
+    font-size: 13px;
+    color: #9E9E9E;
+    line-height: 1.7;
+    margin-bottom: 24px;
+    max-width: 280px;
+}
+
+/* ── СОЦИАЛЬНЫЕ ССЫЛКИ ── */
+.footer-social {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-social-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 13px;
+    color: #9E9E9E;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-social-link:hover { color: #AEBCFE; }
+.footer-social-link svg   { flex-shrink: 0; }
+
+/* ── НАВИГАЦИЯ ── */
+.footer-nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    padding-top: 8px;
+}
+
+.footer-nav-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+}
+
+.footer-nav-link {
+    display: block;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 13px;
+    color: #9E9E9E;
+    text-decoration: none;
+    margin-bottom: 10px;
+    transition: color 0.2s;
+}
+
+.footer-nav-link:hover { color: #AEBCFE; }
+
+/* ── НИЖНЯЯ СТРОКА ── */
+.footer-legal {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 20px 40px;
+}
+
+.footer-legal-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.footer-legal-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 11px;
+    color: #616161;
+}
+
+.footer-legal-copy {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'DVDDS', sans-serif;
+    font-size: 11px;
+    color: #616161;
+}

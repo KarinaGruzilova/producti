@@ -13,10 +13,11 @@ html, body {
     height: auto !important;
 }
 
+/* Минимальная высота контейнера — весь экран */
 .content-container {
-    overflow: visible !important;
-    height: auto !important;
-    min-height: auto !important;
+    min-height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
 }
 .goals-header {
     display: flex;

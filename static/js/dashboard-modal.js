@@ -330,7 +330,7 @@ function initColorSelector() {
 
     // ========== 10. ОТПРАВКА ФОРМЫ СОЗДАНИЯ КАТЕГОРИИ ==========
     
-    function initCategoryForm() {
+function initCategoryForm() {
         console.log('🔍 Инициализация формы создания категории...');
         
         const form = document.getElementById('createCategoryForm');
@@ -350,20 +350,33 @@ function initColorSelector() {
         
         console.log('✅ Форма найдена');
         
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // ── ПРОВЕРКА ЛИМИТА FREE ТАРИФА ──
+        const isPro = document.body.dataset.isPro === 'true';
+        if (!isPro) {
+            try {
+                const limitRes = await fetch('/api/categories/');
+                const cats = await limitRes.json();
+                if (Array.isArray(cats) && cats.length >= 5) {
+                    (window.notify ? window.notify.error('Лимит 5 категорий на бесплатном тарифе. Удалите существующую или оформите PRO.') : alert('Лимит 5 категорий'));
+                    return;
+                }
+            } catch(e) {}
+        }
             
             // Проверка названия
             const categoryName = nameInput ? nameInput.value.trim() : '';
             if (!categoryName) {
-                alert('Пожалуйста, введите название категории');
+                (window.validate ? window.validate.markError('category-name', 'Пожалуйста, введите название категории') : (window.notify ? window.notify.error('Пожалуйста, введите название категории') : alert('Пожалуйста, введите название категории')));
                 return;
             }
             
             // Проверка цвета
             const selectedColor = colorInput ? colorInput.value : '';
             if (!selectedColor) {
-                alert('Пожалуйста, выберите цвет категории');
+                (window.notify ? window.notify.error('Пожалуйста, выберите цвет категории') : alert('Пожалуйста, выберите цвет категории'));
                 return;
             }
             
@@ -393,7 +406,7 @@ function initColorSelector() {
 // CSRF-токен из куки
             const csrftoken = getCookie('csrftoken');
             if (!csrftoken) {
-                alert('Ошибка безопасности: CSRF токен не найден');
+                (window.notify ? window.notify.error('Ошибка безопасности: CSRF токен не найден') : alert('Ошибка безопасности: CSRF токен не найден'));
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.textContent = '+ создать';
@@ -428,7 +441,7 @@ function initColorSelector() {
                 if (data.id) {
                     console.log('✅ Категория создана:', data);
 
-                    alert(`Категория "${data.name}" успешно создана!`);
+                    (window.notify ? window.notify.success(`Категория "${data.name}" создана!`) : alert(`Категория "${data.name}" успешно создана!`));
                     
                     // Очищаем форму
                     form.reset();
@@ -460,13 +473,13 @@ function initColorSelector() {
                         errorDiv.textContent = errorMessage;
                         errorDiv.style.display = 'block';
                     } else {
-                        alert(errorMessage);
+                        (window.notify ? window.notify.error(errorMessage) : alert(errorMessage));
                     }
                 }
             })
             .catch(error => {
                 console.error('❌ Ошибка:', error);
-                alert('Произошла ошибка при отправке запроса');
+                (window.notify ? window.notify.error('Произошла ошибка при отправке запроса') : alert('Произошла ошибка при отправке запроса'));
             })
             .finally(() => {
                 if (submitBtn) {
@@ -610,7 +623,7 @@ function initColorSelector() {
             const hasSelectedCustom = categorySelectBtn && categorySelectBtn.classList.contains('selected');
             
             if (!hasSelectedStandard && !hasSelectedCustom) {
-                alert('Пожалуйста, выберите категорию');
+                (window.notify ? window.notify.error('Пожалуйста, выберите категорию') : alert('Пожалуйста, выберите категорию'));
                 return;
             }
             
@@ -724,7 +737,7 @@ if (createCategoryBtn) {
                 hideOverlay();
             }
             
-            alert('Задача завершена!');
+            (window.notify ? window.notify.info('Задача завершена!') : alert('Задача завершена!'));
         });
     }
     

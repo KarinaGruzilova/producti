@@ -45,7 +45,7 @@ class Category(models.Model):
     is_active = models.BooleanField(default=True, verbose_name='Активна')
     
     class Meta:
-        ordering = ['name']
+        ordering = ['-updated_at']
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
         unique_together = ['user', 'name']

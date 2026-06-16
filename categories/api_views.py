@@ -26,7 +26,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
         return Category.objects.filter(
             user=self.request.user,
             is_active=True
-        ).order_by('name')
+        ).order_by('-updated_at')
     
     def perform_create(self, serializer):
         user = self.request.user
@@ -435,8 +435,29 @@ class GoalViewSet(viewsets.ViewSet):
             return Response({'error': 'Цель не найдена'}, status=404)
  
     def _serialize(self, goal):
+        from datetime import date
+    
+    # Безопасно получаем end_date
+        end_date = goal.end_date
+        if isinstance(end_date, str):
+            try:
+                end_date = date.fromisoformat(end_date)
+            except (ValueError, TypeError):
+                end_date = None
+        
+        # Безопасно проверяем is_overdue
+        try:
+            is_overdue = bool(end_date and date.today() > end_date)
+        except TypeError:
+            is_overdue = False
+
         unit = 'ч' if goal.goal_type == 'time' else 'зад.'
-        period_labels = {'week': 'Неделя', 'month': 'Месяц', 'custom': 'До ' + (str(goal.deadline) if goal.deadline else '—')}
+        period_labels = {
+            'week': 'Неделя',
+            'month': 'Месяц',
+            'custom': 'До ' + (str(goal.deadline) if goal.deadline else '—')
+        }
+        
         return {
             'id': goal.id,
             'title': goal.title,
@@ -450,10 +471,8 @@ class GoalViewSet(viewsets.ViewSet):
             'period': goal.period,
             'period_label': period_labels.get(goal.period, ''),
             'deadline': str(goal.deadline) if goal.deadline else None,
-            'end_date': str(goal.end_date) if goal.end_date else None,
+            'end_date': str(end_date) if end_date else None,
             'status': goal.status,
             'unit': unit,
-            'is_overdue': goal.is_overdue,
+            'is_overdue': is_overdue,
         }
- 
-    

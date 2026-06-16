@@ -3,6 +3,69 @@ document.addEventListener('DOMContentLoaded', function() {
     const avatarEditBtn = document.getElementById('avatarEditBtn');
     const avatarInput = document.getElementById('avatarInput');
     
+
+    // ========== КНОПКА СМЕНИТЬ ПАРОЛЬ ==========
+    const changePasswordBtn = document.getElementById('changePasswordBtn');
+    if (changePasswordBtn) {
+        changePasswordBtn.addEventListener('click', function() {
+            // Открываем панель редактирования профиля
+            const editPanel = document.getElementById('profileEditPanel');
+            const overlay   = document.getElementById('profileEditOverlay');
+            if (editPanel) editPanel.classList.add('open');
+            if (overlay)   overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+
+            // Скроллим к полю пароля
+            setTimeout(() => {
+                const passwordInput = document.getElementById('editPassword');
+                if (passwordInput) {
+                    passwordInput.focus();
+                    passwordInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 300);
+        });
+    }
+
+    // ========== КНОПКА УДАЛИТЬ АККАУНТ ==========
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+    if (deleteAccountBtn) {
+        deleteAccountBtn.addEventListener('click', async function() {
+            const confirmed = confirm(
+                'Вы уверены, что хотите удалить аккаунт?\n\n' +
+                'Все ваши данные, категории, задачи и сессии будут безвозвратно удалены.\n' +
+                'Это действие нельзя отменить.'
+            );
+            if (!confirmed) return;
+
+            // Второе подтверждение
+            const doubleConfirm = confirm(
+                'Последнее предупреждение!\n\n' +
+                'Нажмите ОК только если вы действительно хотите удалить аккаунт навсегда.'
+            );
+            if (!doubleConfirm) return;
+
+            try {
+                const response = await fetch('/api/users/profile/delete-account/', {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    (window.notify ? window.notify.success('Аккаунт успешно удалён. До свидания!') : alert('Аккаунт успешно удалён. До свидания!'));
+                    window.location.href = '/';
+                } else {
+                    const data = await response.json().catch(() => ({}));
+                    (window.notify ? window.notify.error(error_var) : alert(data.error || 'Ошибка при удалении аккаунта'));
+                }
+            } catch (error) {
+                (window.notify ? window.notify.error('Ошибка сети. Попробуйте ещё раз.') : alert('Ошибка сети. Попробуйте ещё раз.'));
+            }
+        });
+    }
+
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -31,12 +94,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!file) return;
             
             if (!file.type.startsWith('image/')) {
-                alert('Пожалуйста, выберите изображение');
+                (window.notify ? window.notify.error('Пожалуйста, выберите изображение') : alert('Пожалуйста, выберите изображение'));
                 return;
             }
             
             if (file.size > 5 * 1024 * 1024) {
-                alert('Размер файла не должен превышать 5MB');
+                (window.notify ? window.notify.error('Размер файла не должен превышать 5MB') : alert('Размер файла не должен превышать 5MB'));
                 return;
             }
             
@@ -59,14 +122,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.success) {
                     location.reload();
                 } else {
-                    alert(data.error || 'Ошибка при загрузке');
+                    (window.notify ? window.notify.error(data.error || 'Ошибка при загрузке') : alert(data.error || 'Ошибка при загрузке'));
                     avatarEditBtn.innerHTML = originalContent;
                     avatarEditBtn.disabled = false;
                 }
             })
             .catch(error => {
                 console.error('Ошибка:', error);
-                alert('Произошла ошибка при загрузке');
+                (window.notify ? window.notify.error('Произошла ошибка при загрузке') : alert('Произошла ошибка при загрузке'));
                 avatarEditBtn.innerHTML = originalContent;
                 avatarEditBtn.disabled = false;
             })
@@ -200,19 +263,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             
             if (data.success) {
-                alert('Профиль успешно обновлён! Страница будет перезагружена.');
+                (window.notify ? window.notify.success('Профиль успешно обновлён! Страница будет перезагружена.') : alert('Профиль успешно обновлён! Страница будет перезагружена.'));
                 location.reload();
             } else {
                 if (data.error.includes('логин')) {
                     usernameError.textContent = data.error;
                     usernameError.style.display = 'block';
                 } else {
-                    alert(data.error || 'Ошибка при обновлении');
+                    (window.notify ? window.notify.error(data.error || 'Ошибка при обновлении') : alert(data.error || 'Ошибка при обновлении'));
                 }
             }
         } catch (error) {
             console.error('Ошибка:', error);
-            alert('Произошла ошибка');
+            (window.notify ? window.notify.error('Произошла ошибка') : alert('Произошла ошибка'));
         }
     });
     
@@ -498,4 +561,3 @@ function renderTrendChart(data) {
 
 // Запускаем загрузку
 document.addEventListener('DOMContentLoaded', loadMonthlyTrends);
-

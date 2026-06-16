@@ -8,28 +8,24 @@
     <title>{% block title %} Producti {% endblock %}</title>
     <link rel="stylesheet" href="{% static 'styles/base.css'%}">
     <link rel="stylesheet" href="{% static 'styles/notification.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/pro-lock.css' %}">
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     {% block extra_css %}{% endblock %}
-    <!-- Emoji Mart CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-mart@latest/css/emoji-mart.css">
-
-
-
-    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
 </head>
-<body>
+<body data-is-pro="{{ user.is_pro|yesno:'true,false' }}">
     <!-- Затемнение для всей страницы -->
 
     <header>
         <div class="header-container">
-            <div class="logo">
+            <a href="{% url 'main:index' %}" class="logo">
                 <span>Pr</span>
                 <svg width="14" height="20" viewBox="0 0 14 20" color="#2d268c" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 19H10M7 1C3.68629 1 1 3.68629 1 7C1 8.2145 1.36084 9.34472 1.98117 10.2893C2.93507 11.7418 3.41161 12.4676 3.47352 12.5761C4.02428 13.541 3.92287 13.2007 3.99219 14.3096C3.99998 14.4342 4 14.6229 4 15C4 15.5523 4.44772 16 5 16L9 16C9.55229 16 10 15.5523 10 15C10 14.6229 10 14.4342 10.0078 14.3096C10.0771 13.2007 9.97511 13.541 10.5259 12.5761C10.5878 12.4676 11.0651 11.7418 12.019 10.2893C12.6394 9.34472 13.0002 8.2145 13.0002 7C13.0002 3.68629 10.3137 1 7 1Z" stroke="#2D268C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
                 <span>ducti</span>
-            </div>
+            </a>
             <div class="header">
                 {% comment %} <div class="name-page">Dashboard</div> {% endcomment %}
                 <div class="head-info">
@@ -48,7 +44,7 @@
                             <div class="search-results" id="searchResults"></div>
                         </div>
                     </div>
-                    <a "{% url "categories:tasks_calendar" %}">
+                    <a href="{% url 'categories:tasks_calendar' %}">
                         <div class="objects">
                             <svg width="30" height="30" color="#2a2a2a" border="2px" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M16.75 28.9985C16.5839 29 16.3976 29 16.1848 29H6.59459C4.63824 29 3.6586 29 2.91064 28.6189C2.25208 28.2833 1.71703 27.7474 1.38148 27.0888C1 26.3401 1 25.3605 1 23.4003V6.60034C1 4.64016 1 3.65934 1.38148 2.91064C1.71703 2.25208 2.25208 1.71703 2.91064 1.38148C3.65934 1 4.64016 1 6.60034 1H23.4003C25.3605 1 26.3392 1 27.0879 1.38148C27.7465 1.71703 28.2833 2.25208 28.6189 2.91064C29 3.6586 29 4.63824 29 6.59459V16.1807C29 16.3953 29 16.5829 28.9984 16.75M16.75 28.9985C17.2499 28.994 17.5661 28.9759 17.868 28.9034C18.2251 28.8177 18.5662 28.6757 18.8794 28.4838C19.2326 28.2674 19.5353 27.9656 20.1406 27.3602L27.3602 20.1406C27.9656 19.5353 28.2665 19.2326 28.483 18.8794C28.6749 18.5662 28.8168 18.2242 28.9026 17.8671C28.9751 17.5653 28.9936 17.2495 28.9984 16.75M16.75 28.9985V19.5502C16.75 18.5701 16.75 18.0797 16.9407 17.7053C17.1085 17.376 17.376 17.1085 17.7053 16.9407C18.0797 16.75 18.5692 16.75 19.5493 16.75H28.9984" stroke="#2A2A2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -59,28 +55,30 @@
                         </div>
 
                     </a>
-                    <div class="profile-info">
-                        <div class="infouser-head">
-                            <span class="username-head">
-                                {{ user.first_name|default:user.username }}
-                            </span>
-                            <span class="tasks-head">
-                                {% if user.is_pro %}
-                                    Продвинутый тариф
-                                {% else %}
-                                    Бесплатный тариф
-                                {% endif %}
-                            </span>
+                    <a href="{% url 'users:profile' %}">
+                        <div class="profile-info">
+                            <div class="infouser-head">
+                                <span class="username-head">
+                                    {{ user.first_name|default:user.username }}
+                                </span>
+                                <span class="tasks-head">
+                                    {% if user.is_pro %}
+                                        Продвинутый тариф
+                                    {% else %}
+                                        Бесплатный тариф
+                                    {% endif %}
+                                </span>
 
-                        </div>
-                            {% if user.avatar and user.avatar.url %}
-                            <img src="{{ user.avatar.url }}" alt="Аватар" class="profile-photo" id="headerAvatar">
-                            {% else %}
-                            <div class="profile-photo-placeholder" id="headerAvatarPlaceholder">
-                                {{ user.username|first|upper }}
                             </div>
-                            {% endif %}
-                    </div>
+                                {% if user.avatar and user.avatar.url %}
+                                <img src="{{ user.avatar.url }}" alt="Аватар" class="profile-photo" id="headerAvatar">
+                                {% else %}
+                                <div class="profile-photo-placeholder" id="headerAvatarPlaceholder">
+                                    {{ user.username|first|upper }}
+                                </div>
+                                {% endif %}
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -89,24 +87,25 @@
         <div class="navigation-container">
             <nav>
                 <ul>
-                    <li class="nav-item">
-                        <a href="{% url 'main:dashboard' %}" class="nav-link">
+                    <a href="{% url 'main:dashboard' %}" class="nav-link">
+                    <li class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                             <img class="no-active" src="{% static 'icons/nav-dashboard.svg' %}" alt="">
                             <span class="no-active">Дашборд</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url "categories:activities" %}" class="nav-link">
+                        </li>
+                    </a>
+                    <a href="{% url "categories:activities" %}" class="nav-link">
+                        <li class="nav-item {% if request.resolver_match.url_name == 'activities' %}active{% endif %}">
                             <img class="no-active" src="{% static 'icons/nav-analytics.svg' %}" alt="">
                             <span class="no-active">Категории</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url "categories:tasks_calendar" %}" class="nav-link">
+                        </li>
+                    </a>
+
+                    <a href="{% url "categories:tasks_calendar" %}" class="nav-link">
+                        <li class="nav-item {% if request.resolver_match.url_name == 'tasks_calendar' %}active{% endif %}">
                             <img class="no-active" src="{% static 'icons/nav-sessions.svg' %}" alt="">
                             <span class="no-active">Мои задачи</span>
-                        </a>
-                    </li>
+                        </li>
+                    </a>
                     {% if user.is_staff %}
                     <li class="nav-item">
                         <a href="/admin/" class="nav-link" target="_blank">
@@ -117,18 +116,18 @@
                         </a>
                     </li>
                     {% endif %}
-                    <li class="nav-item">
-                        <a href="{% url "categories:goals" %}" class="nav-link">
+                    <a href="{% url "categories:goals" %}" class="nav-link">
+                        <li class="nav-item {% if request.resolver_match.url_name == 'goals' %}active{% endif %}">
                             <img class="no-active" src="{% static 'icons/nav-goals.svg' %}" alt="">
                             <span class="no-active">Цели</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url "users:profile" %}" class="nav-link">
+                        </li>
+                    </a>
+                    <a href="{% url "users:profile" %}" class="nav-link">
+                        <li class="nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
                             <img class="no-active" src="{% static 'icons/nav-profile.svg' %}" alt="">
                             <span class="no-active">Профиль</span>
-                        </a>
-                    </li>
+                        </li>
+                    </a>
                     {% comment %} <li class="nav-item">
                         <a href="#" class="nav-link">
                             <img class="no-active" src="{% static 'icons/nav-help.svg' %}" alt="">
@@ -149,8 +148,10 @@
 
     </main>
 
-
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+    <script src="{% static 'js/pro-lock.js' %}"></script>
     <script src="{% static 'js/global-search.js' %}"></script>
+    <script src="{% static 'js/notify.js' %}"></script>
     {% block extra_js %}
     {% endblock %}
     {% block scripts %}{% endblock %}

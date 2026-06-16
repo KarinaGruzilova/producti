@@ -14,6 +14,7 @@ urlpatterns = [
     path('registration/', views.registration, name='registration'),
     path('profile/', views.profile, name='profile'),
     path('logout/', views.logout, name='logout'),
+    path('api/users/profile/delete-account/', views.delete_account),
     path('export/', views.export_tasks, name='export_tasks'),
     path('webhook/', views.yookassa_webhook, name='yookassa_webhook'),
     path('activate-promo/', views.activate_promo, name='activate_promo'),

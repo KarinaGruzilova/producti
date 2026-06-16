@@ -10,6 +10,8 @@
 {% block content %}
 <div class="content-container">
     <div class="block1">
+
+        <!-- СТРОКА 1: фото | календарь | активность -->
         <div class="photo-info">
             {% if user.avatar and user.avatar.url %}
             <img src="{{ user.avatar.url }}" alt="Аватар" class="photo-avatar-img">
@@ -25,12 +27,12 @@
                 </div>
                 <div class="photo-icons">
                     <div class="avatar-edit-btn" id="editProfileBtn">
-                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
                             <path d="M1 12H12M1 12V9.42032L6.5 3.26097M1 12L4 12L9.5 5.84064M6.5 3.26097L8.65147 1.05234L8.65277 1.05103C8.94893 0.747003 9.09727 0.59472 9.26827 0.537683C9.41891 0.487439 9.58118 0.487439 9.73181 0.537683C9.90269 0.594679 10.0509 0.74679 10.3466 1.05039L11.6515 2.38989C11.9485 2.69479 12.097 2.84731 12.1527 3.0231C12.2016 3.17774 12.2016 3.34431 12.1527 3.49894C12.0971 3.67461 11.9487 3.8269 11.6521 4.13136L11.6515 4.13202L9.5 6.34064M6.5 3.26097L9.5 6.34064" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </div>
                     <div class="avatar-edit-btn" id="avatarEditBtn">
-                        <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="12" height="15" viewBox="0 0 12 15" fill="none">
                             <path d="M6 12V9.75M6 9.75V7.5M6 9.75H3.75M6 9.75H8.25M6.75 0.750652C6.67838 0.75 6.59796 0.75 6.50603 0.75H3.15015C2.31007 0.75 1.88972 0.75 1.56885 0.913493C1.2866 1.0573 1.0573 1.2866 0.913493 1.56885C0.75 1.88972 0.75 2.31007 0.75 3.15015V11.8502C0.75 12.6902 0.75 13.1101 0.913493 13.4309C1.0573 13.7132 1.2866 13.9429 1.56885 14.0867C1.88941 14.25 2.30925 14.25 3.1477 14.25L8.8523 14.25C9.69075 14.25 10.11 14.25 10.4305 14.0867C10.7128 13.9429 10.9429 13.7132 11.0867 13.4309C11.25 13.1104 11.25 12.6911 11.25 11.8527V5.49426C11.25 5.40222 11.25 5.32171 11.2493 5.25M6.75 0.750652C6.96423 0.752603 7.09976 0.760389 7.22913 0.791445C7.38218 0.828188 7.52843 0.888945 7.6626 0.97119C7.81395 1.06393 7.94386 1.19386 8.20312 1.45313L10.5473 3.79724C10.8067 4.05667 10.9357 4.18604 11.0285 4.33739C11.1107 4.47161 11.1715 4.61795 11.2082 4.771C11.2393 4.90032 11.2472 5.0359 11.2493 5.25M6.75 0.750652V2.85C6.75 3.69008 6.75 4.10981 6.91349 4.43069C7.0573 4.71294 7.2866 4.94286 7.56885 5.08667C7.88941 5.25 8.30925 5.25 9.1477 5.25H11.2493M11.2493 5.25H11.2501" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </div>
@@ -38,6 +40,7 @@
                 <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/gif" style="display: none;">
             </div>
         </div>
+
         <div class="calendar">
             <div class="calendar__header">
                 <div class="calendar__month"></div>
@@ -57,9 +60,8 @@
             </div>
         </div>
 
-        <!-- ГРАФИК АКТИВНОСТИ -->
         <div class="activity-container">
-            <h2><span>Активность по месяцам</span></h2>
+            <h3>Активность по месяцам</h3>
             <div class="activity-chart">
                 {% for month in months_data %}
                 <div class="chart-bar-wrapper">
@@ -71,104 +73,96 @@
             </div>
         </div>
 
-        <div class="trend-chart-container">
-            <h3>Динамика активности по категориям за месяц</h3>
-            <div class="chart-wrapper">
-                <canvas id="monthlyTrendChart" width="600" height="300"></canvas>
+        <!-- СТРОКА 2: тренд (с замком) | тариф -->
+        <div class="pro-lock-wrapper {% if not user.is_pro %}locked{% endif %}">
+            <div class="trend-chart-container">
+                <h3>Динамика активности по категориям</h3>
+                <div class="chart-wrapper">
+                    <canvas id="monthlyTrendChart" width="800" height="300"></canvas>
+                </div>
             </div>
         </div>
 
-        <!-- Блок о тарифе -->
         <div class="tariff-card">
             {% if user.is_pro and user.subscription_until %}
-                <!-- Продвинутый тариф -->
-                <div class="tariff-pro">
-                    <div class="tariff-badge">PRO</div>
-                    <div class="tariff-icon"></div>
-                    <div class="tariff-title">Продвинутый тариф</div>
-                    <div class="tariff-date">Активен до {{ user.subscription_until|date:"d.m.Y" }}</div>
-                    <div class="tariff-features">
-                        <div class="feature">Безлимит категорий</div>
-                        <div class="feature">Безлимит задач</div>
-                        <div class="feature">Расширенная аналитика</div>
-                        <div class="feature">Экспорт данных</div>
-                    </div>
-                    <a href="{% url 'main:proversion' %}" class="tariff-btn tariff-btn-secondary">Управление подпиской</a>
+            <div class="tariff-pro">
+                <div class="tariff-badge">PRO</div>
+                <div class="tariff-icon"></div>
+                <div class="tariff-title">Продвинутый тариф</div>
+                <div class="tariff-date">Активен до {{ user.subscription_until|date:"d.m.Y" }}</div>
+                <div class="tariff-features">
+                    <div class="feature">Безлимит категорий</div>
+                    <div class="feature">Безлимит задач</div>
+                    <div class="feature">Расширенная аналитика</div>
+                    <div class="feature">Экспорт данных</div>
                 </div>
+                <a href="{% url 'main:proversion' %}" class="tariff-btn tariff-btn-secondary">Управление подпиской</a>
+            </div>
             {% else %}
-                <!-- Бесплатный тариф — рекламируем PRO -->
-                <div class="tariff-free">
-                    <div class="tariff-badge-free">FREE</div>
-                    <div class="tariff-icon">💎</div>
-                    <div class="tariff-title">Расширьте возможности</div>
-                    <div class="tariff-desc">Оформите PRO подписку и получите доступ ко всем функциям</div>
-                    <div class="tariff-features">
-                        <div class="feature">Безлимит категорий</div>
-                        <div class="feature">Безлимит задач</div>
-                        <div class="feature">Расширенная аналитика</div>
-                        <div class="feature">Экспорт данных</div>
-                    </div>
-                    <a href="{% url 'main:proversion' %}" class="tariff-btn tariff-btn-primary">Оформить PRO</a>
+            <div class="tariff-free">
+                <div class="tariff-badge-free">Базовый</div>
+                <div class="tariff-icon"></div>
+                <div class="tariff-title">Расширьте возможности</div>
+                <div class="tariff-desc">Оформите PRO подписку и получите доступ ко всем функциям</div>
+                <div class="tariff-features">
+                    <div class="feature">Безлимит категорий</div>
+                    <div class="feature">Безлимит задач</div>
+                    <div class="feature">Расширенная аналитика</div>
+                    <div class="feature">Экспорт данных</div>
                 </div>
+                <a href="{% url 'main:proversion' %}" class="tariff-btn tariff-btn-primary">Оформить PRO</a>
+            </div>
             {% endif %}
         </div>
 
-                <!-- Блок экспорта данных -->
-        <div class="export-section">
-            <div class="export-header">
-                <h3>Экспорт данных</h3>
-                <p>Выгрузите все ваши задачи в удобном формате</p>
-            </div>
-            
-            <div class="export-buttons">
-                <button class="btn-export" id="exportCsvBtn">
-                    CSV
-                </button>
-                <button class="btn-export" id="exportJsonBtn">
-                    JSON
-                </button>
-                <button class="btn-export" id="exportExcelBtn">
-                    Excel
-                </button>
-            </div>
-            
-            <div class="export-filters">
-                <div class="filter-group">
-                    <label>Дата от:</label>
-                    <input type="date" id="exportDateFrom" class="filter-date">
+        <!-- СТРОКА 3: экспорт (с замком) | промокод -->
+        <div class="pro-lock-wrapper {% if not user.is_pro %}locked{% endif %}">
+            <div class="export-section">
+                <div class="export-header">
+                    <h3>Экспорт данных</h3>
+                    <p>Выгрузите все ваши задачи в удобном формате</p>
                 </div>
-                <div class="filter-group">
-                    <label>Дата до:</label>
-                    <input type="date" id="exportDateTo" class="filter-date">
+                <div class="export-buttons">
+                    <button class="btn-export" id="exportCsvBtn">CSV</button>
+                    <button class="btn-export" id="exportJsonBtn">JSON</button>
+                    <button class="btn-export" id="exportExcelBtn">Excel</button>
                 </div>
-                <button id="applyDateFilter" class="btn-filter">Применить фильтр</button>
-                <button id="clearDateFilter" class="btn-filter-clear">Сбросить</button>
-            </div>
-            
-            <div class="export-note">
-                <small>Экспортируются все задачи, включая невыполненные.</small>
+                <div class="export-filters">
+                    <div class="filter-group">
+                        <label>Дата от:</label>
+                        <input type="date" id="exportDateFrom" class="filter-date">
+                    </div>
+                    <div class="filter-group">
+                        <label>Дата до:</label>
+                        <input type="date" id="exportDateTo" class="filter-date">
+                    </div>
+                    <button id="applyDateFilter" class="btn-filter">Применить</button>
+                    <button id="clearDateFilter" class="btn-filter-clear">Сбросить</button>
+                </div>
+                <div class="export-note">
+                    <small>Экспортируются все задачи, включая невыполненные.</small>
+                </div>
             </div>
         </div>
 
-            <!-- Промокод -->
-            <div class="promo-section">
-                <div class="promo-header">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2D268C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-                        <line x1="7" y1="7" x2="7.01" y2="7"/>
-                    </svg>
-                    <h3>Активировать промокод</h3>
-                </div>
-                <div class="promo-input-row">
-                    <input type="text" id="promoCode" placeholder="Введите промокод" class="promo-input">
-                    <button onclick="activatePromo()" class="promo-btn">Применить</button>
-                </div>
-                <div id="promoResult" class="promo-result"></div>
+        <div class="promo-section">
+            <div class="promo-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2D268C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                    <line x1="7" y1="7" x2="7.01" y2="7"/>
+                </svg>
+                <h3>Промокод</h3>
             </div>
+            <div class="promo-input-row">
+                <input type="text" id="promoCode" placeholder="Введите промокод" class="promo-input">
+                <button onclick="activatePromo()" class="promo-btn">Применить</button>
+            </div>
+            <div id="promoResult" class="promo-result"></div>
+        </div>
 
-        <!-- СТАТИСТИКА -->
+        <!-- СТРОКА 4: статистика | настройки -->
         <div class="stats-container">
-            <h2><span>Моя</span> статистика</h2>
+            <h3>Моя статистика</h3>
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-number">{{ total_hours }}</div>
@@ -184,202 +178,112 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">{{ streak_days }}</div>
-                    <div class="stat-label">дней в серии 🔥</div>
+                    <div class="stat-label">дней в серии</div>
                 </div>
-                {% comment %} <div class="stat-card">
-                    <div class="stat-number">{{ completed_goals }}</div>
-                    <div class="stat-label">достигнутых целей</div>
-                </div> {% endcomment %}
             </div>
         </div>
 
-        <!-- Выезжающая панель -->
-        <div class="profile-edit-panel" id="profileEditPanel">
-            <div class="profile-edit-header">
-                <h3>Редактирование профиля</h3>
-                <button class="profile-edit-close" id="closeEditPanelBtn">×</button>
-            </div>
-            
-            <form id="profileEditForm" class="profile-edit-form">
-                {% csrf_token %}
-                
-                <div class="form-group">
-                    <label>Имя</label>
-                    <input type="text" id="editFirstName" name="first_name" placeholder="Введите имя">
+        <div class="settings-container">
+            <h3>Настройки аккаунта</h3>
+            <div class="settings-grid">
+                <div class="setting-card">
+                    <div class="setting-info">
+                        <h4>Безопасность</h4>
+                        <p>Измените пароль для входа</p>
+                    </div>
+                    <div class="setting-control">
+                        <button class="btn-setting" id="changePasswordBtn">Сменить</button>
+                    </div>
                 </div>
-                
-                <div class="form-group">
-                    <label>Логин</label>
-                    <input type="text" id="editUsername" name="username" placeholder="Введите логин" required>
-                    <div class="error-message" id="usernameError" style="display: none;"></div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="editEmail" name="email" placeholder="Введите email">
-                </div>
-                
-                <div class="form-group">
-                    <label>Новый пароль</label>
-                    <input type="password" id="editPassword" name="password" placeholder="Оставьте пустым, если не хотите менять">
-                    <div class="error-message" id="passwordError" style="display: none;"></div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Подтверждение пароля</label>
-                    <input type="password" id="editConfirmPassword" placeholder="Повторите пароль">
-                </div>
-                
-                <div class="profile-edit-buttons">
-                    <button type="button" class="btn-cancel" id="cancelEditBtn">Отмена</button>
-                    <button type="submit" class="btn-save">Сохранить</button>
-                </div>
-            </form>
-        </div>
-    
-    
-
-    <div class="settings-container">
-        <h2><span>Настройки</span> аккаунта</h2>
-        
-        <div class="settings-grid">
-            <div class="setting-card">
-                <div class="setting-icon">🌙</div>
-                <div class="setting-info">
-                    <h4>Тема оформления</h4>
-                    <p>Выберите светлую или тёмную тему</p>
-                </div>
-                <div class="setting-control">
-                    <div class="theme-switch">
-                        <button class="theme-option active" data-theme="light">☀️</button>
-                        <button class="theme-option" data-theme="dark">🌙</button>
+                <div class="setting-card danger">
+                    <div class="setting-info">
+                        <h4>Удалить аккаунт</h4>
+                        <p>Это действие необратимо</p>
+                    </div>
+                    <div class="setting-control">
+                        <button class="btn-danger" id="deleteAccountBtn">Удалить</button>
                     </div>
                 </div>
             </div>
-            
-            <!-- Уведомления -->
-            <div class="setting-card">
-                <div class="setting-icon">🔔</div>
-                <div class="setting-info">
-                    <h4>Уведомления</h4>
-                    <p>Настройте получаемые уведомления</p>
-                </div>
-                <div class="setting-control">
-                    <label class="toggle-switch">
-                        <input type="checkbox" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-            
-            <!-- Еженедельный отчёт -->
-            <div class="setting-card">
-                <div class="setting-icon">📊</div>
-                <div class="setting-info">
-                    <h4>Еженедельный отчёт</h4>
-                    <p>Получайте сводку о вашей продуктивности</p>
-                </div>
-                <div class="setting-control">
-                    <label class="toggle-switch">
-                        <input type="checkbox" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-            
-            <!-- Экспорт данных -->
-            <div class="setting-card">
-                <div class="setting-icon">📤</div>
-                <div class="setting-info">
-                    <h4>Экспорт данных</h4>
-                    <p>Скачайте все ваши данные в CSV или JSON</p>
-                </div>
-                <div class="setting-control">
-                    <button class="btn-setting" id="exportDataBtn">Экспорт</button>
-                </div>
-            </div>
-            
-            <!-- Смена пароля -->
-            <div class="setting-card">
-                <div class="setting-icon">🔐</div>
-                <div class="setting-info">
-                    <h4>Безопасность</h4>
-                    <p>Измените пароль для входа</p>
-                </div>
-                <div class="setting-control">
-                    <button class="btn-setting" id="changePasswordBtn">Сменить</button>
-                </div>
-            </div>
-            
-            <!-- Удаление аккаунта (опасная зона) -->
-            <div class="setting-card danger">
-                <div class="setting-icon">⚠️</div>
-                <div class="setting-info">
-                    <h4>Удалить аккаунт</h4>
-                    <p>Это действие необратимо</p>
-                </div>
-                <div class="setting-control">
-                    <button class="btn-danger" id="deleteAccountBtn">Удалить</button>
-                </div>
-            </div>
         </div>
+
     </div>
-    
+
+    <!-- Выезжающая панель (вне grid) -->
+    <div id="profileEditOverlay" class="profile-edit-overlay"></div>
+    <div class="profile-edit-panel" id="profileEditPanel">
+        <div class="profile-edit-header">
+            <h3>Редактирование профиля</h3>
+            <button class="profile-edit-close" id="closeEditPanelBtn">×</button>
+        </div>
+        <form id="profileEditForm" class="profile-edit-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Имя</label>
+                <input type="text" id="editFirstName" name="first_name" placeholder="Введите имя">
+            </div>
+            <div class="form-group">
+                <label>Логин</label>
+                <input type="text" id="editUsername" name="username" placeholder="Введите логин" required>
+                <div class="error-message" id="usernameError" style="display: none;"></div>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="editEmail" name="email" placeholder="Введите email">
+            </div>
+            <div class="form-group">
+                <label>Новый пароль</label>
+                <input type="password" id="editPassword" name="password" placeholder="Оставьте пустым, если не хотите менять">
+                <div class="error-message" id="passwordError" style="display: none;"></div>
+            </div>
+            <div class="form-group">
+                <label>Подтверждение пароля</label>
+                <input type="password" id="editConfirmPassword" placeholder="Повторите пароль">
+            </div>
+            <div class="profile-edit-buttons">
+                <button type="button" class="btn-cancel" id="cancelEditBtn">Отмена</button>
+                <button type="submit" class="btn-save">Сохранить</button>
+            </div>
+        </form>
+    </div>
+
 </div>
-
-
-
 {% endblock %}
 
 {% block scripts %}
     <script src="{% static 'js/export.js' %}"></script>
     <script src="{% static 'js/user.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{% static 'js/trend-chart.js' %}"></script>
-
-
-
-
-
-<script>
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+    <script src="{% static 'js/trend-chart.js' %}"></script>
+    <script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
+        return cookieValue;
     }
-    return cookieValue;
-}
-
-function activatePromo() {
-    const code = document.getElementById('promoCode').value;
-    
-    fetch('/user/activate-promo/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: 'promo_code=' + encodeURIComponent(code)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            document.getElementById('promoResult').innerHTML = '<span style="color:green">✅ ' + data.success + '</span>';
-            location.reload();
-        } else {
-            document.getElementById('promoResult').innerHTML = '<span style="color:red">❌ ' + data.error + '</span>';
-        }
-    })
-    .catch(error => {
-        document.getElementById('promoResult').innerHTML = '<span style="color:red">❌ Ошибка сети</span>';
-    });
-}
-</script>
+    function activatePromo() {
+        const code = document.getElementById('promoCode').value;
+        fetch('/user/activate-promo/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': getCookie('csrftoken') },
+            body: 'promo_code=' + encodeURIComponent(code)
+        })
+        .then(r => r.json())
+        .then(data => {
+            const el = document.getElementById('promoResult');
+            if (data.success) { el.innerHTML = '<span class="promo-success">✅ ' + data.success + '</span>'; location.reload(); }
+            else { el.innerHTML = '<span class="promo-error">❌ ' + data.error + '</span>'; }
+        })
+        .catch(() => { document.getElementById('promoResult').innerHTML = '<span class="promo-error">❌ Ошибка сети</span>'; });
+    }
+    </script>
 {% endblock %}

@@ -189,7 +189,7 @@ if (!overlay) {
                 .then(response => {
                     if (response.ok) {
                         categoryElement?.remove();
-                        alert('✅ Категория удалена');
+                        (window.notify ? window.notify.success('✅ Категория удалена') : alert('✅ Категория удалена'));
                         loadCategories();
                     } else {
                         throw new Error('Ошибка при удалении');
@@ -197,7 +197,7 @@ if (!overlay) {
                 })
                 .catch(error => {
                     console.error('Ошибка:', error);
-                    alert('❌ Ошибка при удалении');
+                    (window.notify ? window.notify.error('❌ Ошибка при удалении') : alert('❌ Ошибка при удалении'));
                 });
             });
         });
@@ -349,7 +349,7 @@ if (!overlay) {
             
             const name = editNameInput?.value.trim();
             if (!name) {
-                alert('Введите название категории');
+                (window.validate ? window.validate.markError('category-name', 'Введите название категории') : (window.notify ? window.notify.error('Введите название категории') : alert('Введите название категории')));
                 return;
             }
             
@@ -373,14 +373,14 @@ if (!overlay) {
                 });
                 
                 if (response.ok) {
-                    alert('✅ Категория успешно обновлена!');
+                    (window.notify ? window.notify.success('✅ Категория успешно обновлена!') : alert('✅ Категория успешно обновлена!'));
                     location.reload();
                 } else {
-                    alert('❌ Ошибка при обновлении');
+                    (window.notify ? window.notify.error('❌ Ошибка при обновлении') : alert('❌ Ошибка при обновлении'));
                 }
             } catch (error) {
                 console.error('Ошибка:', error);
-                alert('❌ Ошибка сети');
+                (window.notify ? window.notify.error('❌ Ошибка сети') : alert('❌ Ошибка сети'));
             }
         });
     }
@@ -492,7 +492,7 @@ document.addEventListener('click', function(e) {
             
             const categoryName = nameInput?.value.trim();
             if (!categoryName) {
-                alert('Введите название категории');
+                (window.validate ? window.validate.markError('category-name', 'Введите название категории') : (window.notify ? window.notify.error('Введите название категории') : alert('Введите название категории')));
                 return;
             }
             
@@ -524,7 +524,7 @@ document.addEventListener('click', function(e) {
             .then(response => response.json())
 .then(data => {
     if (data.id) {
-        alert(`Категория "${data.name}" успешно создана!`);
+        (window.notify ? window.notify.success(`Категория "${data.name}" создана!`) : alert(`Категория "${data.name}" успешно создана!`));
         closeModal();
         loadCategories();
         nameInput.value = '';
@@ -536,11 +536,11 @@ document.addEventListener('click', function(e) {
     }
     // Показываем ошибку только если нет id
     const errorMsg = data.error || data.name?.[0] || 'Ошибка при создании категории';
-    alert(errorMsg);
+    (window.notify ? window.notify.error(errorMsg) : alert(errorMsg));
 })
             .catch(error => {
                 console.error('Ошибка:', error);
-                alert('Ошибка при создании категории');
+                (window.notify ? window.notify.error('Ошибка при создании категории') : alert('Ошибка при создании категории'));
             })
             .finally(() => {
                 if (submitBtn) {

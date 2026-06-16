@@ -408,35 +408,19 @@ h1, h2, h3 {
     background-color: #fff;
     border-radius: 40px;
     padding: 40px 60px;
-    gap: 32px;
+    gap: 24px;
 }
-
-.stats-container h2 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: #2a2a2a;
-}
-
-.stats-container h2 span {
-    color: #2D268C;
-}
-
 .stats-grid {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 20px;
-    width: 280px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
 }
 
 .stat-card {
-    flex: 1;
-    min-width: 150px;
-    padding: 32px 24px;
+    padding: 20px 16px;
     background: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(236,239,254,0.5));
     border: 1px solid #2D268C;
-    border-radius: 40px;
+    border-radius: 28px;
     text-align: center;
     transition: all 0.3s ease;
 }
@@ -448,15 +432,15 @@ h1, h2, h3 {
 
 .stat-number {
     font-family: 'Unbounded', sans-serif;
-    font-size: 40px;
+    font-size: 28px;
     font-weight: 700;
     color: #2D268C;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .stat-label {
     font-family: 'DVDDS', sans-serif;
-    font-size: 14px;
+    font-size: 12px;
     color: #757575;
 }
 
@@ -469,15 +453,6 @@ h1, h2, h3 {
     gap: 32px;
     height: 300px;
 }
-
-.activity-container h2 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: #2a2a2a;
-}
-
-.activity-container h2 span { color: #2D268C; }
 
 .activity-chart {
     display: flex;
@@ -523,20 +498,17 @@ h1, h2, h3 {
     background-color: #fff;
     border-radius: 40px;
     padding: 40px 60px;
-    gap: 32px;
-    width: 626px;
+    gap: 24px;
+    width: 600px;
 }
 
-.settings-container h2 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: #2a2a2a;
+
+.settings-grid { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px;
+    margin-bottom: 16px;
 }
-
-.settings-container h2 span { color: #2D268C; }
-
-.settings-grid { display: flex; flex-direction: column; gap: 16px; }
 
 .setting-card {
     display: flex;
@@ -545,7 +517,7 @@ h1, h2, h3 {
     padding: 24px 32px;
     background: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(236,239,254,0.3));
     border: 1px solid #2D268C;
-    border-radius: 40px;
+    border-radius: 24px;
     transition: all 0.3s ease;
 }
 
@@ -554,18 +526,13 @@ h1, h2, h3 {
     background: linear-gradient(to bottom, #fff, #ECEFFE);
 }
 
-.setting-card.danger {
-    border-color: #FF4444;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,68,68,0.1));
-}
-
 .setting-icon { font-size: 32px; width: 60px; }
 
 .setting-info { flex: 1; margin-left: 16px; }
 
 .setting-info h4 {
     font-family: 'DVDDS', sans-serif;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
     color: #2a2a2a;
     margin-bottom: 4px;
@@ -783,12 +750,7 @@ h1, h2, h3 {
     border-bottom: 1px solid #F0F0F0;
 }
 
-.profile-edit-header h3 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: #2A2A2A;
-}
+
 
 .profile-edit-close {
     width: 32px; height: 32px;
@@ -945,6 +907,7 @@ h1, h2, h3 {
 
 /* ── ГРАФИК ТРЕНДА ── */
 .trend-chart-container {
+    height: 400px;
     flex: 1;
     min-width: 300px;
     width: 100%;
@@ -957,20 +920,6 @@ h1, h2, h3 {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
-}
-
-.trend-chart-container h3 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    padding-left: 8px;
-    background: linear-gradient(135deg, #2D268C, #AEBCFE);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    display: inline-block;
-    flex-shrink: 0;
 }
 
 .chart-wrapper {
@@ -998,9 +947,9 @@ h1, h2, h3 {
 
 .promo-header { display: flex; align-items: center; gap: 10px; }
 
-.promo-header h3 {
+h3 {
     font-family: 'Unbounded', sans-serif;
-    font-size: 14px;
+    font-size: 20px;
     font-weight: 700;
     color: #2D268C;
     margin: 0;
@@ -1050,6 +999,7 @@ h1, h2, h3 {
 
 /* ── ТАРИФНАЯ КАРТОЧКА ── */
 .tariff-card {
+    height: 400px;
     width: 440px;
     min-width: 320px;
     background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FF 100%);
@@ -1148,15 +1098,9 @@ h1, h2, h3 {
     border-radius: 40px;
     padding: 28px 32px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    width: 816px;
 }
 
-.export-header h3 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: #2A2A2A;
-    margin-bottom: 8px;
-}
 
 .export-header p {
     font-family: 'DVDDS', sans-serif;

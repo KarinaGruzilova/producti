@@ -258,28 +258,48 @@ document.addEventListener('DOMContentLoaded', function() {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         if (selectedDate < today) {
-            alert('Дата не может быть раньше сегодняшнего дня');
+            if (window.validate) window.validate.markError('taskDueDate', 'Дата не может быть раньше сегодняшнего дня');
+            else if (window.notify) window.notify.error('Дата не может быть раньше сегодняшнего дня');
             return false;
         }
         return true;
     }
     
     // ========== 10. СОЗДАНИЕ ЗАДАЧИ ==========
-    if (submitTaskBtn) {
-        submitTaskBtn.addEventListener('click', async function() {
-            const title = taskTitleInput?.value.trim();
-            const description = taskDescriptionInput?.value.trim() || '';
-            const dueDate = taskDueDate?.value;
-            const dueTime = taskTime?.value;
+if (submitTaskBtn) {
+    submitTaskBtn.addEventListener('click', async function() {
+        const title = taskTitleInput?.value.trim();
+        const description = taskDescriptionInput?.value.trim() || '';
+        const dueDate = taskDueDate?.value;
+        const dueTime = taskTime?.value;
+
+        // ── ПРОВЕРКА ЛИМИТА FREE ТАРИФА ──
+        const isPro = document.body.dataset.isPro === 'true';
+        if (!isPro) {
+            try {
+                const limitRes = await fetch('/api/tasks/');
+                const allTasks = await limitRes.json();
+                const activeTasks = allTasks.filter(t => !t.completed);
+                if (activeTasks.length >= 10) {
+                    if (window.notify) window.notify.error('Лимит 10 задач на бесплатном тарифе. Выполните или удалите существующие задачи, или оформите PRO.');
+                    return;
+                }
+            } catch(e) {}
+        }
             
             if (!title) {
-                alert('Введите название задачи');
+                if (window.validate) window.validate.markError('taskTitle', 'Введите название задачи');
+                else if (window.notify) window.notify.error('Введите название задачи');
                 return;
             }
             
             const categoryData = getSelectedCategoryData();
             if (!categoryData.name) {
-                alert('Выберите категорию');
+                if (window.notify) window.notify.error('Выберите категорию');
+                document.querySelectorAll('.categories-row .category').forEach(b => {
+                    b.style.borderColor = '#FF4444';
+                    b.addEventListener('click', () => { b.style.borderColor = ''; }, { once: true });
+                });
                 return;
             }
             
@@ -290,13 +310,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (categoryData.isStandard && !categoryId) {
                 categoryId = await createStandardCategoryIfNeeded(categoryData.name);
                 if (!categoryId) {
-                    alert('Ошибка при создании категории');
+                    if (window.notify) window.notify.error('Ошибка при создании категории');
                     return;
                 }
             }
             
             if (!categoryId) {
-                alert('Категория не найдена. Пожалуйста, выберите категорию из списка');
+                if (window.notify) window.notify.error('Выберите категорию из списка');
                 return;
             }
             
@@ -325,15 +345,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = await response.json();
                 
                 if (response.ok && data.id) {
-                    alert('✅ Задача создана!');
+                    if (window.notify) window.notify.success('Задача создана!');
                     closeModal();
                     location.reload();
                 } else {
-                    alert('❌ Ошибка при создании задачи');
+                    if (window.notify) window.notify.error('Ошибка при создании задачи');
                 }
             } catch (error) {
                 console.error('Ошибка:', error);
-                alert('❌ Ошибка сети');
+                if (window.notify) window.notify.error('Ошибка сети');
             }
         });
     }

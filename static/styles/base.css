@@ -339,7 +339,22 @@ ul { list-style: none; }
 }
 
 .nav-link img { width: 20px; height: 20px; }
+/* Активный пункт меню */
+.nav-item.active {
+    background: rgba(174, 188, 254, 0.18);
+    box-shadow: 0 4px 12px rgba(45, 38, 140, 0.08);
+}
 
+.nav-item.active span {
+    color: #2D268C;
+}
+
+/* Плавные переходы */
+.nav-item,
+.nav-link span,
+.nav-link img {
+    transition: all 0.25s ease;
+}
 .content-container {
     width: 100%;
     padding: 80px;
@@ -668,33 +683,29 @@ ul { list-style: none; }
 .info-category p:last-child { font-size: 11px; color: #757575; }
 
 /* ── ЗАТЕМНЕНИЕ И ОВЕРЛЕЙ ── */
-.content-container.dimmed {
-    position: relative;
-}
-
 .content-container.dimmed::after {
     content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.5);
-    z-index: 5;
-    border-top-left-radius: 40px;
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 16, 60, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 95;
     pointer-events: none;
 }
 
 .overlay {
     display: none;
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: #000;
+    inset: 0;
+    background: rgba(20, 16, 60, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     z-index: 90;
     pointer-events: all;
 }
 
 .overlay.active { display: block; }
-
 /* ── МОДАЛЬНЫЕ ОКНА ── */
 .modal {
     display: none;

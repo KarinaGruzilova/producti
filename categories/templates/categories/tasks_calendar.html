@@ -1,10 +1,8 @@
-
 {% extends "base.html" %}
 {% load static %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'styles/tasks_calendar.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -61,7 +59,7 @@
             </div>
             <div class="tasks">
                 {% for task in overdue_tasks %}
-                <div class="task-card">
+                <div class="task-card" data-task-id="{{ task.id }}" data-category-id="{{ task.category.id }}">
                     <div class="accent-bar accent-red"></div>
                     <button class="task-cat" style="background-color: {{ task.category.color }}; color: #fff;">
                         {{ task.category.emoji }} {{ task.category.name }}
@@ -98,7 +96,7 @@
             </div>
             <div class="tasks">
                 {% for task in active_tasks %}
-                <div class="task-card">
+                <div class="task-card" data-task-id="{{ task.id }}" data-category-id="{{ task.category.id }}">
                     <div class="accent-bar accent-green"></div>
                     <button class="task-cat" style="background-color: {{ task.category.color }}; color: #fff;">
                         {{ task.category.emoji }} {{ task.category.name }}
@@ -136,7 +134,7 @@
             </div>
             <div class="tasks">
                 {% for task in planned_tasks %}
-                <div class="task-card">
+                <div class="task-card" data-task-id="{{ task.id }}" data-category-id="{{ task.category.id }}">
                     <div class="accent-bar accent-blue"></div>
                         <button class="task-cat" style="background-color: {{ task.category.color }}; color:#fff;">
                             {{ task.category.emoji }} {{ task.category.name }}
@@ -222,7 +220,7 @@
                 </div>
             </div>
 
-            <input class="modal-input mod1-tasks" type="text" id="taskTitle" placeholder="Название задачи" required>
+            <input class="modal-input mod1-tasks" type="text" id="taskTitle" placeholder="Название задачи *" required>
             <input class="modal-input mod1-tasks" type="text" id="taskDescription" placeholder="Описание задачи (необязательно)">
 
             <div class="button-mod1">

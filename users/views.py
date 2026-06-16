@@ -521,3 +521,15 @@ def activate_promo(request):
         
     except ProPromoCode.DoesNotExist:
         return JsonResponse({'error': 'Неверный промокод'}, status=400)
+
+
+
+
+@login_required
+def delete_account(request):
+    if request.method == 'DELETE':
+        user = request.user
+        logout(request)
+        user.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
