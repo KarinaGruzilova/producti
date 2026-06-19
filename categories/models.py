@@ -1,6 +1,5 @@
 from django.db import models
 from users.models import User
-# import emoji
 
 class Category(models.Model):
     PASTEL_COLORS = [
@@ -55,7 +54,7 @@ class Category(models.Model):
     
     @property
     def total_time(self):
-        """Общее время всех задач в категории в секундах"""
+        # Общее время всех задач в категории в секундах
         Tasks = self.Tasks.all()
         return sum(task.duration_seconds for task in Tasks)
     

@@ -15,8 +15,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-mart@latest/css/emoji-mart.css">
 </head>
 <body data-is-pro="{{ user.is_pro|yesno:'true,false' }}">
-    <!-- Затемнение для всей страницы -->
-
     <header>
         <div class="header-container">
             <a href="{% url 'main:index' %}" class="logo">
@@ -68,7 +66,6 @@
                                         Бесплатный тариф
                                     {% endif %}
                                 </span>
-
                             </div>
                                 {% if user.avatar and user.avatar.url %}
                                 <img src="{{ user.avatar.url }}" alt="Аватар" class="profile-photo" id="headerAvatar">
@@ -145,7 +142,6 @@
         </div>
         {% include "includes/notification.html" %}
         {% block content %}{% endblock %}
-
     </main>
 
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>

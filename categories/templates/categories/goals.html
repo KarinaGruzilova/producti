@@ -2,6 +2,7 @@
 {% load static %}
  
 {% block extra_css %}
+    <script src="{% static 'js/notify.js' %}"></script>
     <link rel="stylesheet" href="{% static 'styles/goals.css' %}">
 {% endblock %}
  
@@ -58,7 +59,6 @@
         <button class="goal-modal-close" id="closeGoalModal">&times;</button>
         <h3>Новая цель</h3>
  
-        <!-- Тип цели -->
         <span class="goal-modal-label">Тип цели</span>
         <div class="goal-type-row">
             <button class="goal-type-btn selected" data-type="time">
@@ -68,8 +68,7 @@
                 По задачам (шт.)
             </button>
         </div>
- 
-        <!-- Категория -->
+
         <span class="goal-modal-label">Категория</span>
         <input type="text" class="goal-input" id="catSearch" 
             placeholder="Поиск категории..." style="margin-bottom:10px;">
@@ -86,13 +85,11 @@
             {% endfor %}
         </div>
  
-        <!-- Название -->
         <span class="goal-modal-label">Название цели</span>
         <input type="text" class="goal-input" id="goalTitle" placeholder="Например: 20 часов учёбы за неделю">
  
-        <!-- Целевое значение -->
         <span class="goal-modal-label" id="targetLabel">Целевое значение (часов)</span>
-        <input type="number" class="goal-input" id="goalTarget" placeholder="20" min="0.1" step="0.5">
+        <input type="number" class="goal-input" id="goalTarget" placeholder="20" min="0.1" step="0.5"  max="99999">
  
         <!-- Период -->
         <span class="goal-modal-label">Период</span>
@@ -102,7 +99,7 @@
             <button class="goal-period-btn" data-period="custom">Своя дата</button>
         </div>
  
-        <!-- Дедлайн (только для своей даты) -->
+        <!-- Дедлайн -->
         <div class="goal-deadline-wrap" id="deadlineWrap">
             <span class="goal-modal-label">Дата выполнения</span>
             <input type="date" class="goal-input" id="goalDeadline">

@@ -3,7 +3,7 @@
 
 {% block title %}{{ category.name }} | Producti{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'styles/category.css'%}">
+    <link rel="stylesheet" href="{% static 'styles/category.css'%}">
 {% endblock %}
 
 {% block content %}
@@ -16,9 +16,9 @@
                     {{ category.emoji }}
                 </div>
                 <div class="category-hero-text">
-                    <h1>{{ category.name }}</h1>
+                    <h1>{{ category.name|truncatechars:20 }}</h1>
                     {% if category.description %}
-                    <p>{{ category.description }}</p>
+                    <p>{{ category.description|truncatechars:40 }}</p>
                     {% else %}
                     <p>Категория создана {{ category.created_at|date:"d.m.Y" }}</p>
                     {% endif %}
@@ -56,74 +56,73 @@
     </div>
     
     <div class="pro-lock-wrapper {% if not user.is_pro %}locked{% endif %}">
-    <div class="two-columns">
-        
-        <!-- ГРАФИК -->
-        <div class="chart-column">
-            <div class="chart-header">
-                <h3>Активность за неделю</h3>
-                <span>часы</span>
-            </div>
-            <div class="chart-bars">
-                {% for day in week_data %}
-                <div class="chart-day">
-                    <div class="chart-bar" style="height: {% widthratio day.hours max_hours 100 %}px;"></div>
-                    <span class="chart-day-name">{{ day.name_short }}</span>
-                    <span class="chart-hours">{{ day.hours }}ч</span>
+        <div class="two-columns">
+            
+            <!-- ГРАФИК -->
+            <div class="chart-column">
+                <div class="chart-header">
+                    <h3>Активность за неделю</h3>
+                    <span>часы</span>
                 </div>
-                {% endfor %}
+                <div class="chart-bars">
+                    {% for day in week_data %}
+                    <div class="chart-day">
+                        <div class="chart-bar" style="height: {% widthratio day.hours max_hours 100 %}px;"></div>
+                        <span class="chart-day-name">{{ day.name_short }}</span>
+                        <span class="chart-hours">{{ day.hours }}ч</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="insights-column">
+                <div class="insights-header">
+                    <h3>Наблюдение</h3>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon">📈</div>
+                    <div class="insight-text">
+                        <div class="insight-title">Пик продуктивности</div>
+                        <div class="insight-desc">Самое продуктивное время: утро</div>
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon">🎯</div>
+                    <div class="insight-text">
+                        <div class="insight-title">Цель близка</div>
+                        <div class="insight-desc">Осталось 5 часов до цели</div>
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon">🔥</div>
+                    <div class="insight-text">
+                        <div class="insight-title">Лучший день</div>
+                        <div class="insight-desc">{{ best_day_name }} — {{ best_day_hours }} ч</div>
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon">💪</div>
+                    <div class="insight-text">
+                        <div class="insight-title">Прогресс</div>
+                        <div class="insight-desc">+25% к прошлому месяцу</div>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <div class="insights-column">
-            <div class="insights-header">
-                <h3>Инсайты</h3>
+        {% if not user.is_pro %}
+            <div class="pro-lock-badge">
+                        <svg class="lock-icon" viewBox="0 0 574.922 574.922" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M491.102,238.031v-33.892c0-27.472-5.39-54.146-16.021-79.278c-10.26-24.255-24.937-46.028-43.624-64.717c-18.688-18.688-40.462-33.365-64.717-43.623C341.607,5.891,314.934,0.5,287.461,0.5s-54.146,5.391-79.279,16.021c-24.255,10.259-46.028,24.935-64.717,43.623c-18.688,18.688-33.366,40.462-43.624,64.717c-10.63,25.133-16.021,51.806-16.021,79.278v33.892c-29.34,2.925-52.328,27.753-52.328,57.85v220.4c0,32.059,26.082,58.141,58.14,58.141h395.657c32.059,0,58.141-26.082,58.141-58.141v-220.4C543.431,265.784,520.442,240.957,491.102,238.031z M126.662,204.139c0-88.807,71.993-160.799,160.8-160.799c88.807,0,160.8,71.993,160.8,160.799v33.602h-321.6V204.139z M287.461,302.375c-34.337,0-62.272,27.936-62.272,62.273c0,26.639,16.816,49.422,40.388,58.299v49.414c0,4.852,1.699,9.581,4.784,13.316c3.992,4.833,9.874,7.605,16.136,7.605c6.216,0,12.071-2.741,16.063-7.521c3.132-3.751,4.856-8.51,4.856-13.4v-49.078c24.516-8.786,40.986-32.163,40.986-58.17C349.401,330.311,321.799,302.375,287.461,302.375z M287.461,384.082c-10.732,0-19.433-8.701-19.433-19.434s8.701-19.434,19.433-19.434s19.433,8.701,19.433,19.434S298.194,384.082,287.461,384.082z"/>
+                        </svg>
+                        <span class="lock-title">Аналитика — PRO</span>
+                        <span class="lock-desc">Графики активности доступны в PRO тарифе</span>
+                        <a href="{% url 'main:proversion' %}" class="lock-btn">Оформить PRO</a>
+                    </div>
+                    {% endif %}
             </div>
-            <div class="insight-item">
-                <div class="insight-icon">📈</div>
-                <div class="insight-text">
-                    <div class="insight-title">Пик продуктивности</div>
-                    <div class="insight-desc">Самое продуктивное время: утро</div>
-                </div>
-            </div>
-            <div class="insight-item">
-                <div class="insight-icon">🎯</div>
-                <div class="insight-text">
-                    <div class="insight-title">Цель близка</div>
-                    <div class="insight-desc">Осталось 5 часов до цели</div>
-                </div>
-            </div>
-            <div class="insight-item">
-                <div class="insight-icon">🔥</div>
-                <div class="insight-text">
-                    <div class="insight-title">Лучший день</div>
-                    <div class="insight-desc">{{ best_day_name }} — {{ best_day_hours }} ч</div>
-                </div>
-            </div>
-            <div class="insight-item">
-                <div class="insight-icon">💪</div>
-                <div class="insight-text">
-                    <div class="insight-title">Прогресс</div>
-                    <div class="insight-desc">+25% к прошлому месяцу</div>
-                </div>
-            </div>
-        </div>
-        
-    </div>
-    {% if not user.is_pro %}
-        <div class="pro-lock-badge">
-                    <svg class="lock-icon" viewBox="0 0 574.922 574.922" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M491.102,238.031v-33.892c0-27.472-5.39-54.146-16.021-79.278c-10.26-24.255-24.937-46.028-43.624-64.717c-18.688-18.688-40.462-33.365-64.717-43.623C341.607,5.891,314.934,0.5,287.461,0.5s-54.146,5.391-79.279,16.021c-24.255,10.259-46.028,24.935-64.717,43.623c-18.688,18.688-33.366,40.462-43.624,64.717c-10.63,25.133-16.021,51.806-16.021,79.278v33.892c-29.34,2.925-52.328,27.753-52.328,57.85v220.4c0,32.059,26.082,58.141,58.14,58.141h395.657c32.059,0,58.141-26.082,58.141-58.141v-220.4C543.431,265.784,520.442,240.957,491.102,238.031z M126.662,204.139c0-88.807,71.993-160.799,160.8-160.799c88.807,0,160.8,71.993,160.8,160.799v33.602h-321.6V204.139z M287.461,302.375c-34.337,0-62.272,27.936-62.272,62.273c0,26.639,16.816,49.422,40.388,58.299v49.414c0,4.852,1.699,9.581,4.784,13.316c3.992,4.833,9.874,7.605,16.136,7.605c6.216,0,12.071-2.741,16.063-7.521c3.132-3.751,4.856-8.51,4.856-13.4v-49.078c24.516-8.786,40.986-32.163,40.986-58.17C349.401,330.311,321.799,302.375,287.461,302.375z M287.461,384.082c-10.732,0-19.433-8.701-19.433-19.434s8.701-19.434,19.433-19.434s19.433,8.701,19.433,19.434S298.194,384.082,287.461,384.082z"/>
-                    </svg>
-                    <span class="lock-title">Аналитика — PRO</span>
-                    <span class="lock-desc">Графики активности доступны в PRO тарифе</span>
-                    <a href="{% url 'main:proversion' %}" class="lock-btn">Оформить PRO</a>
-                </div>
-                {% endif %}
-        </div>
     
 
-    <!-- ДВЕ КОЛОНКИ С ЗАДАЧАМИ (ВЫПОЛНЕННЫЕ + НЕВЫПОЛНЕННЫЕ) -->
+    <!-- ДВЕ КОЛОНКИ С ЗАДАЧАМИ -->
     <div class="two-columns-tasks">
         
         <!-- Выполненные задачи -->
@@ -136,7 +135,7 @@
                 <div class="task-row">
                     <div class="task-date">{{ task.created_at|date:"d.m" }}</div>
                     <div class="task-info">
-                        <div class="task-name">{{ task.title|default:"Без названия" }}</div>
+                        <div class="task-name">{{ task.title|default:"Без названия"|truncatechars:30 }}</div>
                         <div class="task-duration">{{ task.duration_formatted }}</div>
                         {% if task.description %}
                         <div class="task-description">{{ task.description|truncatechars:50 }}</div>
@@ -176,7 +175,7 @@
                         {% endif %}
                     </div>
                     <div class="task-info">
-                        <div class="task-name">{{ task.title|default:"Без названия" }}</div>
+                        <div class="task-name">{{ task.title|default:"Без названия"|truncatechars:30 }}</div>
                         {% if task.description %}
                         <div class="task-description">{{ task.description|truncatechars:50 }}</div>
                         {% endif %}
@@ -227,7 +226,7 @@
         
         <div class="form-group">
             <label>Название категории</label>
-            <input type="text" id="editCategoryName" name="name" placeholder="Введите название" required>
+            <input type="text" id="editCategoryName" name="name" placeholder="Введите название" maxlength="100" required>
         </div>
         
         <div class="form-group">

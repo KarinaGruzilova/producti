@@ -30,7 +30,6 @@
     font-display: swap;
 }
 
-/* Базовый шрифт для всего */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -38,7 +37,6 @@
     font-family: 'DVDDS', sans-serif;
 }
 
-/* Заголовки — Unbounded */
 h1, h2, h3 {
     font-family: 'Unbounded', sans-serif;
 }
@@ -58,7 +56,7 @@ h4 {
     color: #2a2a2a;
 }
 
-/* ── ХЕДЕР ── */
+/* ХЕДЕР */
 header {
     padding: 28px 80px;
     background: white;
@@ -112,7 +110,7 @@ header {
     align-items: center;
 }
 
-/* ── ПОИСК ── */
+/* ПОИСК */
 .search-container {
     position: relative;
     display: inline-block;
@@ -225,7 +223,7 @@ header {
     font-size: 14px;
 }
 
-/* ── ПРОФИЛЬ В ШАПКЕ ── */
+/* ПРОФИЛЬ В ШАПКЕ */
 .objects {
     position: relative;
     width: 38px; height: 38px;
@@ -291,7 +289,6 @@ header {
     color: white;
 }
 
-/* ── LAYOUT ── */
 .main-container { display: flex; }
 
 .navigation-container {
@@ -339,7 +336,6 @@ ul { list-style: none; }
 }
 
 .nav-link img { width: 20px; height: 20px; }
-/* Активный пункт меню */
 .nav-item.active {
     background: rgba(174, 188, 254, 0.18);
     box-shadow: 0 4px 12px rgba(45, 38, 140, 0.08);
@@ -349,7 +345,6 @@ ul { list-style: none; }
     color: #2D268C;
 }
 
-/* Плавные переходы */
 .nav-item,
 .nav-link span,
 .nav-link img {
@@ -366,7 +361,7 @@ ul { list-style: none; }
     gap: 40px;
 }
 
-/* ── ВЕРХУШКА ДАШБОРДА ── */
+/* ВЕРХУШКА ДАШБОРДА */
 .data-and-focus {
     display: flex;
     flex-direction: row;
@@ -435,7 +430,7 @@ ul { list-style: none; }
     cursor: pointer;
 }
 
-/* ── СРЕДНИЙ БЛОК ── */
+/* СРЕДНИЙ БЛОК */
 .block1-dashboard {
     display: flex;
     flex-direction: row;
@@ -559,7 +554,7 @@ ul { list-style: none; }
     border-color: #7AD4D6 transparent transparent transparent;
 }
 
-/* ── ИСТОРИЯ СЕАНСОВ ── */
+/* ИСТОРИЯ СЕАНСОВ */
 .history-container {
     display: flex;
     flex-direction: column;
@@ -682,7 +677,7 @@ ul { list-style: none; }
 .info-category p:first-child { font-weight: 500; color: #2d268c; }
 .info-category p:last-child { font-size: 11px; color: #757575; }
 
-/* ── ЗАТЕМНЕНИЕ И ОВЕРЛЕЙ ── */
+/* ЗАТЕМНЕНИЕ И ОВЕРЛЕЙ */
 .content-container.dimmed::after {
     content: '';
     position: fixed;
@@ -706,7 +701,7 @@ ul { list-style: none; }
 }
 
 .overlay.active { display: block; }
-/* ── МОДАЛЬНЫЕ ОКНА ── */
+/* МОДАЛЬНЫЕ ОКНА */
 .modal {
     display: none;
     position: fixed;
@@ -753,7 +748,7 @@ ul { list-style: none; }
     color: #2a2a2a;
 }
 
-/* ── КАТЕГОРИИ В МОДАЛЬНОМ ОКНЕ ── */
+/* КАТЕГОРИИ В МОДАЛЬНОМ ОКНЕ */
 .category-content { display: flex; flex-direction: column; gap: 12px; }
 
 .categories-container { display: flex; flex-direction: column; gap: 12px; }
@@ -845,7 +840,7 @@ ul { list-style: none; }
 .category.selected { box-shadow: 0 4px 4px 0 rgba(0,0,0,0.25); background: #eceffe; }
 .category.selected img { display: block; width: 20px; height: 20px; }
 
-/* ── ВЫБОР ВРЕМЕНИ ── */
+/* ВЫБОР ВРЕМЕНИ */
 .timer-chose {
     display: flex;
     flex-direction: row;
@@ -902,7 +897,7 @@ ul { list-style: none; }
 .time-option:last-child { border-bottom: none; }
 .time-option:hover { background-color: #eceffe; }
 
-/* ── ПОЛЯ ВВОДА ── */
+
 .mod1-tasks, .mod2-tasks {
     width: 82%;
     border: none;
@@ -918,7 +913,6 @@ ul { list-style: none; }
 
 .mod1-tasks:focus, .mod2-tasks:focus { border-bottom-color: #2d268c; }
 
-/* ── КНОПКИ МОДАЛЬНЫХ ОКОН ── */
 .button-mod1, .button-mod2 {
     display: flex;
     flex-direction: row;
@@ -941,7 +935,7 @@ ul { list-style: none; }
 .button-mod1 button:nth-child(2),
 .button-mod2 button:nth-child(2) { background-color: #2d268c; color: #fff; }
 
-/* ── ФОРМА СОЗДАНИЯ КАТЕГОРИИ ── */
+/* ФОРМА СОЗДАНИЯ КАТЕГОРИИ */
 .category-form {
     width: 100%;
     padding: 0 52px;
@@ -1008,7 +1002,7 @@ ul { list-style: none; }
     transition: transform 0.2s ease;
 }
 
-/* ── ЭМОДЗИ ПИКЕР ── */
+/* ЭМОДЗИ ПИКЕР */
 .emoji-trigger-button {
     display: flex;
     align-items: center;
@@ -1042,7 +1036,7 @@ emoji-picker {
     --outline-color: #2d268c;
 }
 
-/* ── ВЫБОР ЦВЕТА ── */
+/* ВЫБОР ЦВЕТА */
 .color-selector-container { position: relative; width: 100%; }
 .custom-color-select { position: relative; width: 100%; }
 
@@ -1102,7 +1096,7 @@ emoji-picker {
     font-weight: bold;
 }
 
-/* ── МОДАЛЬНОЕ ОКНО ТАЙМЕРА ── */
+/* МОДАЛЬНОЕ ОКНО ТАЙМЕРА */
 .start-timer-modal.modal {
     display: none;
     position: fixed;
@@ -1203,7 +1197,7 @@ emoji-picker {
 .start-timer-actions .btn-pauza-begin { background: #eceffe; color: #2a2a2a; }
 .start-timer-actions .btn-start-begin { background: #2d268c; color: white; }
 
-/* ── СООБЩЕНИЕ О ЗАВЕРШЕНИИ ТАЙМЕРА ── */
+/* СООБЩЕНИЕ О ЗАВЕРШЕНИИ ТАЙМЕРА */
 .timer-complete-message { text-align: center; margin: 10px 0; }
 
 .timer-complete-message span {
@@ -1215,6 +1209,3 @@ emoji-picker {
     font-size: 18px;
     box-shadow: 0 2px 10px rgba(76,175,80,0.3);
 }
-
-
-

@@ -4,11 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const avatarInput = document.getElementById('avatarInput');
     
 
-    // ========== КНОПКА СМЕНИТЬ ПАРОЛЬ ==========
+    // КНОПКА СМЕНИТЬ ПАРОЛЬ
     const changePasswordBtn = document.getElementById('changePasswordBtn');
     if (changePasswordBtn) {
         changePasswordBtn.addEventListener('click', function() {
-            // Открываем панель редактирования профиля
+            // Панель редактирования профиля
             const editPanel = document.getElementById('profileEditPanel');
             const overlay   = document.getElementById('profileEditOverlay');
             if (editPanel) editPanel.classList.add('open');
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== КНОПКА УДАЛИТЬ АККАУНТ ==========
+    // КНОПКА УДАЛИТЬ АККАУНТ
     const deleteAccountBtn = document.getElementById('deleteAccountBtn');
     if (deleteAccountBtn) {
         deleteAccountBtn.addEventListener('click', async function() {
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.location.href = '/';
                 } else {
                     const data = await response.json().catch(() => ({}));
-                    (window.notify ? window.notify.error(error_var) : alert(data.error || 'Ошибка при удалении аккаунта'));
+                    (window.notify ? window.notify.error(data.error || 'Ошибка при удалении аккаунта') : alert(data.error || 'Ошибка при удалении аккаунта'));
                 }
             } catch (error) {
                 (window.notify ? window.notify.error('Ошибка сети. Попробуйте ещё раз.') : alert('Ошибка сети. Попробуйте ещё раз.'));
@@ -140,17 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
-
-
-
-
-
-
-
-
-
-// profile.js
 
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -234,19 +223,56 @@ document.addEventListener('DOMContentLoaded', function() {
             passwordError.style.display = 'block';
             return false;
         }
+        if (password.length > 128) {
+            passwordError.textContent = 'Пароль не должен превышать 128 символов';
+            passwordError.style.display = 'block';
+            return false;
+        }
         passwordError.style.display = 'none';
+        return true;
+    }
+
+    function validateProfileFields() {
+        const firstName = firstNameInput.value.trim();
+        const username  = usernameInput.value.trim();
+        const email     = emailInput.value.trim();
+
+        if (!username) {
+            usernameError.textContent = 'Введите логин';
+            usernameError.style.display = 'block';
+            return false;
+        }
+
+        if (username.length > 50) {
+            usernameError.textContent = 'Логин не должен превышать 50 символов';
+            usernameError.style.display = 'block';
+            return false;
+        }
+
+        if (firstName.length > 50) {
+            if (window.notify) window.notify.error('Имя не должно превышать 50 символов');
+            return false;
+        }
+
+        if (email.length > 254) {
+            if (window.notify) window.notify.error('Email не должен превышать 254 символов');
+            return false;
+        }
+
+        usernameError.style.display = 'none';
         return true;
     }
     
     editForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        if (!validateProfileFields()) return;
         if (!validatePassword()) return;
         
         const formData = {
-            username: usernameInput.value,
-            first_name: firstNameInput.value,
-            email: emailInput.value,
+            username: usernameInput.value.trim(),
+            first_name: firstNameInput.value.trim(),
+            email: emailInput.value.trim(),
             password: passwordInput.value
         };
         
@@ -323,9 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
-
-// calendar.js
+// КАЛЕНДАРЬ
 
 const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
@@ -341,10 +365,10 @@ const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
 const startDayOfWeek = firstDayOfMonth.getDay();
 const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-// ========== ФУНКЦИЯ ДЛЯ ПАРСИНГА ДАТЫ БЕЗ TIMEZONE ==========
+// ФУНКЦИЯ ДЛЯ ПАРСИНГА ДАТЫ
 function parseLocalDate(dateString) {
     if (!dateString) return null;
-    // Разбираем строку вида "2026-05-17"
+    // Разбираем строку вида
     const parts = dateString.split('T')[0].split('-');
     if (parts.length === 3) {
         return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
@@ -352,22 +376,21 @@ function parseLocalDate(dateString) {
     return new Date(dateString);
 }
 
-// ========== ПОЛУЧАЕМ ДАННЫЕ О ЗАДАЧАХ ==========
+// ДАННЫЕ О ЗАДАЧАХ
 async function loadTasksAndRenderCalendar() {
     try {
         const response = await fetch('/api/tasks/');
         if (!response.ok) throw new Error('Ошибка загрузки задач');
         
         const tasks = await response.json();
-        console.log('Все задачи:', tasks);
         
-        // Группируем задачи по датам (только невыполненные)
+        // Группировка задач по датам
         const tasksByDate = {};
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
         tasks.forEach(task => {
-            // Пропускаем выполненные задачи
+            // Пропуск выполненных задач
             if (task.completed === true) return;
             
             let taskDate = null;
@@ -396,20 +419,19 @@ async function loadTasksAndRenderCalendar() {
                 tasksByDate[dateKey] = [];
             }
             
-            // Определяем статус задачи
+            // Статус задачи
             let status = '';
             if (taskDate < today) {
-                status = 'overdue';  // просроченная
+                status = 'overdue';
             } else if (taskDate.getTime() === today.getTime()) {
-                status = 'today';     // на сегодня
+                status = 'today';
             } else {
-                status = 'planned';   // запланированная
+                status = 'planned';
             }
             
             tasksByDate[dateKey].push({ status: status, title: task.title });
         });
         
-        console.log('Задачи по датам (после обработки):', tasksByDate);
         renderCalendar(tasksByDate, today);
         
     } catch (error) {
@@ -445,7 +467,7 @@ function renderCalendar(tasksByDate, today) {
             day.classList.add('calendar__day-number--current');
         }
         
-        // Формируем ключ даты (локальная дата)
+        // Формирование ключа даты
         const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
         const dateTasks = tasksByDate[dateKey];
         
@@ -460,14 +482,14 @@ function renderCalendar(tasksByDate, today) {
                 day.classList.add('calendar__day-number--has-planned');
             }
             
-            // Добавляем всплывающую подсказку
+            // Всплывающие подсказки
             const taskTitles = dateTasks.map(t => `${t.status === 'overdue' ? '⚠️' : '📅'} ${t.title}`).join('\n');
             day.title = taskTitles;
         }
         
         week.appendChild(day);
         
-        // Проверяем конец недели (воскресенье)
+        // Проверка на конец недели
         const dayOfWeek = new Date(currentYear, currentMonth, i).getDay();
         const isSunday = dayOfWeek === 0;
         
@@ -481,7 +503,7 @@ function renderCalendar(tasksByDate, today) {
     }
 }
 
-// Запускаем загрузку
+
 loadTasksAndRenderCalendar();
 
 

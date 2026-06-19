@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     
-    // ========== ЭЛЕМЕНТЫ ==========
+    // ЭЛЕМЕНТЫ
     const editBtn = document.querySelector('.btn-hero-edit');
     const editPanel = document.getElementById('categoryEditPanel');
     const overlay = document.getElementById('categoryEditOverlay');
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
             colorInput.value = data.color || '#C7CEEA';
             descriptionInput.value = data.description || '';
             
-            // Обновляем название цвета
+            // Обновляет название цвета
             const colorOption = document.querySelector(`#editColorDropdown .color-option[data-color="${data.color}"]`);
             if (colorOption && colorName) {
                 colorName.textContent = colorOption.dataset.name;
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = '';
     }
     
-    // ========== ОТКРЫТИЕ/ЗАКРЫТИЕ ==========
+    // ОТКРЫТИЕ/ЗАКРЫТИЕ
     if (editBtn) {
         editBtn.addEventListener('click', openEditPanel);
     }
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // ========== ВЫБОР ЭМОДЗИ ==========
+    // ВЫБОР ЭМОДЗИ
     const emojiPickerBtn = document.getElementById('editEmojiPickerBtn');
     const emojiContainer = document.getElementById('editEmojiPickerContainer');
     
@@ -161,63 +161,72 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-// ========== ВЫБОР ЦВЕТА ==========
-const colorSelectorBtn = document.getElementById('editColorSelectorBtn');
-const colorDropdown = document.getElementById('editColorDropdown');
+    // ВЫБОР ЦВЕТА
+    const colorSelectorBtn = document.getElementById('editColorSelectorBtn');
+    const colorDropdown = document.getElementById('editColorDropdown');
 
-if (colorSelectorBtn && colorDropdown) {
-    // Открытие/закрытие выпадающего списка
-    colorSelectorBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const isOpen = colorDropdown.style.display === 'block';
-        colorDropdown.style.display = isOpen ? 'none' : 'block';
-    });
+    if (colorSelectorBtn && colorDropdown) {
+        // Открытие/закрытие выпадающего списка
+        colorSelectorBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const isOpen = colorDropdown.style.display === 'block';
+            colorDropdown.style.display = isOpen ? 'none' : 'block';
+        });
 
-    // Делегирование событий — более надежный подход
-    colorDropdown.addEventListener('click', function(e) {
-        const option = e.target.closest('.color-option');
-        if (!option) return;
-        
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const selectedColor = option.dataset.color;
-        const selectedName = option.dataset.name;
-        
-        console.log('Выбран цвет:', selectedName, selectedColor);
-        
-        colorPreview.style.backgroundColor = selectedColor;
-        colorName.textContent = selectedName;
-        colorInput.value = selectedColor;
-        colorDropdown.style.display = 'none';
-    });
-
-    // Закрытие при клике вне
-    document.addEventListener('click', function(e) {
-        if (!colorDropdown.contains(e.target) && 
-            !colorSelectorBtn.contains(e.target)) {
+        colorDropdown.addEventListener('click', function(e) {
+            const option = e.target.closest('.color-option');
+            if (!option) return;
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const selectedColor = option.dataset.color;
+            const selectedName = option.dataset.name;
+            
+            colorPreview.style.backgroundColor = selectedColor;
+            colorName.textContent = selectedName;
+            colorInput.value = selectedColor;
             colorDropdown.style.display = 'none';
-        }
-    });
-}
+        });
+
+        // Закрытие при клике вне
+        document.addEventListener('click', function(e) {
+            if (!colorDropdown.contains(e.target) && 
+                !colorSelectorBtn.contains(e.target)) {
+                colorDropdown.style.display = 'none';
+            }
+        });
+    }
     
-    // ========== ОТПРАВКА ФОРМЫ ==========
+    // ОТПРАВКА ФОРМЫ
     if (editForm) {
         editForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const name = nameInput.value.trim();
+const name = nameInput?.value.trim();
+            const description = descriptionInput?.value.trim() || '';
+
             if (!name) {
-                alert('Введите название категории');
+                (window.validate ? window.validate.markError('editCategoryName', 'Введите название категории') : (window.notify ? window.notify.error('Введите название категории') : alert('Введите название категории')));
+                return;
+            }
+
+            if (name.length > 100) {
+                (window.validate ? window.validate.markError('editCategoryName', 'Название не должно превышать 100 символов') : (window.notify ? window.notify.error('Название не должно превышать 100 символов') : alert('Название не должно превышать 100 символов')));
+                return;
+            }
+
+            if (description.length > 500) {
+                (window.validate ? window.validate.markError('editCategoryDescription', 'Описание не должно превышать 500 символов') : (window.notify ? window.notify.error('Описание не должно превышать 500 символов') : alert('Описание не должно превышать 500 символов')));
                 return;
             }
             
             const formData = {
                 name: name,
-                emoji: emojiInput.value || '🎨',
-                color: colorInput.value,
-                description: descriptionInput.value || ''
+                emoji: editEmojiInput?.value || '🎨',
+                color: editColorInput?.value,
+                description: description
             };
             
             try {
@@ -233,7 +242,7 @@ if (colorSelectorBtn && colorDropdown) {
                 const data = await response.json();
                 
                 if (response.ok) {
-                    alert('✅ Категория успешно обновлена! Страница будет перезагружена.');
+                    alert('Категория успешно обновлена! Страница будет перезагружена.');
                     location.reload();
                 } else {
                     alert(data.error || data.message || 'Ошибка при обновлении');
@@ -246,7 +255,7 @@ if (colorSelectorBtn && colorDropdown) {
     }
     
 
-    // ========== УДАЛЕНИЕ ЗАДАЧ ==========
+    // УДАЛЕНИЕ ЗАДАЧ
     document.querySelectorAll('.btn-delete-task').forEach(btn => {
         btn.addEventListener('click', async function(e) {
             e.preventDefault();
@@ -269,8 +278,7 @@ if (colorSelectorBtn && colorDropdown) {
         });
     });
 
-    // ========== ВОЗОБНОВИТЬ (выполненные задачи) ==========
-    // Открывает дашборд с модальным окном таймера, заполненным данными задачи
+    // ВОЗОБНОВИТЬ
     document.querySelectorAll('.btn-resume').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -279,7 +287,7 @@ if (colorSelectorBtn && colorDropdown) {
             const title      = taskRow?.querySelector('.task-name')?.innerText || '';
             const catId      = document.querySelector('.btn-hero-edit')?.dataset.id || '';
 
-            // Передаём данные через sessionStorage — дашборд их подберёт
+            // Дашборд их подберёт
             sessionStorage.setItem('resumeTask', JSON.stringify({
                 categoryId:  catId,
                 description: title,
@@ -291,8 +299,7 @@ if (colorSelectorBtn && colorDropdown) {
         });
     });
 
-    // ========== НАЧАТЬ (невыполненные задачи) ==========
-    // То же самое но помечаем mode: 'start' — задача уже создана, только запускаем таймер
+    // НАЧАТЬ
     document.querySelectorAll('.btn-start-task').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -302,25 +309,24 @@ if (colorSelectorBtn && colorDropdown) {
             const catId   = document.querySelector('.btn-hero-edit')?.dataset.id || '';
 
             sessionStorage.setItem('resumeTask', JSON.stringify({
-                categoryId:  catId,
+                categoryId: catId,
                 description: title,
-                taskId:      taskId,
-                mode:        'start'   // отличие от resume
+                taskId: taskId,
+                mode: 'start'
             }));
 
             window.location.href = '/dashboard/';
         });
     });
 
-    console.log('✅ Панель редактирования категории инициализирована');
 });
-// ========== ОБРАБОТКА НА ДАШБОРДЕ ==========
-// Этот код запускается на дашборде и подбирает данные из sessionStorage
+
+
+// ОБРАБОТКА НА ДАШБОРДЕ
 (function() {
     const stored = sessionStorage.getItem('resumeTask');
     if (!stored) return;
 
-    // Только на дашборде
     if (!document.getElementById('openModalBtn')) return;
 
     sessionStorage.removeItem('resumeTask');
@@ -341,7 +347,6 @@ if (colorSelectorBtn && colorDropdown) {
             }
 
             setTimeout(() => {
-                // Выбираем категорию
                 const option = document.querySelector(
                     `.category-option[data-value="${task.categoryId}"], .category-option[data-id="${task.categoryId}"]`
                 );

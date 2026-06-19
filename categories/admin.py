@@ -1,4 +1,3 @@
-# categories/admin.py
 from django.contrib import admin
 from django import forms
 from django.utils.html import format_html
@@ -26,14 +25,14 @@ class CategoryAdmin(admin.ModelAdmin):
     Task_count.short_description = 'Задач'
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        """Обычный пользователь видит только себя при выборе владельца"""
+        # Обычный пользователь видит только себя при выборе владельца
         if db_field.name == "user":
             if not request.user.is_superuser:
                 kwargs["queryset"] = User.objects.filter(id=request.user.id)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
     
     def save_model(self, request, obj, form, change):
-        """Автоматически назначаем владельца при создании категории"""
+        # Автоматически назначаем владельца при создании категории
         if not obj.pk:  # Только при создании
             obj.user = request.user
         super().save_model(request, obj, form, change)

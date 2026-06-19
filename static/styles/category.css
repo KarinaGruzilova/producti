@@ -43,7 +43,7 @@ h4, h5, h6 {
     font-weight: normal;
 }
 
-/* ── ВЕРХНЯЯ ПАНЕЛЬ ── */
+/* ВЕРХНЯЯ ПАНЕЛЬ */
 .category-hero {
     border-radius: 40px;
     padding: 48px 60px;
@@ -83,7 +83,6 @@ h4, h5, h6 {
     box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
-/* Название категории — Unbounded */
 .category-hero-text h1 {
     font-family: 'Unbounded', sans-serif;
     font-size: 30px;
@@ -115,7 +114,7 @@ h4, h5, h6 {
 .btn-hero-delete { background: white; color: #FF4444; border: 1px solid #FF4444; }
 .btn-hero-delete:hover { background: #FF4444; color: white; }
 
-/* ── МЕТРИКИ ── */
+/* МЕТРИКИ */
 .key-metrics {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -132,7 +131,7 @@ h4, h5, h6 {
 
 .metric-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.05); }
 
-/* Числа метрик — Unbounded */
+
 .metric-value {
     font-family: 'Unbounded', sans-serif;
     font-size: 40px;
@@ -161,7 +160,7 @@ h4, h5, h6 {
 .trend-down { background-color: rgba(244,67,54,0.15); color: #F44336; }
 .trend-neutral { background-color: rgba(158,158,158,0.15); color: #757575; }
 
-/* ── ДВЕ КОЛОНКИ ── */
+/* ДВЕ КОЛОНКИ */
 .two-columns { display: flex; gap: 32px; }
 
 .chart-column {
@@ -179,7 +178,7 @@ h4, h5, h6 {
     border-bottom: 1px solid #F0F0F0;
 }
 
-/* Заголовок графика — Unbounded */
+
 .chart-header h3 {
     font-family: 'Unbounded', sans-serif;
     font-size: 16px;
@@ -244,7 +243,6 @@ h4, h5, h6 {
     border-bottom: 1px solid #F0F0F0;
 }
 
-/* Заголовок инсайтов — Unbounded */
 .insights-header h3 {
     font-family: 'Unbounded', sans-serif;
     font-size: 16px;
@@ -285,7 +283,7 @@ h4, h5, h6 {
     margin-top: 2px;
 }
 
-/* ── СПИСОК ЗАДАЧ ── */
+/* СПИСОК ЗАДАЧ */
 .tasks-section {
     background: white;
     border-radius: 40px;
@@ -301,7 +299,6 @@ h4, h5, h6 {
     border-bottom: 1px solid #F0F0F0;
 }
 
-/* Заголовок секции задач — Unbounded */
 .tasks-header h3 {
     font-family: 'Unbounded', sans-serif;
     font-size: 16px;
@@ -404,7 +401,7 @@ h4, h5, h6 {
     font-family: 'DVDDS', sans-serif;
 }
 
-/* ── ПУСТОЕ СОСТОЯНИЕ ── */
+
 .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -418,7 +415,6 @@ h4, h5, h6 {
     margin-bottom: 20px;
 }
 
-/* ── КНОПКА НАЗАД ── */
 .back-nav { margin-top: 32px; text-align: center; }
 
 .btn-back {
@@ -438,7 +434,7 @@ h4, h5, h6 {
 
 .btn-back:hover { background: #2D268C; }
 
-/* ── ДВЕ КОЛОНКИ ЗАДАЧ ── */
+/* ДВЕ КОЛОНКИ ЗАДАЧ */
 .two-columns-tasks { display: flex; gap: 32px; margin-bottom: 32px; }
 
 .two-columns-tasks .tasks-section {
@@ -464,7 +460,7 @@ h4, h5, h6 {
 
 .pending-tasks .btn-start-task:hover { background: #AEBCFE; color: #2D268C; }
 
-/* ── ПАНЕЛЬ РЕДАКТИРОВАНИЯ ── */
+/* ПАНЕЛЬ РЕДАКТИРОВАНИЯ */
 .category-edit-panel {
     position: fixed;
     top: 0;
@@ -490,7 +486,7 @@ h4, h5, h6 {
     border-bottom: 1px solid #F0F0F0;
 }
 
-/* Заголовок панели редактирования — Unbounded */
+
 .category-edit-header h3 {
     font-family: 'Unbounded', sans-serif;
     font-size: 16px;

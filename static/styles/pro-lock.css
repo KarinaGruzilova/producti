@@ -1,8 +1,3 @@
-/* ============================================================
-   pro_lock.css | Producti — Ограничения Free тарифа
-   ============================================================ */
-
-/* ── ОБЁРТКА ЗАБЛОКИРОВАННОГО БЛОКА ── */
 .pro-lock-wrapper {
     position: relative;
     overflow: hidden;
@@ -22,7 +17,6 @@
     pointer-events: all;
 }
 
-/* ── БЕЙДЖ С ЗАМКОМ ── */
 .pro-lock-badge {
     position: absolute;
     top: 50%;
@@ -83,69 +77,6 @@
     transform: translateY(-2px);
 }
 
-/* ── ЗАБЛОКИРОВАННАЯ КНОПКА ── */
-.btn-locked {
-    position: relative;
-    opacity: 0.5;
-    cursor: not-allowed !important;
-    pointer-events: none;
-}
-
-.btn-locked::after {
-    content: '🔒';
-    position: absolute;
-    right: -24px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 14px;
-}
-
-/* ── ТУЛТИП НА ЗАБЛОКИРОВАННОЙ КНОПКЕ ── */
-.btn-pro-tooltip {
-    position: relative;
-    cursor: pointer;
-}
-
-.btn-pro-tooltip .tooltip-text {
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #2A2A2A;
-    color: #fff;
-    font-family: 'DVDDS', sans-serif;
-    font-size: 12px;
-    padding: 6px 14px;
-    border-radius: 20px;
-    white-space: nowrap;
-    transition: opacity 0.2s;
-    z-index: 100;
-    pointer-events: none;
-}
-
-.btn-pro-tooltip:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* ── МАЛЕНЬКИЙ ЗАМОК НА ПУНКТАХ МЕНЮ/БЕЙДЖАХ ── */
-.pro-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 8px;
-    background: linear-gradient(135deg, #2D268C, #AEBCFE);
-    color: #fff;
-    border-radius: 20px;
-    font-family: 'DVDDS', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    vertical-align: middle;
-    margin-left: 6px;
-}
 
 @keyframes slideDown {
     from { opacity: 0; transform: translateX(-50%) translateY(-16px); }

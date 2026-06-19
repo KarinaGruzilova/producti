@@ -1,17 +1,14 @@
-// static/js/category.js
-
 document.addEventListener('DOMContentLoaded', function() {
     
-    // ========== 1. ЭЛЕМЕНТЫ ==========
+    // 1. ЭЛЕМЕНТЫ
     const modal = document.getElementById('createCategoryModal');
-    // СТАЛО — если оверлея нет, создаём его динамически:
-let overlay = document.getElementById('modalOverlay');
-if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'modalOverlay';
-    overlay.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(20,16,60,0.55); backdrop-filter:blur(6px); z-index:200;';
-    document.body.appendChild(overlay);
-}
+    let overlay = document.getElementById('modalOverlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'modalOverlay';
+        overlay.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(20,16,60,0.55); backdrop-filter:blur(6px); z-index:200;';
+        document.body.appendChild(overlay);
+    }
     const openBtn = document.getElementById('openCategoryModalBtn');
     const closeBtn = modal?.querySelector('.close-mod2');
     
@@ -42,7 +39,7 @@ if (!overlay) {
     let retryCount = 0;
     const MAX_RETRIES = 10;
     
-    // ========== 2. CSRF ТОКЕН ==========
+    // 2. CSRF ТОКЕН
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -58,7 +55,7 @@ if (!overlay) {
         return cookieValue;
     }
     
-    // ========== 3. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+    // 3. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
     function escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');
@@ -73,10 +70,10 @@ if (!overlay) {
         return `${minutes}м`;
     }
     
-    // ========== 4. ОТОБРАЖЕНИЕ КАТЕГОРИЙ ==========
+    // 4. ОТОБРАЖЕНИЕ КАТЕГОРИЙ
     function renderCategories(categories) {
         if (!categoriesContainer) {
-            console.error('❌ Контейнер .activities не найден');
+            console.error(' Контейнер .activities не найден');
             return;
         }
         
@@ -102,7 +99,7 @@ if (!overlay) {
                                 ${cat.emoji || '📁'}
                             </div>
                             <div class="text">
-                                <span>${escapeHtml(cat.name)}</span>
+                                <span>${escapeHtml(truncateText(cat.name, 20))}</span>
                                 <p class="info-time">объем работы: ${totalTime}</p>
                             </div>
                         </a>
@@ -133,9 +130,8 @@ if (!overlay) {
         initEditButtons();
     }
     
-    // ========== 5. ЗАГРУЗКА КАТЕГОРИЙ ==========
+    // 5. ЗАГРУЗКА КАТЕГОРИЙ
     function loadCategories() {
-        console.log('📡 Загрузка категорий...');
         const csrftoken = getCookie('csrftoken');
         
         fetch('/api/categories/', {
@@ -143,15 +139,14 @@ if (!overlay) {
         })
         .then(response => response.json())
         .then(categories => {
-            console.log('📦 Получены категории:', categories);
             renderCategories(categories);
         })
         .catch(error => {
-            console.error('❌ Ошибка загрузки категорий:', error);
+            console.error(' Ошибка загрузки категорий:', error);
             if (categoriesContainer) {
                 categoriesContainer.innerHTML = `
                     <div class="error-state">
-                        <p>❌ Ошибка загрузки категорий</p>
+                        <p> Ошибка загрузки категорий</p>
                         <button onclick="location.reload()">Обновить</button>
                     </div>
                 `;
@@ -159,10 +154,9 @@ if (!overlay) {
         });
     }
     
-    // ========== 6. УДАЛЕНИЕ КАТЕГОРИИ ==========
+    // 6. УДАЛЕНИЕ КАТЕГОРИИ
     function initDeleteButtons() {
         const deleteButtons = document.querySelectorAll('.btn-delete');
-        console.log('🔍 Найдено кнопок удаления:', deleteButtons.length);
         
         deleteButtons.forEach(button => {
             const newButton = button.cloneNode(true);
@@ -189,7 +183,7 @@ if (!overlay) {
                 .then(response => {
                     if (response.ok) {
                         categoryElement?.remove();
-                        (window.notify ? window.notify.success('✅ Категория удалена') : alert('✅ Категория удалена'));
+                        (window.notify ? window.notify.success('Категория удалена') : alert('Категория удалена'));
                         loadCategories();
                     } else {
                         throw new Error('Ошибка при удалении');
@@ -197,13 +191,13 @@ if (!overlay) {
                 })
                 .catch(error => {
                     console.error('Ошибка:', error);
-                    (window.notify ? window.notify.error('❌ Ошибка при удалении') : alert('❌ Ошибка при удалении'));
+                    (window.notify ? window.notify.error(' Ошибка при удалении') : alert(' Ошибка при удалении'));
                 });
             });
         });
     }
     
-    // ========== 7. РЕДАКТИРОВАНИЕ КАТЕГОРИИ (открытие панели) ==========
+    // 7. РЕДАКТИРОВАНИЕ КАТЕГОРИИ
     function openEditModal(categoryId, categoryName, categoryEmoji, categoryColor, categoryDesc) {
         if (!editPanel || !editOverlay) {
             console.error('Панель редактирования не найдена');
@@ -236,7 +230,6 @@ if (!overlay) {
     
     function initEditButtons() {
         const editButtons = document.querySelectorAll('.edit-category-btn');
-        console.log('🔍 Найдено кнопок редактирования:', editButtons.length);
         
         editButtons.forEach(button => {
             button.addEventListener('click', function(e) {
@@ -254,7 +247,6 @@ if (!overlay) {
     }
     function initColorSelector() {
     if (!colorBtn || !colorDropdown || !colorOptions.length) {
-        console.log('⚠️ Элементы выбора цвета не найдены');
         return;
     }
     
@@ -271,21 +263,16 @@ if (!overlay) {
             const selectedColor = this.dataset.color;
             const selectedName = this.dataset.name;
             
-            // Обновляем визуальные элементы
             if (colorPreview) colorPreview.style.backgroundColor = selectedColor;
             if (colorName) colorName.textContent = selectedName;
             
-            // 🔥 ВАЖНО: обновляем скрытое поле colorInput
             if (colorInput) {
                 colorInput.value = selectedColor;
-                console.log('🎨 Цвет сохранён в input:', selectedColor);
             }
             
-            // Убираем выделение с других опций
             colorOptions.forEach(opt => opt.classList.remove('selected'));
             this.classList.add('selected');
-            
-            // Закрываем выпадающий список
+
             colorDropdown.style.display = 'none';
         });
     });
@@ -297,7 +284,7 @@ if (!overlay) {
         }
     });
     
-    // 🔥 ДОБАВЛЯЕМ: устанавливаем дефолтный цвет при загрузке
+    // Устанавливает дефолтный цвет при загрузке
     if (colorInput && !colorInput.value) {
         colorInput.value = '#C7CEEA';
     }
@@ -305,12 +292,10 @@ if (!overlay) {
         colorPreview.style.backgroundColor = '#C7CEEA';
     }
     
-    console.log('✅ Инициализация выбора цвета завершена, текущий цвет:', colorInput?.value);
 }
     
-    // ========== 8. УПРАВЛЕНИЕ МОДАЛЬНЫМ ОКНОМ СОЗДАНИЯ ==========
+    // 8. УПРАВЛЕНИЕ МОДАЛЬНЫМ ОКНОМ СОЗДАНИЯ
     function openModal() {
-        console.log('📂 Открываем модальное окно');
         modal.style.display = 'block';
         overlay.style.display = 'block';
         document.body.style.overflow = 'hidden';
@@ -342,14 +327,26 @@ if (!overlay) {
     if (cancelBtn) cancelBtn.addEventListener('click', closeEditPanel);
     if (editOverlay) editOverlay.addEventListener('click', closeEditPanel);
     
-    // ========== 9. СОХРАНЕНИЕ РЕДАКТИРОВАНИЯ ==========
+    // 9. СОХРАНЕНИЕ РЕДАКТИРОВАНИЯ
     if (editForm) {
         editForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const name = editNameInput?.value.trim();
+const name = editNameInput?.value.trim();
+            const description = editDescriptionInput?.value.trim() || '';
+
             if (!name) {
-                (window.validate ? window.validate.markError('category-name', 'Введите название категории') : (window.notify ? window.notify.error('Введите название категории') : alert('Введите название категории')));
+                (window.validate ? window.validate.markError('editCategoryName', 'Введите название категории') : (window.notify ? window.notify.error('Введите название категории') : alert('Введите название категории')));
+                return;
+            }
+
+            if (name.length > 100) {
+                (window.validate ? window.validate.markError('editCategoryName', 'Название не должно превышать 100 символов') : (window.notify ? window.notify.error('Название не должно превышать 100 символов') : alert('Название не должно превышать 100 символов')));
+                return;
+            }
+
+            if (description.length > 500) {
+                (window.validate ? window.validate.markError('editCategoryDescription', 'Описание не должно превышать 500 символов') : (window.notify ? window.notify.error('Описание не должно превышать 500 символов') : alert('Описание не должно превышать 500 символов')));
                 return;
             }
             
@@ -357,7 +354,7 @@ if (!overlay) {
                 name: name,
                 emoji: editEmojiInput?.value || '🎨',
                 color: editColorInput?.value,
-                description: editDescriptionInput?.value || ''
+                description: description
             };
             
             const csrftoken = getCookie('csrftoken');
@@ -373,64 +370,64 @@ if (!overlay) {
                 });
                 
                 if (response.ok) {
-                    (window.notify ? window.notify.success('✅ Категория успешно обновлена!') : alert('✅ Категория успешно обновлена!'));
+                    (window.notify ? window.notify.success('Категория успешно обновлена!') : alert('Категория успешно обновлена!'));
                     location.reload();
                 } else {
-                    (window.notify ? window.notify.error('❌ Ошибка при обновлении') : alert('❌ Ошибка при обновлении'));
+                    (window.notify ? window.notify.error(' Ошибка при обновлении') : alert(' Ошибка при обновлении'));
                 }
             } catch (error) {
                 console.error('Ошибка:', error);
-                (window.notify ? window.notify.error('❌ Ошибка сети') : alert('❌ Ошибка сети'));
+                (window.notify ? window.notify.error(' Ошибка сети') : alert(' Ошибка сети'));
             }
         });
     }
     
- // ========== ВЫБОР ЦВЕТА (делегирование) ==========
-document.addEventListener('click', function(e) {
-    // Открытие выпадающего списка
-    const colorBtn = e.target.closest('#editColorSelectorBtn');
-    if (colorBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-        const dropdown = document.getElementById('editColorDropdown');
-        if (dropdown) {
-            const isOpen = dropdown.style.display === 'block';
-            dropdown.style.display = isOpen ? 'none' : 'block';
+    // ВЫБОР ЦВЕТА (делегирование)
+    document.addEventListener('click', function(e) {
+        // Открытие выпадающего списка
+        const colorBtn = e.target.closest('#editColorSelectorBtn');
+        if (colorBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            const dropdown = document.getElementById('editColorDropdown');
+            if (dropdown) {
+                const isOpen = dropdown.style.display === 'block';
+                dropdown.style.display = isOpen ? 'none' : 'block';
+            }
+            return;
         }
-        return;
-    }
-    
-    // Выбор цвета
-    const colorOption = e.target.closest('#editColorDropdown .color-option');
-    if (colorOption) {
-        e.preventDefault();
-        e.stopPropagation();
-        const selectedColor = colorOption.dataset.color;
-        const selectedName = colorOption.dataset.name;
         
-        const preview = document.getElementById('editColorPreview');
-        const nameSpan = document.getElementById('editColorName');
-        const input = document.getElementById('editColorInput');
-        
-        if (preview) preview.style.backgroundColor = selectedColor;
-        if (nameSpan) nameSpan.textContent = selectedName;
-        if (input) input.value = selectedColor;
-        
-        const dropdown = document.getElementById('editColorDropdown');
-        if (dropdown) dropdown.style.display = 'none';
-    }
-});
+        // Выбор цвета
+        const colorOption = e.target.closest('#editColorDropdown .color-option');
+        if (colorOption) {
+            e.preventDefault();
+            e.stopPropagation();
+            const selectedColor = colorOption.dataset.color;
+            const selectedName = colorOption.dataset.name;
+            
+            const preview = document.getElementById('editColorPreview');
+            const nameSpan = document.getElementById('editColorName');
+            const input = document.getElementById('editColorInput');
+            
+            if (preview) preview.style.backgroundColor = selectedColor;
+            if (nameSpan) nameSpan.textContent = selectedName;
+            if (input) input.value = selectedColor;
+            
+            const dropdown = document.getElementById('editColorDropdown');
+            if (dropdown) dropdown.style.display = 'none';
+        }
+    });
 
-// Закрытие при клике вне
-document.addEventListener('click', function(e) {
-    const dropdown = document.getElementById('editColorDropdown');
-    const btn = document.getElementById('editColorSelectorBtn');
-    if (dropdown && btn && !btn.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.style.display = 'none';
-    }
-});
+    // Закрытие при клике вне
+    document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('editColorDropdown');
+        const btn = document.getElementById('editColorSelectorBtn');
+        if (dropdown && btn && !btn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
     
-    // ========== 11. ВЫБОР ЭМОДЗИ ==========
+    // 11. ВЫБОР ЭМОДЗИ
     function initEmojiPicker() {
         const emojiBtn = document.getElementById('emojiPickerBtn');
         const emojiContainer = document.getElementById('emojiPickerContainer');
@@ -483,7 +480,7 @@ document.addEventListener('click', function(e) {
         return false;
     }
     
-    // ========== 12. СОЗДАНИЕ КАТЕГОРИИ ==========
+    // 12. СОЗДАНИЕ КАТЕГОРИИ
     function initCategoryForm() {
         if (!form) return;
         
@@ -522,22 +519,22 @@ document.addEventListener('click', function(e) {
                 })
             })
             .then(response => response.json())
-.then(data => {
-    if (data.id) {
-        (window.notify ? window.notify.success(`Категория "${data.name}" создана!`) : alert(`Категория "${data.name}" успешно создана!`));
-        closeModal();
-        loadCategories();
-        nameInput.value = '';
-        if (emojiSpan) emojiSpan.textContent = '🎨';
-        const colorPreview = document.getElementById('selectedColorPreview');
-        if (colorPreview) colorPreview.style.backgroundColor = '#C7CEEA';
-        if (colorInputEl) colorInputEl.value = '#C7CEEA';
-        return; // ← добавь это
-    }
-    // Показываем ошибку только если нет id
-    const errorMsg = data.error || data.name?.[0] || 'Ошибка при создании категории';
-    (window.notify ? window.notify.error(errorMsg) : alert(errorMsg));
-})
+            .then(data => {
+                if (data.id) {
+                    (window.notify ? window.notify.success(`Категория "${data.name}" создана!`) : alert(`Категория "${data.name}" успешно создана!`));
+                    closeModal();
+                    loadCategories();
+                    nameInput.value = '';
+                    if (emojiSpan) emojiSpan.textContent = '🎨';
+                    const colorPreview = document.getElementById('selectedColorPreview');
+                    if (colorPreview) colorPreview.style.backgroundColor = '#C7CEEA';
+                    if (colorInputEl) colorInputEl.value = '#C7CEEA';
+                    return;
+                }
+                // Показывает ошибку только если нет id
+                const errorMsg = data.error || data.name?.[0] || 'Ошибка при создании категории';
+                (window.notify ? window.notify.error(errorMsg) : alert(errorMsg));
+            })
             .catch(error => {
                 console.error('Ошибка:', error);
                 (window.notify ? window.notify.error('Ошибка при создании категории') : alert('Ошибка при создании категории'));
@@ -550,88 +547,87 @@ document.addEventListener('click', function(e) {
             });
         });
     }
-    // ── ВЫБОР ЦВЕТА ДЛЯ МОДАЛКИ СОЗДАНИЯ ──
-function initColorSelector() {
-    const btn      = document.getElementById('colorSelectorBtn');
-    const dropdown = document.getElementById('colorDropdown');
-    const preview  = document.getElementById('selectedColorPreview');
-    const input    = document.getElementById('colorInput');
-    if (!btn || !dropdown) return;
 
-    btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    });
+    // ВЫБОР ЦВЕТА ДЛЯ МОДАЛКИ СОЗДАНИЯ
+    function initColorSelector() {
+        const btn      = document.getElementById('colorSelectorBtn');
+        const dropdown = document.getElementById('colorDropdown');
+        const preview  = document.getElementById('selectedColorPreview');
+        const input    = document.getElementById('colorInput');
+        if (!btn || !dropdown) return;
 
-    dropdown.querySelectorAll('.color-option').forEach(option => {
-        option.addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (preview) preview.style.backgroundColor = this.dataset.color;
-            if (input)   input.value = this.dataset.color;
-            dropdown.style.display = 'none';
-        });
-    });
-
-    document.addEventListener('click', function(e) {
-        if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.style.display = 'none';
-        }
-    });
-    colorSelectorInitialized = true;
-}
-
-// ── ЭМОДЗИ ДЛЯ ПАНЕЛИ РЕДАКТИРОВАНИЯ ──
-function initEditEmojiPicker() {
-    const emojiBtn       = document.getElementById('editEmojiPickerBtn');
-    const emojiContainer = document.getElementById('editEmojiPickerContainer');
-    if (!emojiBtn || !emojiContainer) return;
-
-    const hasEmojiPicker = typeof customElements !== 'undefined' && customElements.get('emoji-picker');
-    if (!hasEmojiPicker) return;
-
-    try {
-        emojiContainer.innerHTML = '';
-        const picker = document.createElement('emoji-picker');
-        picker.classList.add('light');
-
-    picker.addEventListener('emoji-click', (event) => {
-        const emoji = event.detail.unicode;
-        const span  = document.getElementById('editSelectedEmoji');
-        const input = document.getElementById('editEmojiInput');
-        if (span)  span.textContent = emoji;
-        if (input) input.value = emoji;
-        emojiContainer.style.display = 'none';
-    });
-
-        emojiContainer.appendChild(picker);
-
-        const newBtn = emojiBtn.cloneNode(true);
-        emojiBtn.parentNode.replaceChild(newBtn, emojiBtn);
-
-        newBtn.addEventListener('click', function(e) {
+        btn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            emojiContainer.style.display =
-                emojiContainer.style.display === 'block' ? 'none' : 'block';
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+
+        dropdown.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (preview) preview.style.backgroundColor = this.dataset.color;
+                if (input)   input.value = this.dataset.color;
+                dropdown.style.display = 'none';
+            });
         });
 
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('#editEmojiPickerContainer') &&
-                !e.target.closest('#editEmojiPickerBtn')) {
-                emojiContainer.style.display = 'none';
+            if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
             }
         });
-    } catch(err) {
-        console.error('Ошибка эмодзи панели:', err);
+        colorSelectorInitialized = true;
     }
-}
-    // ========== 13. ЗАПУСК ==========
+
+    // ЭМОДЗИ ДЛЯ ПАНЕЛИ РЕДАКТИРОВАНИЯ
+    function initEditEmojiPicker() {
+        const emojiBtn       = document.getElementById('editEmojiPickerBtn');
+        const emojiContainer = document.getElementById('editEmojiPickerContainer');
+        if (!emojiBtn || !emojiContainer) return;
+
+        const hasEmojiPicker = typeof customElements !== 'undefined' && customElements.get('emoji-picker');
+        if (!hasEmojiPicker) return;
+
+        try {
+            emojiContainer.innerHTML = '';
+            const picker = document.createElement('emoji-picker');
+            picker.classList.add('light');
+
+        picker.addEventListener('emoji-click', (event) => {
+            const emoji = event.detail.unicode;
+            const span  = document.getElementById('editSelectedEmoji');
+            const input = document.getElementById('editEmojiInput');
+            if (span)  span.textContent = emoji;
+            if (input) input.value = emoji;
+            emojiContainer.style.display = 'none';
+        });
+
+            emojiContainer.appendChild(picker);
+
+            const newBtn = emojiBtn.cloneNode(true);
+            emojiBtn.parentNode.replaceChild(newBtn, emojiBtn);
+
+            newBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                emojiContainer.style.display =
+                    emojiContainer.style.display === 'block' ? 'none' : 'block';
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#editEmojiPickerContainer') &&
+                    !e.target.closest('#editEmojiPickerBtn')) {
+                    emojiContainer.style.display = 'none';
+                }
+            });
+        } catch(err) {
+            console.error('Ошибка эмодзи панели:', err);
+        }
+    }
+
     loadCategories();
     initCategoryForm();
-    initColorSelector();      // ← добавь
+    initColorSelector();
     initEditEmojiPicker(); 
     window.openEditModal = openEditModal;
-    
-    console.log('🚀 category.js загружен');
 });

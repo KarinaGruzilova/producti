@@ -16,10 +16,10 @@ from categories.forms import CategoryCreateForm
 logger = logging.getLogger(__name__)
 
 
-# ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+# ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 
 def format_duration(seconds):
-    """Форматирование секунд в '1ч 15м'"""
+    # Форматирование секунд в '1ч 15м'
     hours = seconds // 3600
     minutes = (seconds % 3600) // 60
     if hours > 0:
@@ -35,7 +35,7 @@ def truncate_text(text, max_length=40):
     return text
 
 
-# ========== ОСНОВНЫЕ VIEWS ==========
+# ОСНОВНЫЕ VIEWS
 
 def index(request):
     # Если пользователь уже авторизован — перенаправляем на дашборд
@@ -44,7 +44,7 @@ def index(request):
     return render(request, 'main/index.html')
 
 def proversion(request):
-    """Страница Pro-версии"""
+    # Страница Pro-версии
     context = {
         'user_is_authenticated': request.user.is_authenticated,
         'user_is_pro': request.user.is_authenticated and request.user.is_pro,
@@ -54,10 +54,9 @@ def proversion(request):
 
 @login_required
 def dashboard(request):
-    # Получаем текущую дату и время
     current_datetime = datetime.now()
 
-    # Форматируем дату на русском языке
+    # Форматирует дату на русском языке
     months_ru = {
         1: 'Янв', 2: 'Фев', 3: 'Мар', 4: 'Апр', 5: 'Май', 6: 'Июн',
         7: 'Июл', 8: 'Авг', 9: 'Сен', 10: 'Окт', 11: 'Ноя', 12: 'Дек'
@@ -66,19 +65,19 @@ def dashboard(request):
     formatted_date = f"{months_ru[current_datetime.month]} {current_datetime.day:02d}, {current_datetime.year}"
     formatted_time = current_datetime.strftime("%H:%M")
 
-    # Получаем категории текущего пользователя
+    # Получает категории текущего пользователя
     categories = Category.objects.filter(user=request.user, is_active=True)
 
-    # ========== ГРАФИК ДНЕЙ НЕДЕЛИ ==========
+    # ГРАФИК ДНЕЙ НЕДЕЛИ
     user = request.user
     today = timezone.now().date()
     
-    # Получаем начало недели (понедельник)
+    # Получаем начало недели
     start_of_week = today - timedelta(days=today.weekday())
     
     # Данные за каждый день недели
     week_data = []
-    week_total = 0  # ← обязательно определить ДО цикла
+    week_total = 0
     max_hours = 0
     
     days_ru = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
@@ -87,7 +86,7 @@ def dashboard(request):
     for i in range(7):
         current_day = start_of_week + timedelta(days=i)
         
-        # Суммируем время за день
+        # Суммирует время за день
         day_sessions = Task.objects.filter(
             user=user,
             created_at__date=current_day
@@ -97,7 +96,7 @@ def dashboard(request):
         total_hours = total_seconds / 3600
         week_total += total_hours
         
-        # Находим максимальное значение для масштабирования
+        # Максимальное значение для масштабирования
         if total_hours > max_hours:
             max_hours = total_hours
         
@@ -112,13 +111,13 @@ def dashboard(request):
     if max_hours == 0:
         max_hours = 1
 
-    # ========== ПОСЛЕДНИЕ 10 СЕАНСОВ ==========
+    # ПОСЛЕДНИЕ 10 СЕАНСОВ
     recent_tasks = Task.objects.filter(
         user=request.user,
-        duration_seconds__gt=0  # 🔥 ТОЛЬКО ЗАДАЧИ С ПОТРАЧЕННЫМ ВРЕМЕНЕМ
+        duration_seconds__gt=0
     ).select_related('category').order_by('-created_at')[:10]
 
-    # Группируем по датам
+    # Группирую по датам
     today_date = timezone.now().date()
     yesterday_date = today_date - timedelta(days=1)
 
@@ -155,7 +154,6 @@ def dashboard(request):
         else:
             sessions_by_day['older'].append(session_data)
 
-    # ========== КОНТЕКСТ ==========
     context = {
         'current_date': formatted_date,
         'current_time': formatted_time,
@@ -175,9 +173,7 @@ def dashboard(request):
 @require_POST
 @csrf_protect
 def create_category(request):
-    """
-    Создание новой категории через AJAX
-    """
+    # Создание новой категории через AJAX
     print("\n" + "="*50)
     print("ЗАПРОС НА СОЗДАНИЕ КАТЕГОРИИ")
     print("="*50)
@@ -224,25 +220,23 @@ def create_category(request):
             'errors': form.errors
         }, status=400)
 
-# ========== НОВЫЙ VIEW ДЛЯ СОХРАНЕНИЯ РЕЗУЛЬТАТОВ ТАЙМЕРА ==========
+# ДЛЯ СОХРАНЕНИЯ РЕЗУЛЬТАТОВ ТАЙМЕРА
 
 @login_required
 @require_POST
-@csrf_protect  # Для упрощения, но лучше использовать csrf_protect с правильным токеном
+@csrf_protect
 def save_timer_result(request):
-    """
-    Сохранение результата таймера
-    """
+    # Сохранение результата таймера
     print("\n" + "="*50)
     print("СОХРАНЕНИЕ РЕЗУЛЬТАТА ТАЙМЕРА")
     print("="*50)
     
     try:
-        # Парсим JSON из тела запроса
+        # JSON из тела запроса
         data = json.loads(request.body)
         print(f"Полученные данные: {data}")
         
-        # Получаем данные
+        # Данные
         category_id = data.get('category_id')
         task_description = data.get('task_description', '')
         duration_seconds = data.get('duration_seconds', 0)
@@ -255,61 +249,53 @@ def save_timer_result(request):
         print(f"Время: {duration_seconds} сек")
         print(f"Выполнена: {completed}")
         
-        # Проверяем наличие категории
+        # Проверяет наличие категории
         if not category_id:
             return JsonResponse({
                 'success': False,
                 'error': 'Не указана категория'
             }, status=400)
         
-        # Находим категорию (для стандартных категорий может не быть в БД)
+        # Находит категорию
         category = None
         try:
-            # Пробуем найти по ID (для категорий из БД)
-            category = Category.objects.get(id=category_id, user=request.user)
-        except (Category.DoesNotExist, ValueError):
-            # Если не нашли по ID, возможно это стандартная категория
-            # Создаем временную или ищем по имени
-            standard_categories = ['study', 'read', 'work', 'hobby']
-            if category_id in standard_categories:
-                # Для стандартных категорий создаем запись в БД
-                category_name_map = {
-                    'study': 'учеба',
-                    'read': 'чтение',
-                    'work': 'работа',
-                    'hobby': 'хобби'
-                }
-                category_emoji_map = {
-                    'study': '📚',
-                    'read': '📖',
-                    'work': '💼',
-                    'hobby': '🎨'
-                }
-                
-                # Проверяем, есть ли уже такая категория у пользователя
+            # Пробуем найти по ID
+            category = Category.objects.get(id=int(category_id), user=request.user)
+        except (Category.DoesNotExist, ValueError, TypeError):
+            name_map = {
+                'study': 'учеба', 'read': 'чтение',
+                'work': 'работа', 'hobby': 'хобби',
+                'учеба': 'учеба', 'чтение': 'чтение',
+                'работа': 'работа', 'хобби': 'хобби',
+            }
+            emoji_map = {'учеба': '📚', 'чтение': '📖', 'работа': '💼', 'хобби': '🎨'}
+            color_map = {'учеба': '#C7CEEA', 'чтение': '#B5EAD7', 'работа': '#FFDAC1', 'хобби': '#FFB6C1'}
+
+            cat_name = name_map.get(str(category_id).lower())
+            
+            if cat_name:
                 category = Category.objects.filter(
-                    user=request.user,
-                    name=category_name_map.get(category_id, category_id)
+                    user=request.user, name__iexact=cat_name
                 ).first()
-                
-                # Если нет, создаем
                 if not category:
                     category = Category.objects.create(
                         user=request.user,
-                        name=category_name_map.get(category_id, category_id),
-                        color='#C7CEEA',
-                        emoji=category_emoji_map.get(category_id, '📁'),
+                        name=cat_name,
+                        emoji=emoji_map.get(cat_name, '📁'),
+                        color=color_map.get(cat_name, '#C7CEEA'),
                         description='Стандартная категория'
                     )
-                    print(f"Создана стандартная категория: {category.name}")
-        
+                    print(f"Создана стандартная категория: {cat_name}")
+
+        if not category:
+            return JsonResponse({'success': False, 'error': 'Категория не найдена'}, status=400)       
         # Создаем задачу
         task_title = task_description if task_description else f"Фокус на {category.name if category else 'задаче'}"
         
         task = Task.objects.create(
             category=category,
             user=request.user,
-            title=task_title[:200],  # Обрезаем до 200 символов
+            title=task_title[:100],
             description=task_description,
             duration_seconds=duration_seconds,
             completed=completed
@@ -318,7 +304,6 @@ def save_timer_result(request):
         print(f"Задача создана: {task.title} (ID: {task.id})")
         print(f"Потрачено времени: {duration_seconds // 60} мин {duration_seconds % 60} сек")
         
-        # Формируем ответ
         response_data = {
             'success': True,
             'task': {
@@ -362,10 +347,10 @@ def save_timer_result(request):
 @require_POST
 @csrf_exempt
 def activate_pro(request):
-    """Активация Pro-подписки (заглушка для теста)"""
+    # Активация Pro-подписки
     user = request.user
     
-    # Активируем подписку на 30 дней
+    # Подписка на 30 дней
     user.is_pro = True
     user.subscription_until = timezone.now() + timedelta(days=30)
     user.save()

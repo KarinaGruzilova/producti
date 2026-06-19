@@ -50,7 +50,7 @@ def activities(request):
                 'hours': total_hours,
             })
     
-    # Сортируем по часам
+    # Сортирует по часам
     chart_data.sort(key=lambda x: x['hours'], reverse=True)
     
     TOP_LIMIT = 5
@@ -305,13 +305,6 @@ def tasks_calendar(request):
     return render(request, 'categories/tasks_calendar.html', context)
 
 
-
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.utils import timezone
-from categories.models import Category, Task
-from django.db.models import Sum
  
  
 @login_required

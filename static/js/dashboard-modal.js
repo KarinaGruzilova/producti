@@ -1,29 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // ========== 1. ПОЛУЧАЕМ ВСЕ НЕОБХОДИМЫЕ ЭЛЕМЕНТЫ ==========
+    // 1. ВСЕ НЕОБХОДИМЫЕ ЭЛЕМЕНТЫ
     
     // Модальные окна
-    const modal1 = document.getElementById('modal'); // Окно выбора категории
-    const modal2 = document.getElementById('createCategoryModal'); // Окно создания категории
-    const modal3 = document.getElementById('startTimerModal'); // Окно старта таймера
+    const modal1 = document.getElementById('modal');
+    const modal2 = document.getElementById('createCategoryModal');
+    const modal3 = document.getElementById('startTimerModal');
     
     // Элементы для затемнения
-    const overlay = document.getElementById('overlay'); // Затемнение всего экрана (для 3-го окна)
-    const contentContainer = document.querySelector('.content-container'); // Контейнер контента (для 1-го и 2-го окон)
-    const openBtn = document.getElementById('openModalBtn'); // Кнопка открытия главного окна
-    const closeBtn = document.querySelector('.close-btn'); // Крестик главного окна
+    const overlay = document.getElementById('overlay');
+    const contentContainer = document.querySelector('.content-container'); // Контейнер контента
+    const openBtn = document.getElementById('openModalBtn');
+    const closeBtn = document.querySelector('.close-btn')
     
-    // Элементы первого окна (категории)
-    const startBtn = document.querySelector('.button-mod1 .start'); // Кнопка "старт"
-    const createCategoryBtn = document.querySelector('.button-mod1 .create'); // Кнопка "+ новая категория"
-    const closeModal1 = document.querySelector('.close-mod1'); // Крестик первого окна
+    // Элементы первого окна
+    const startBtn = document.querySelector('.button-mod1 .start');
+    const createCategoryBtn = document.querySelector('.button-mod1 .create');
+    const closeModal1 = document.querySelector('.close-mod1');
     
-    // Элементы второго окна (создание категории)
-    const closeModal2 = document.querySelector('.close-mod2'); // Крестик второго окна
-    const categoryForm = document.getElementById('createCategoryForm'); // Форма создания
+    // Элементы второго окна
+    const closeModal2 = document.querySelector('.close-mod2');
+    const categoryForm = document.getElementById('createCategoryForm');
     const categoryInput = document.getElementById('category-name'); // Поле названия
     
-    // Элементы третьего окна (старт таймера)
-    const closeModal3 = document.querySelector('.close-mod3'); // Крестик третьего окна
+    // Элементы третьего окна
+    const closeModal3 = document.querySelector('.close-mod3');
     const startCategoryName = document.getElementById('startCategoryName');
     const startCategoryEmoji = document.getElementById('startCategoryEmoji');
     const startCategoryColor = document.getElementById('startCategoryColor');
@@ -32,9 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnStartCancel = document.querySelector('.btn-start-cancel');
     const btnStartBegin = document.querySelector('.btn-start-begin');
     
-    // ========== 2. ЭЛЕМЕНТЫ ВЫПАДАЮЩИХ СПИСКОВ ==========
+    // 2. ЭЛЕМЕНТЫ ВЫПАДАЮЩИХ СПИСКОВ
     
-    // Выпадающий список категорий (кнопка "выбрать")
     const categorySelectWrapper = document.querySelector('.category-select-wrapper');
     const categorySelectBtn = document.querySelector('.category-select-btn');
     const categoryOptions = document.querySelectorAll('.category-option:not([data-value="add-new"])');
@@ -47,13 +46,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const timeOptions = document.querySelectorAll('.time-option');
     const hiddenInput = document.getElementById('selected-minutes');
     
-    // ========== 3. ЭЛЕМЕНТЫ ЭМОДЗИ ПИКЕРА ==========
+    // 3. ЭЛЕМЕНТЫ ЭМОДЗИ ПИКЕРА
     const emojiPickerBtn = document.getElementById('emojiPickerBtn');
     const emojiPickerContainer = document.getElementById('emojiPickerContainer');
     const selectedEmoji = document.getElementById('selectedEmoji');
     const emojiInput = document.getElementById('emojiInput');
     
-    // ========== 4. ЭЛЕМЕНТЫ ВЫБОРА ЦВЕТА ==========
+    // 4. ЭЛЕМЕНТЫ ВЫБОРА ЦВЕТА
     const colorBtn = document.getElementById('colorSelectorBtn');
     const colorDropdown = document.getElementById('colorDropdown');
     const colorOptions = document.querySelectorAll('.color-option');
@@ -63,67 +62,50 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitBtn = document.getElementById('createCategorySubmit');
     const errorDiv = document.getElementById('categoryError');
 
-    // ========== 5. ФУНКЦИИ УПРАВЛЕНИЯ ЗАТЕМНЕНИЕМ ==========
+    // 5. ФУНКЦИИ УПРАВЛЕНИЯ ЗАТЕМНЕНИЕМ
     
-    /**
-     * Затемнить content-container (для 1-го и 2-го окон)
-     */
     function dimContentContainer() {
         if (contentContainer) {
             contentContainer.classList.add('dimmed');
         }
     }
     
-    /**
-     * Убрать затемнение с content-container
-     */
     function undimContentContainer() {
         if (contentContainer) {
             contentContainer.classList.remove('dimmed');
         }
     }
     
-    /**
-     * Показать overlay на весь экран (для 3-го окна)
-     * @param {number} opacity - степень затемнения (0.8 = 80%)
-     */
     function showOverlay(opacity = 0.8) {
         if (overlay) {
             overlay.style.opacity = opacity;
             overlay.classList.add('active');
         }
-        document.body.style.overflow = 'hidden'; // Блокируем прокрутку
+        document.body.style.overflow = 'hidden';
     }
     
-    /**
-     * Скрыть overlay
-     */
     function hideOverlay() {
         if (overlay) {
             overlay.classList.remove('active');
-            overlay.style.opacity = ''; // Сбрасываем
+            overlay.style.opacity = '';
         }
-        document.body.style.overflow = ''; // Возвращаем прокрутку
+        document.body.style.overflow = '';
     }
     
-    /**
-     * Сбросить все затемнения
-     */
+
     function resetAllDimming() {
         undimContentContainer();
         hideOverlay();
     }
     
-    /**
-     * Проверить, открыто ли хотя бы одно модальное окно
-     */
+
     function isAnyModalOpen() {
         return (modal1 && modal1.style.display === 'block') ||
                (modal2 && modal2.style.display === 'block') ||
                (modal3 && modal3.style.display === 'block');
     }
 
-    // ========== 6. ФУНКЦИИ УПРАВЛЕНИЯ ОКНАМИ ==========
+    // 6. ФУНКЦИИ УПРАВЛЕНИЯ ОКНАМИ
     
     window.openCategoryModal = function() {
         if (modal1) modal1.style.display = 'block';
@@ -143,46 +125,45 @@ document.addEventListener('DOMContentLoaded', function() {
         if (modal2) modal2.style.display = 'none';
     };
 
-    // ========== 7. ФУНКЦИЯ ОТКРЫТИЯ ТРЕТЬЕГО ОКНА С ДАННЫМИ ==========
-    
+ // 7. ФУНКЦИЯ ОТКРЫТИЯ ТРЕТЬЕГО ОКНА С ДАННЫМИ
     function openStartTimerWithData() {
         // Получаем выбранную категорию
         let selectedCategory = {
             name: 'Не выбрано',
             emoji: '📁',
-            color: '#C7CEEA'
+            color: '#C7CEEA',
+            id: null
         };
         
-        // Проверяем стандартные категории (учеба, чтение, работа, хобби)
+        // Проверяем стандартные категории
         const selectedStandardBtn = document.querySelector('.categories-row .category.selected');
         if (selectedStandardBtn) {
             const spanElement = selectedStandardBtn.querySelector('span');
             selectedCategory.name = spanElement ? spanElement.textContent : 'категория';
-            selectedCategory.emoji = '📌'; // Эмодзи по умолчанию для стандартных
+            selectedCategory.emoji = '📌';
+            selectedCategory.id = selectedStandardBtn.getAttribute('data-value');
             
-            // Цвета для стандартных категорий
-            const categoryValue = selectedStandardBtn.getAttribute('data-value');
             const colorMap = {
                 'study': '#C7CEEA',
                 'read': '#B5EAD7',
                 'work': '#FFDAC1',
                 'hobby': '#FFB6C1'
             };
-            selectedCategory.color = colorMap[categoryValue] || '#C7CEEA';
+            selectedCategory.color = colorMap[selectedCategory.id] || '#C7CEEA';
         }
         
-        // Проверяем выбранную категорию из выпадающего списка
+        // Проверяем выбранную категорию из списка
         if (categorySelectBtn && categorySelectBtn.classList.contains('selected')) {
             const spanElement = categorySelectBtn.querySelector('span');
             if (spanElement && spanElement.textContent !== 'выбрать') {
                 selectedCategory.name = spanElement.textContent;
+                selectedCategory.id = categorySelectBtn.getAttribute('data-value');
                 
-                // Пытаемся найти эмодзи для этой категории
-                const categoryId = categorySelectBtn.getAttribute('data-value');
-                const categoryOption = document.querySelector(`.category-option[data-value="${categoryId}"]`);
+
+                const categoryOption = document.querySelector(`.category-option[data-value="${selectedCategory.id}"]`);
                 if (categoryOption) {
                     const optionText = categoryOption.innerHTML;
-                    // Регулярное выражение для поиска эмодзи в тексте
+                    // Ищет эмодзи в начале строки
                     const emojiMatch = optionText.match(/^([\u{1F300}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}])/u);
                     if (emojiMatch) {
                         selectedCategory.emoji = emojiMatch[1];
@@ -191,47 +172,61 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Получаем выбранное время
-        const minutes = hiddenInput ? hiddenInput.value : '25';
-        const minutesNum = parseInt(minutes);
-        const formattedTime = `${minutesNum.toString().padStart(2, '0')}:00`;
+        // Выбранное время
+        const minutes = hiddenInput ? parseInt(hiddenInput.value) : 25;
         
-        // Получаем описание задачи
+        // Описание задачи
         const taskInput = document.querySelector('.mod1-tasks');
         const taskDescription = taskInput ? taskInput.value.trim() : '';
         
-        // Обновляем содержимое третьего окна
-        if (startCategoryName) startCategoryName.textContent = selectedCategory.name;
+        if (startCategoryName) startCategoryName.textContent = window.truncateText ? window.truncateText(selectedCategory.name, 30) : selectedCategory.name;
         if (startCategoryEmoji) startCategoryEmoji.textContent = selectedCategory.emoji;
-        if (startCategoryColor) startCategoryColor.style.backgroundColor = selectedCategory.color;
-        if (startTimeDisplay) startTimeDisplay.textContent = formattedTime;
         if (startTaskDescription) {
             startTaskDescription.textContent = taskDescription || 'без описания';
         }
+
+        if (startTimeDisplay) {
+            startTimeDisplay.textContent = formatTime(minutes * 60);
+        }
         
-        // Убираем затемнение с content-container (если было)
+        if (timerCompleteMessage) {
+            timerCompleteMessage.style.display = 'none';
+        }
+        
+        if (btnPause) {
+            const spanElement = btnPause.querySelector('span');
+            if (spanElement) spanElement.textContent = 'взять паузу';
+            const imgElement = btnPause.querySelector('img');
+            if (imgElement) imgElement.src = "{% static 'icons/pauza.svg' %}";
+        }
+        isPaused = false;
+        
         undimContentContainer();
-        
-        // Показываем overlay на весь экран (80% затемнение)
         showOverlay(0.8);
-        
-        // Открываем третье окно
         window.openStartTimerModal();
         
-        console.log('⏰ Открыто окно старта таймера с категорией:', selectedCategory);
+        // ЗАПУСК ТАЙМЕРА
+        const timerData = {
+            categoryId: selectedCategory.id,
+            categoryName: selectedCategory.name,
+            categoryEmoji: selectedCategory.emoji,
+            taskDescription: taskDescription
+        };
+        
+        startTimer(minutes * 60, timerData);
     }
+   
 
-    // ========== 8. ИНИЦИАЛИЗАЦИЯ ЭМОДЗИ ПИКЕРА ==========
+    // 8. ИНИЦИАЛИЗАЦИЯ ЭМОДЗИ ПИКЕРА
     
     function initEmojiPicker() {
         if (!emojiPickerBtn || !emojiPickerContainer || !selectedEmoji || !emojiInput) {
-            console.log('⚠️ Элементы эмодзи не найдены');
             return;
         }
         
-        // Проверяем, загружен ли компонент emoji-picker
+        // Загружен ли компонент emoji-picker
         if (!customElements.get('emoji-picker')) {
-            console.error('❌ emoji-picker-element не загружен!');
+            console.error(' emoji-picker-element не загружен!');
             return;
         }
         
@@ -242,7 +237,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             picker.addEventListener('emoji-click', event => {
                 const emoji = event.detail.unicode;
-                console.log('✅ Выбран эмодзи:', emoji);
                 selectedEmoji.textContent = emoji;
                 emojiInput.value = emoji;
                 emojiPickerContainer.style.display = 'none';
@@ -264,238 +258,212 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            console.log('✅ Эмодзи пикер инициализирован');
         } catch (error) {
-            console.error('❌ Ошибка:', error);
+            console.error(' Ошибка:', error);
         }
     }
 
-    // ========== 9. УПРАВЛЕНИЕ ВЫПАДАЮЩИМ СПИСКОМ ЦВЕТОВ ==========
+    // 9. УПРАВЛЕНИЕ ВЫПАДАЮЩИМ СПИСКОМ ЦВЕТОВ
     
-function initColorSelector() {
-    if (!colorBtn || !colorDropdown || !colorOptions.length) {
-        console.log('⚠️ Элементы выбора цвета не найдены');
-        return;
-    }
-    
-    // Открытие/закрытие списка
-    colorBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        colorDropdown.style.display = colorDropdown.style.display === 'block' ? 'none' : 'block';
-    });
-    
-    // Выбор цвета
-    colorOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            const selectedColor = this.dataset.color;
-            const selectedName = this.dataset.name;
-            
-            // Обновляем визуальные элементы
-            if (colorPreview) colorPreview.style.backgroundColor = selectedColor;
-            if (colorName) colorName.textContent = selectedName;
-            
-            // 🔥 ВАЖНО: обновляем скрытое поле colorInput
-            if (colorInput) {
-                colorInput.value = selectedColor;
-                console.log('🎨 Цвет сохранён в input:', selectedColor);
-            }
-            
-            // Убираем выделение с других опций
-            colorOptions.forEach(opt => opt.classList.remove('selected'));
-            this.classList.add('selected');
-            
-            // Закрываем выпадающий список
-            colorDropdown.style.display = 'none';
-        });
-    });
-    
-    // Закрытие при клике вне
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.color-selector-container')) {
-            colorDropdown.style.display = 'none';
-        }
-    });
-    
-    // 🔥 ДОБАВЛЯЕМ: устанавливаем дефолтный цвет при загрузке
-    if (colorInput && !colorInput.value) {
-        colorInput.value = '#C7CEEA';
-    }
-    if (colorPreview && !colorPreview.style.backgroundColor) {
-        colorPreview.style.backgroundColor = '#C7CEEA';
-    }
-    
-    console.log('✅ Инициализация выбора цвета завершена, текущий цвет:', colorInput?.value);
-}
-
-    // ========== 10. ОТПРАВКА ФОРМЫ СОЗДАНИЯ КАТЕГОРИИ ==========
-    
-function initCategoryForm() {
-        console.log('🔍 Инициализация формы создания категории...');
-        
-        const form = document.getElementById('createCategoryForm');
-        const submitBtn = document.getElementById('createCategorySubmit');
-        const errorDiv = document.getElementById('categoryError');
-        const nameInput = document.getElementById('category-name');
-        const emojiInput = document.getElementById('emojiInput');
-        const selectedEmojiSpan = document.getElementById('selectedEmoji');
-        const colorInput = document.getElementById('colorInput');
-        const colorPreview = document.getElementById('selectedColorPreview');
-        const colorName = document.getElementById('selectedColorName');
-        
-        if (!form) {
-            console.error('❌ Форма createCategoryForm не найдена!');
+    function initColorSelector() {
+        if (!colorBtn || !colorDropdown || !colorOptions.length) {
             return;
         }
         
-        console.log('✅ Форма найдена');
+        // Открытие/закрытие списка
+        colorBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            colorDropdown.style.display = colorDropdown.style.display === 'block' ? 'none' : 'block';
+        });
         
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        // ── ПРОВЕРКА ЛИМИТА FREE ТАРИФА ──
-        const isPro = document.body.dataset.isPro === 'true';
-        if (!isPro) {
-            try {
-                const limitRes = await fetch('/api/categories/');
-                const cats = await limitRes.json();
-                if (Array.isArray(cats) && cats.length >= 5) {
-                    (window.notify ? window.notify.error('Лимит 5 категорий на бесплатном тарифе. Удалите существующую или оформите PRO.') : alert('Лимит 5 категорий'));
-                    return;
+        colorOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const selectedColor = this.dataset.color;
+                const selectedName = this.dataset.name;
+                
+                if (colorPreview) colorPreview.style.backgroundColor = selectedColor;
+                if (colorName) colorName.textContent = selectedName;
+                
+                if (colorInput) {
+                    colorInput.value = selectedColor;
                 }
-            } catch(e) {}
-        }
-            
-            // Проверка названия
-            const categoryName = nameInput ? nameInput.value.trim() : '';
-            if (!categoryName) {
-                (window.validate ? window.validate.markError('category-name', 'Пожалуйста, введите название категории') : (window.notify ? window.notify.error('Пожалуйста, введите название категории') : alert('Пожалуйста, введите название категории')));
-                return;
-            }
-            
-            // Проверка цвета
-            const selectedColor = colorInput ? colorInput.value : '';
-            if (!selectedColor) {
-                (window.notify ? window.notify.error('Пожалуйста, выберите цвет категории') : alert('Пожалуйста, выберите цвет категории'));
-                return;
-            }
-            
-            // Синхронизация эмодзи
-            if (selectedEmojiSpan && emojiInput) {
-                emojiInput.value = selectedEmojiSpan.textContent;
-            }
-            
-            // Блокируем кнопку
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Создание...';
-            }
-            if (errorDiv) errorDiv.style.display = 'none';
-            
-            // Создаем FormData
-            const formData = new FormData(form);
-            
-            // Добавляем значения принудительно
-            if (emojiInput && emojiInput.value) {
-                formData.set('emoji', emojiInput.value);
-            }
-            if (colorInput && colorInput.value) {
-                formData.set('color', colorInput.value);
-            }
-            
-// CSRF-токен из куки
-            const csrftoken = getCookie('csrftoken');
-            if (!csrftoken) {
-                (window.notify ? window.notify.error('Ошибка безопасности: CSRF токен не найден') : alert('Ошибка безопасности: CSRF токен не найден'));
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = '+ создать';
-                }
-                return;
-            }
-
-            const finalEmoji = (selectedEmojiSpan && selectedEmojiSpan.textContent.trim())
-                ? selectedEmojiSpan.textContent.trim()
-                : '📁';
-            const finalColor = (colorInput && colorInput.value)
-                ? colorInput.value
-                : '#C7CEEA';
-
-            // Отправка JSON
-            fetch('/api/categories/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken,
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({
-                    name: categoryName,
-                    emoji: finalEmoji,
-                    color: finalColor,
-                    description: ''
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.id) {
-                    console.log('✅ Категория создана:', data);
-
-                    (window.notify ? window.notify.success(`Категория "${data.name}" создана!`) : alert(`Категория "${data.name}" успешно создана!`));
-                    
-                    // Очищаем форму
-                    form.reset();
-                    if (selectedEmojiSpan) selectedEmojiSpan.textContent = '🎨';
-                    if (emojiInput) emojiInput.value = '🎨';
-                    if (colorPreview) colorPreview.style.backgroundColor = '#C7CEEA';
-                    if (colorName) colorName.textContent = 'Пастельно-лавандовый';
-                    if (colorInput) colorInput.value = '#C7CEEA';
-                    
-                    // Закрываем окно
-                    if (modal2) modal2.style.display = 'none';
-                    
-                    // Убираем затемнение с content-container, если других окон нет
-                    if (!isAnyModalOpen()) {
-                        undimContentContainer();
-                    }
-                    
-                    // Обновляем список категорий
-                    if (typeof loadUserCategories === 'function') {
-                        loadUserCategories();
-                    }
-                } else {
-                    let errorMessage = 'Ошибка при создании категории:\n';
-                    for (let field in data.errors) {
-                        errorMessage += `- ${field}: ${data.errors[field].join(', ')}\n`;
-                    }
-                    
-                    if (errorDiv) {
-                        errorDiv.textContent = errorMessage;
-                        errorDiv.style.display = 'block';
-                    } else {
-                        (window.notify ? window.notify.error(errorMessage) : alert(errorMessage));
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('❌ Ошибка:', error);
-                (window.notify ? window.notify.error('Произошла ошибка при отправке запроса') : alert('Произошла ошибка при отправке запроса'));
-            })
-            .finally(() => {
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = '+ создать';
-                }
+                
+                colorOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                colorDropdown.style.display = 'none';
             });
         });
         
-        console.log('✅ Форма категории полностью инициализирована');
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.color-selector-container')) {
+                colorDropdown.style.display = 'none';
+            }
+        });
+        
+        if (colorInput && !colorInput.value) {
+            colorInput.value = '#C7CEEA';
+        }
+        if (colorPreview && !colorPreview.style.backgroundColor) {
+            colorPreview.style.backgroundColor = '#C7CEEA';
+        }
     }
 
-    // ========== 11. ЗАГРУЗКА КАТЕГОРИЙ ПОЛЬЗОВАТЕЛЯ ==========
+    // 10. ОТПРАВКА ФОРМЫ СОЗДАНИЯ КАТЕГОРИИ
+    
+    function initCategoryForm() {
+            
+            const form = document.getElementById('createCategoryForm');
+            const submitBtn = document.getElementById('createCategorySubmit');
+            const errorDiv = document.getElementById('categoryError');
+            const nameInput = document.getElementById('category-name');
+            const emojiInput = document.getElementById('emojiInput');
+            const selectedEmojiSpan = document.getElementById('selectedEmoji');
+            const colorInput = document.getElementById('colorInput');
+            const colorPreview = document.getElementById('selectedColorPreview');
+            const colorName = document.getElementById('selectedColorName');
+            
+            if (!form) {
+                console.error(' Форма createCategoryForm не найдена!');
+                return;
+            }
+            
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // ПРОВЕРКА ЛИМИТА
+            const isPro = document.body.dataset.isPro === 'true';
+            if (!isPro) {
+                try {
+                    const limitRes = await fetch('/api/categories/');
+                    const cats = await limitRes.json();
+                    if (Array.isArray(cats) && cats.length >= 5) {
+                        (window.notify ? window.notify.error('Лимит 5 категорий на бесплатном тарифе. Удалите существующую или оформите PRO.') : alert('Лимит 5 категорий'));
+                        return;
+                    }
+                } catch(e) {}
+            }
+                
+                // Проверка названия
+                const categoryName = nameInput ? nameInput.value.trim() : '';
+                if (!categoryName) {
+                    (window.validate ? window.validate.markError('category-name', 'Пожалуйста, введите название категории') : (window.notify ? window.notify.error('Пожалуйста, введите название категории') : alert('Пожалуйста, введите название категории')));
+                    return;
+                }
+                
+                // Проверка цвета
+                const selectedColor = colorInput ? colorInput.value : '';
+                if (!selectedColor) {
+                    (window.notify ? window.notify.error('Пожалуйста, выберите цвет категории') : alert('Пожалуйста, выберите цвет категории'));
+                    return;
+                }
+                
+                // Синхронизация эмодзи
+                if (selectedEmojiSpan && emojiInput) {
+                    emojiInput.value = selectedEmojiSpan.textContent;
+                }
+                
+                // Блокируем кнопку
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Создание...';
+                }
+                if (errorDiv) errorDiv.style.display = 'none';
+                
+                const formData = new FormData(form);
+                
+                if (emojiInput && emojiInput.value) {
+                    formData.set('emoji', emojiInput.value);
+                }
+                if (colorInput && colorInput.value) {
+                    formData.set('color', colorInput.value);
+                }
+                
+                const csrftoken = getCookie('csrftoken');
+                if (!csrftoken) {
+                    (window.notify ? window.notify.error('Ошибка безопасности: CSRF токен не найден') : alert('Ошибка безопасности: CSRF токен не найден'));
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '+ создать';
+                    }
+                    return;
+                }
+
+                const finalEmoji = (selectedEmojiSpan && selectedEmojiSpan.textContent.trim())
+                    ? selectedEmojiSpan.textContent.trim()
+                    : '📁';
+                const finalColor = (colorInput && colorInput.value)
+                    ? colorInput.value
+                    : '#C7CEEA';
+
+                fetch('/api/categories/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        name: categoryName,
+                        emoji: finalEmoji,
+                        color: finalColor,
+                        description: ''
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.id) {
+
+                        (window.notify ? window.notify.success(`Категория "${data.name}" создана!`) : alert(`Категория "${data.name}" успешно создана!`));
+                        
+                        // Очищает форму
+                        form.reset();
+                        if (selectedEmojiSpan) selectedEmojiSpan.textContent = '🎨';
+                        if (emojiInput) emojiInput.value = '🎨';
+                        if (colorPreview) colorPreview.style.backgroundColor = '#C7CEEA';
+                        if (colorName) colorName.textContent = 'Пастельно-лавандовый';
+                        if (colorInput) colorInput.value = '#C7CEEA';
+                        
+                        if (modal2) modal2.style.display = 'none';
+                        
+                        if (!isAnyModalOpen()) {
+                            undimContentContainer();
+                        }
+                        
+                        if (typeof loadUserCategories === 'function') {
+                            loadUserCategories();
+                        }
+                    } else {
+                        let errorMessage = 'Ошибка при создании категории:\n';
+                        for (let field in data.errors) {
+                            errorMessage += `- ${field}: ${data.errors[field].join(', ')}\n`;
+                        }
+                        
+                        if (errorDiv) {
+                            errorDiv.textContent = errorMessage;
+                            errorDiv.style.display = 'block';
+                        } else {
+                            (window.notify ? window.notify.error(errorMessage) : alert(errorMessage));
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error(' Ошибка:', error);
+                    (window.notify ? window.notify.error('Произошла ошибка при отправке запроса') : alert('Произошла ошибка при отправке запроса'));
+                })
+                .finally(() => {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '+ создать';
+                    }
+                });
+            });
+        }
+
+    // 11. ЗАГРУЗКА КАТЕГОРИЙ ПОЛЬЗОВАТЕЛЯ
     
     function loadUserCategories() {
-        console.log('📡 Загрузка категорий пользователя...');
         
         fetch('/api/categories/', {
             headers: {
@@ -508,28 +476,27 @@ function initCategoryForm() {
                 updateCategoriesDropdown(data);
             }
         })
-        .catch(error => console.error('❌ Ошибка загрузки категорий:', error));
+        .catch(error => console.error(' Ошибка загрузки категорий:', error));
     }
 
     function updateCategoriesDropdown(categories) {
         const dropdown = document.querySelector('.category-dropdown');
         if (!dropdown) return;
         
-        // Сохраняем опцию "создать категорию"
         const addNewOption = dropdown.querySelector('[data-value="add-new"]');
         
-        // Очищаем список
         dropdown.innerHTML = '';
         
-        // Добавляем категории пользователя
-        categories.forEach(cat => {
+        // Добавляю категории пользователя
+categories.forEach(cat => {
             const option = document.createElement('div');
             option.className = 'category-option';
             option.setAttribute('data-value', cat.id);
             option.setAttribute('data-id', cat.id);
-            option.innerHTML = `${cat.emoji || '📁'} ${cat.name}`;
+            const displayName = window.truncateText ? window.truncateText(cat.name, 30) : cat.name;
+            option.innerHTML = `${cat.emoji || '📁'} ${displayName}`;
             
-            // Добавляем обработчик выбора категории
+            // Обработчик выбора категории
             option.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -537,12 +504,11 @@ function initCategoryForm() {
                 const selectedValue = this.getAttribute('data-value');
                 const selectedText = this.textContent.trim();
                 
-                // Убираем выделение со всех стандартных кнопок
                 document.querySelectorAll('.categories-row .category:not(.category-select-btn)').forEach(btn => {
                     btn.classList.remove('selected');
                 });
                 
-                // Обновляем кнопку "выбрать"
+                // Обнова кнопки "выбрать"
                 const categorySelectBtn = document.querySelector('.category-select-btn');
                 const spanElement = categorySelectBtn.querySelector('span');
                 if (spanElement) {
@@ -552,19 +518,18 @@ function initCategoryForm() {
                 categorySelectBtn.setAttribute('data-value', selectedValue);
                 categorySelectBtn.classList.add('selected');
                 
-                // Закрываем выпадающий список
+                // Закрытие выпадающего списка
                 const wrapper = document.querySelector('.category-select-wrapper');
                 if (wrapper) {
                     wrapper.classList.remove('active');
                 }
                 
-                console.log('📌 Выбрана категория:', selectedText);
             });
             
             dropdown.appendChild(option);
         });
         
-        // Добавляем опцию создания новой категории
+        // Опция создания новой категории
         if (addNewOption) {
             dropdown.appendChild(addNewOption);
         } else {
@@ -581,17 +546,14 @@ function initCategoryForm() {
             dropdown.appendChild(newOption);
         }
         
-        console.log('✅ Выпадающий список обновлен');
     }
 
-    // ========== 12. ОБРАБОТЧИКИ ДЛЯ ОСНОВНОГО ОКНА ==========
+    // 12. ОБРАБОТЧИКИ ДЛЯ ОСНОВНОГО ОКНА
     
     if (openBtn && modal1 && closeBtn) {
         openBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            
-            // Затемняем только content-container
             dimContentContainer();
             modal1.style.display = 'block';
             
@@ -603,22 +565,20 @@ function initCategoryForm() {
             e.stopPropagation();
             
             modal1.style.display = 'none';
-            
-            // Убираем затемнение с content-container, если других окон нет
             if (!isAnyModalOpen()) {
                 undimContentContainer();
             }
         });
     }
     
-    // ========== 13. ОБРАБОТЧИКИ ДЛЯ КНОПОК ==========
+    // 13. ОБРАБОТЧИКИ ДЛЯ КНОПОК
     
     // Кнопка старт
     if (startBtn) {
         startBtn.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Проверяем, выбрана ли категория
+            // Выбрана ли категория
             const hasSelectedStandard = document.querySelector('.categories-row .category.selected');
             const hasSelectedCustom = categorySelectBtn && categorySelectBtn.classList.contains('selected');
             
@@ -628,63 +588,36 @@ function initCategoryForm() {
             }
             
             modal1.style.display = 'none';
-            
-            // Убираем затемнение с content-container (оно больше не нужно)
+        
             undimContentContainer();
-            
-            // Открываем третье окно с overlay
             openStartTimerWithData();
         });
     }
     
-    // // Кнопка "+ новая категория"
-    // if (createCategoryBtn) {
-    //     createCategoryBtn.addEventListener('click', function(e) {
-    //         e.preventDefault();
-            
-    //         // Затемняем content-container (если еще не затемнен)
-    //         dimContentContainer();
-            
-    //         modal1.style.display = 'none';
-    //         modal2.style.display = 'block';
-    //     });
-    // }
-    // Кнопка "+ новая категория" - ОТКРЫТИЕ ВТОРОГО ОКНА
-if (createCategoryBtn) {
-    // Удаляем все предыдущие обработчики, чтобы избежать конфликтов
-    createCategoryBtn.replaceWith(createCategoryBtn.cloneNode(true));
-    
-    // Получаем новую ссылку на кнопку
-    const newCreateCategoryBtn = document.querySelector('.button-mod1 .create');
-    
-    if (newCreateCategoryBtn) {
-        newCreateCategoryBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation(); // Останавливаем всплытие события
-            
-            console.log('➕ Открытие окна создания категории');
-            
-            // Затемняем content-container
-            dimContentContainer();
-            
-            // Закрываем первое окно
-            if (modal1) modal1.style.display = 'none';
-            
-            // Открываем второе окно
-            if (modal2) modal2.style.display = 'block';
-            
-            // Сбрасываем выделение категорий в первом окне (опционально)
-            // Это не обязательно, но может быть полезно
-        });
+
+    // ОТКРЫТИЕ ВТОРОГО ОКНА
+    if (createCategoryBtn) {
+        createCategoryBtn.replaceWith(createCategoryBtn.cloneNode(true));
+        
+        const newCreateCategoryBtn = document.querySelector('.button-mod1 .create');
+        
+        if (newCreateCategoryBtn) {
+            newCreateCategoryBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dimContentContainer();
+                
+                // Закрываем окна
+                if (modal1) modal1.style.display = 'none';
+                if (modal2) modal2.style.display = 'block';
+            });
+        }
     }
-}
     
     // Крестик первого окна
     if (closeModal1) {
         closeModal1.addEventListener('click', function() {
             modal1.style.display = 'none';
-            
-            // Убираем затемнение с content-container, если других окон нет
             if (!isAnyModalOpen()) {
                 undimContentContainer();
             }
@@ -695,8 +628,6 @@ if (createCategoryBtn) {
     if (closeModal2) {
         closeModal2.addEventListener('click', function() {
             modal2.style.display = 'none';
-            
-            // Убираем затемнение с content-container, если других окон нет
             if (!isAnyModalOpen()) {
                 undimContentContainer();
             }
@@ -707,8 +638,6 @@ if (createCategoryBtn) {
     if (closeModal3) {
         closeModal3.addEventListener('click', function() {
             modal3.style.display = 'none';
-            
-            // Убираем overlay
             if (!isAnyModalOpen()) {
                 hideOverlay();
             }
@@ -719,8 +648,6 @@ if (createCategoryBtn) {
     if (btnStartCancel) {
         btnStartCancel.addEventListener('click', function() {
             modal3.style.display = 'none';
-            
-            // Убираем overlay
             if (!isAnyModalOpen()) {
                 hideOverlay();
             }
@@ -730,7 +657,6 @@ if (createCategoryBtn) {
     // Кнопка начать в третьем окне
     if (btnStartBegin) {
         btnStartBegin.addEventListener('click', function() {
-            console.log('Задача завершена!');
             modal3.style.display = 'none';
             
             if (!isAnyModalOpen()) {
@@ -741,7 +667,7 @@ if (createCategoryBtn) {
         });
     }
     
-    // ========== 14. ОБРАБОТЧИК ВЫБОРА "СОЗДАТЬ КАТЕГОРИЮ" ИЗ СПИСКА ==========
+    // 14. ОБРАБОТЧИК ВЫБОРА "СОЗДАТЬ КАТЕГОРИЮ"
     
     if (addNewCategoryOption) {
         addNewCategoryOption.addEventListener('click', function() {
@@ -749,7 +675,7 @@ if (createCategoryBtn) {
         });
     }
     
-    // ========== 15. ОБРАБОТКА ВЫБОРА КАТЕГОРИЙ ИЗ ВЫПАДАЮЩЕГО СПИСКА ==========
+    // 15. ОБРАБОТКА ВЫБОРА КАТЕГОРИЙ ИЗ ВЫПАДАЮЩЕГО СПИСКА
     
     if (categorySelectBtn && categorySelectWrapper) {
         categorySelectBtn.addEventListener('click', function(e) {
@@ -792,7 +718,7 @@ if (createCategoryBtn) {
         });
     }
     
-    // ========== 16. ОБРАБОТКА СТАНДАРТНЫХ КАТЕГОРИЙ ==========
+    // 16. ОБРАБОТКА СТАНДАРТНЫХ КАТЕГОРИЙ
     
     if (categoryButtons.length > 0) {
         categoryButtons.forEach(button => {
@@ -817,7 +743,7 @@ if (createCategoryBtn) {
         });
     }
     
-    // ========== 17. ОБРАБОТКА ВЫБОРА ВРЕМЕНИ ==========
+    // 17. ОБРАБОТКА ВЫБОРА ВРЕМЕНИ
     
     if (timeSelect) {
         timeSelect.addEventListener('click', function(e) {
@@ -845,21 +771,8 @@ if (createCategoryBtn) {
         });
     }
     
-    // ========== 18. ГЛОБАЛЬНЫЕ ОБРАБОТЧИКИ ==========
-    
-    // // Закрытие по клику на overlay (только для 3-го окна)
-    // window.addEventListener('click', function(event) {
-    //     if (event.target === overlay) {
-    //         if (modal3 && modal3.style.display === 'block') {
-    //             modal3.style.display = 'none';
-    //             hideOverlay();
-    //         }
-    //     }
-    // });
-    
-    // Закрытие по клику вне модальных окон
+    // 18. ГЛОБАЛЬНЫЕ ОБРАБОТЧИКИ
     window.addEventListener('click', function(event) {
-        // Для overlay (3-е окно)
         if (event.target === overlay) {
             if (modal3 && modal3.style.display === 'block') {
                 modal3.style.display = 'none';
@@ -867,7 +780,6 @@ if (createCategoryBtn) {
             }
         }
         
-        // Для первого окна
         if (modal1 && modal1.style.display === 'block' && !modal1.contains(event.target) && event.target !== openBtn) {
             modal1.style.display = 'none';
             if (!isAnyModalOpen()) {
@@ -875,7 +787,6 @@ if (createCategoryBtn) {
             }
         }
         
-        // Для второго окна
         if (modal2 && modal2.style.display === 'block' && !modal2.contains(event.target)) {
             modal2.style.display = 'none';
             if (!isAnyModalOpen()) {
@@ -899,8 +810,6 @@ if (createCategoryBtn) {
                 modal3.style.display = 'none';
                 if (!isAnyModalOpen()) hideOverlay();
             }
-            
-            // Закрываем выпадающие списки
             if (categorySelectWrapper) categorySelectWrapper.classList.remove('active');
             if (timeSelect) timeSelect.classList.remove('active');
             if (colorDropdown) colorDropdown.style.display = 'none';
@@ -910,368 +819,254 @@ if (createCategoryBtn) {
 
 
 
-    // ========== ПЕРЕМЕННЫЕ ТАЙМЕРА ==========
-let timerInterval = null;
-let timerSeconds = 0;
-let timerTotalSeconds = 0;
-let isPaused = false;
-let currentTimerData = {
-    categoryId: null,
-    categoryName: '',
-    categoryEmoji: '',
-    taskDescription: '',
-    startTime: null,
-    completedEarly: false
-};
-
-// Элементы таймера
-const timerDisplay = document.getElementById('startTimeDisplay');
-const timerCompleteMessage = document.getElementById('timerCompleteMessage');
-const btnDistracted = document.getElementById('btnDistracted');
-const btnPause = document.getElementById('btnPause');
-const btnComplete = document.getElementById('btnComplete');
-
-// ========== ФУНКЦИИ ТАЙМЕРА ==========
-
-function formatTime(seconds) {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
-
-/*Запуск таймера*/
-function startTimer(seconds, categoryData) {
-    stopTimer();
-
-    timerTotalSeconds = seconds;
-    timerSeconds = seconds;
-    currentTimerData = {
-        ...categoryData,
-        startTime: new Date(),
+    // ПЕРЕМЕННЫЕ ТАЙМЕРА
+    let timerInterval = null;
+    let timerSeconds = 0;
+    let timerTotalSeconds = 0;
+    let isPaused = false;
+    let currentTimerData = {
+        categoryId: null,
+        categoryName: '',
+        categoryEmoji: '',
+        taskDescription: '',
+        startTime: null,
         completedEarly: false
     };
-    
-    if (timerDisplay) {
-        timerDisplay.textContent = formatTime(timerSeconds);
+
+    // Элементы таймера
+    const timerDisplay = document.getElementById('startTimeDisplay');
+    const timerCompleteMessage = document.getElementById('timerCompleteMessage');
+    const btnDistracted = document.getElementById('btnDistracted');
+    const btnPause = document.getElementById('btnPause');
+    const btnComplete = document.getElementById('btnComplete');
+
+    // ФУНКЦИИ ТАЙМЕРА
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
-    
-    if (timerCompleteMessage) {
-        timerCompleteMessage.style.display = 'none';
-    }
-    
-    isPaused = false;
-    timerInterval = setInterval(() => {
-        if (!isPaused && timerSeconds > 0) {
-            timerSeconds--;
-            if (timerDisplay) {
-                timerDisplay.textContent = formatTime(timerSeconds);
+
+    // Запуск таймера
+    function startTimer(seconds, categoryData) {
+        stopTimer();
+
+        timerTotalSeconds = seconds;
+        timerSeconds = seconds;
+        currentTimerData = {
+            ...categoryData,
+            startTime: new Date(),
+            completedEarly: false
+        };
+        
+        if (timerDisplay) {
+            timerDisplay.textContent = formatTime(timerSeconds);
+        }
+        
+        if (timerCompleteMessage) {
+            timerCompleteMessage.style.display = 'none';
+        }
+        
+        isPaused = false;
+        timerInterval = setInterval(() => {
+            if (!isPaused && timerSeconds > 0) {
+                timerSeconds--;
+                if (timerDisplay) {
+                    timerDisplay.textContent = formatTime(timerSeconds);
+                }
+            
+                if (timerSeconds === 0) {
+                    handleTimerComplete('natural');
+                }
             }
-         
-            if (timerSeconds === 0) {
-                handleTimerComplete('natural');
+        }, 1000);
+    }
+
+    // Остановка таймера
+    function stopTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+    }
+
+    // Получение CSRF токена из куки
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
-    }, 1000);
-}
-
-/* Остановка таймера*/
-function stopTimer() {
-    if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
+        return cookieValue;
     }
-}
 
-/* Получение CSRF токена из куки*/
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+
+    function saveTimerResult(seconds, reason) {
+
+
+            const elapsedSeconds = timerTotalSeconds - seconds;
+        if (window._pendingTaskId) {
+            const csrftoken = getCookie('csrftoken');
+            fetch(`/api/tasks/${window._pendingTaskId}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify({
+                    completed: true,
+                    duration_seconds: elapsedSeconds
+                })
+            })
+            .then(r => r.json())
+            .then(() => {
+                window._pendingTaskId = null;
+                if (timerCompleteMessage) {
+                    timerCompleteMessage.innerHTML = '<span>Задача выполнена!</span>';
+                    timerCompleteMessage.style.display = 'block';
+                }
+            });
+            return; // не идём дальше — новую задачу не создаём
         }
-    }
-    return cookieValue;
-}
-
-/**
- * Сохранение результата таймера
- */
-function saveTimerResult(seconds, reason) {
-
-
-        const elapsedSeconds = timerTotalSeconds - seconds;
-
-    // Если это режим 'start' — обновляем существующую задачу вместо создания новой
-    if (window._pendingTaskId) {
+        
+        const data = {
+            category_id: currentTimerData.categoryId,
+            task_description: currentTimerData.taskDescription,
+            duration_seconds: elapsedSeconds,
+            completed: reason === 'natural' || reason === 'complete',
+            completed_early: reason === 'complete',
+            distracted: reason === 'distracted',
+            timestamp: new Date().toISOString()
+        };
+        
+        
         const csrftoken = getCookie('csrftoken');
-        fetch(`/api/tasks/${window._pendingTaskId}/`, {
-            method: 'PATCH',
+        
+        fetch('/api/save-timer/', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrftoken,
+                'X-Requested-With': 'XMLHttpRequest'
             },
-            body: JSON.stringify({
-                completed: true,
-                duration_seconds: elapsedSeconds
-            })
+            body: JSON.stringify(data)
         })
-        .then(r => r.json())
-        .then(() => {
-            window._pendingTaskId = null;
-            if (timerCompleteMessage) {
-                timerCompleteMessage.innerHTML = '<span>✅ Задача выполнена!</span>';
-                timerCompleteMessage.style.display = 'block';
-            }
-        });
-        return; // не идём дальше — новую задачу не создаём
-    }
-    
-    const data = {
-        category_id: currentTimerData.categoryId,
-        task_description: currentTimerData.taskDescription,
-        duration_seconds: elapsedSeconds,
-        completed: reason === 'natural' || reason === 'complete',
-        completed_early: reason === 'complete',
-        distracted: reason === 'distracted',
-        timestamp: new Date().toISOString()
-    };
-    
-    
-    const csrftoken = getCookie('csrftoken');
-    
-    fetch('/api/save-timer/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken,
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            console.log('✅ Результат сохранен:', result);
-            
-            if (timerCompleteMessage) {
-                let messageText = '';
-                if (reason === 'natural') {
-                    messageText = ' Время вышло! Отличная работа!';
-                } else if (reason === 'complete') {
-                    messageText = ' Задача выполнена досрочно!';
-                } else if (reason === 'distracted') {
-                    messageText = '⏸ Таймер остановлен';
-                }
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
                 
-                timerCompleteMessage.innerHTML = `<span>${messageText}</span>`;
-                timerCompleteMessage.style.display = 'block';
+                if (timerCompleteMessage) {
+                    let messageText = '';
+                    if (reason === 'natural') {
+                        messageText = ' Время вышло! Отличная работа!';
+                    } else if (reason === 'complete') {
+                        messageText = ' Задача выполнена досрочно!';
+                    } else if (reason === 'distracted') {
+                        messageText = '⏸ Таймер остановлен';
+                    }
+                    
+                    timerCompleteMessage.innerHTML = `<span>${messageText}</span>`;
+                    timerCompleteMessage.style.display = 'block';
+                }
+            } else {
+                console.error(' Ошибка сохранения:', result.error);
             }
-        } else {
-            console.error(' Ошибка сохранения:', result.error);
-        }
-    })
-    .catch(error => {
-        console.error('Ошибка сети:', error);
-    });
-}
-
-/*Обработка завершения таймера*/
-function handleTimerComplete(reason) {
-    stopTimer();
-    
-    const elapsedSeconds = timerTotalSeconds - timerSeconds;
-
-    saveTimerResult(timerSeconds, reason);
-    
-    if (reason !== 'pause') {
-        if (timerCompleteMessage) {
-            timerCompleteMessage.style.display = 'block';
-        }
+        })
+        .catch(error => {
+            console.error('Ошибка сети:', error);
+        });
     }
-}
 
-// Кнопка "я отвлекся"
-if (btnDistracted) {
-    btnDistracted.addEventListener('click', function() {
-        handleTimerComplete('distracted');
-        
-        setTimeout(() => {
-            if (modal3) {
-                modal3.style.display = 'none';
-                hideOverlay();
-            }
-        }, 2000);
-    });
-}
-
-if (btnPause) {
-    btnPause.addEventListener('click', function() {
-        isPaused = !isPaused;
-        
-        const spanElement = btnPause.querySelector('span');
-        if (spanElement) {
-            spanElement.textContent = isPaused ? 'продолжить' : 'взять паузу';
-        }
-        
-        // Меняем иконку
-        const imgElement = btnPause.querySelector('img');
-        if (imgElement) {
-            imgElement.src = isPaused 
-                ? "{% static 'icons/play.svg' %}" 
-                : "{% static 'icons/pauza.svg' %}";
-        }
-        
-        console.log(isPaused ? '⏸️ Таймер на паузе' : '▶️ Таймер продолжен');
-    });
-}
-
-// Кнопка "готово!"
-if (btnComplete) {
-    btnComplete.addEventListener('click', function() {
-        handleTimerComplete('complete');
-        
-        // Закрываем окно через 2 секунды
-        setTimeout(() => {
-            if (modal3) {
-                modal3.style.display = 'none';
-                hideOverlay();
-            }
-        }, 2000);
-    });
-}
-
-// Закрытие по крестику
-if (closeModal3) {
-    closeModal3.addEventListener('click', function() {
-        // Если таймер еще идет, считаем как "отвлекся"
-        if (timerInterval && timerSeconds > 0 && timerSeconds < timerTotalSeconds) {
-            handleTimerComplete('distracted');
-        }
-        
-        modal3.style.display = 'none';
+    // Обработка завершения таймера
+    function handleTimerComplete(reason) {
         stopTimer();
         
-        if (!isAnyModalOpen()) {
-            hideOverlay();
-        }
-    });
-}
+        const elapsedSeconds = timerTotalSeconds - timerSeconds;
 
-// ========== ОБНОВЛЕННАЯ ФУНКЦИЯ ОТКРЫТИЯ ТРЕТЬЕГО ОКНА ==========
-function openStartTimerWithData() {
-    // Получаем выбранную категорию
-    let selectedCategory = {
-        name: 'Не выбрано',
-        emoji: '📁',
-        color: '#C7CEEA',
-        id: null
-    };
-    
-    // Проверяем стандартные категории (study, read, work, hobby)
-    const selectedStandardBtn = document.querySelector('.categories-row .category.selected');
-    if (selectedStandardBtn) {
-        const spanElement = selectedStandardBtn.querySelector('span');
-        selectedCategory.name = spanElement ? spanElement.textContent : 'категория';
-        selectedCategory.emoji = '📌';
-        selectedCategory.id = selectedStandardBtn.getAttribute('data-value');
+        saveTimerResult(timerSeconds, reason);
         
-        // Цвета для стандартных категорий
-        const colorMap = {
-            'study': '#C7CEEA',
-            'read': '#B5EAD7',
-            'work': '#FFDAC1',
-            'hobby': '#FFB6C1'
-        };
-        selectedCategory.color = colorMap[selectedCategory.id] || '#C7CEEA';
-    }
-    
-    // Проверяем выбранную категорию из списка (из БД)
-    if (categorySelectBtn && categorySelectBtn.classList.contains('selected')) {
-        const spanElement = categorySelectBtn.querySelector('span');
-        if (spanElement && spanElement.textContent !== 'выбрать') {
-            selectedCategory.name = spanElement.textContent;
-            selectedCategory.id = categorySelectBtn.getAttribute('data-value'); // Это будет числовой ID из БД
-            
-            // Пытаемся найти эмодзи для этой категории
-            const categoryOption = document.querySelector(`.category-option[data-value="${selectedCategory.id}"]`);
-            if (categoryOption) {
-                const optionText = categoryOption.innerHTML;
-                // Ищем эмодзи в начале строки
-                const emojiMatch = optionText.match(/^([\u{1F300}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}])/u);
-                if (emojiMatch) {
-                    selectedCategory.emoji = emojiMatch[1];
-                }
+        if (reason !== 'pause') {
+            if (timerCompleteMessage) {
+                timerCompleteMessage.style.display = 'block';
             }
         }
     }
-    
-    // Получаем выбранное время (в минутах)
-    const minutes = hiddenInput ? parseInt(hiddenInput.value) : 25;
-    
-    // Получаем описание задачи
-    const taskInput = document.querySelector('.mod1-tasks');
-    const taskDescription = taskInput ? taskInput.value.trim() : '';
-    
-    // Обновляем содержимое третьего окна
-    if (startCategoryName) startCategoryName.textContent = selectedCategory.name;
-    if (startCategoryEmoji) startCategoryEmoji.textContent = selectedCategory.emoji;
-    if (startTaskDescription) {
-        startTaskDescription.textContent = taskDescription || 'без описания';
+
+    // Кнопка "я отвлекся"
+    if (btnDistracted) {
+        btnDistracted.addEventListener('click', function() {
+            handleTimerComplete('distracted');
+            
+            setTimeout(() => {
+                if (modal3) {
+                    modal3.style.display = 'none';
+                    hideOverlay();
+                }
+            }, 2000);
+        });
     }
-    
-    // Показываем время
-    if (startTimeDisplay) {
-        startTimeDisplay.textContent = formatTime(minutes * 60);
-    }
-    
-    // Прячем сообщение о завершении
-    if (timerCompleteMessage) {
-        timerCompleteMessage.style.display = 'none';
-    }
-    
-    // Сбрасываем кнопку паузы
+
     if (btnPause) {
-        const spanElement = btnPause.querySelector('span');
-        if (spanElement) spanElement.textContent = 'взять паузу';
-        const imgElement = btnPause.querySelector('img');
-        if (imgElement) imgElement.src = "{% static 'icons/pauza.svg' %}";
+        btnPause.addEventListener('click', function() {
+            isPaused = !isPaused;
+            
+            const spanElement = btnPause.querySelector('span');
+            if (spanElement) {
+                spanElement.textContent = isPaused ? 'продолжить' : 'взять паузу';
+            }
+            
+            // Меняем иконку
+            const imgElement = btnPause.querySelector('img');
+            if (imgElement) {
+                imgElement.src = isPaused 
+                    ? "{% static 'icons/play.svg' %}" 
+                    : "{% static 'icons/pauza.svg' %}";
+            }
+        });
     }
-    isPaused = false;
-    
-    // Убираем затемнение с content-container
-    undimContentContainer();
-    
-    // Показываем overlay на весь экран
-    showOverlay(0.8);
-    
-    // Открываем третье окно
-    window.openStartTimerModal();
-    
-    // ЗАПУСКАЕМ ТАЙМЕР!
-    const timerData = {
-        categoryId: selectedCategory.id,
-        categoryName: selectedCategory.name,
-        categoryEmoji: selectedCategory.emoji,
-        taskDescription: taskDescription
-    };
-    
-    startTimer(minutes * 60, timerData);
-    
-    console.log('⏰ Открыто окно таймера с категорией:', selectedCategory);
-}
-    
-    // ========== 19. ЗАПУСК ВСЕХ ИНИЦИАЛИЗАЦИЙ ==========
+
+    // Кнопка "готово!"
+    if (btnComplete) {
+        btnComplete.addEventListener('click', function() {
+            handleTimerComplete('complete');
+            setTimeout(() => {
+                if (modal3) {
+                    modal3.style.display = 'none';
+                    hideOverlay();
+                }
+            }, 2000);
+        });
+    }
+
+    // Закрытие по крестику
+    if (closeModal3) {
+        closeModal3.addEventListener('click', function() {
+            // Если таймер еще идет, считай как "отвлекся"
+            if (timerInterval && timerSeconds > 0 && timerSeconds < timerTotalSeconds) {
+                handleTimerComplete('distracted');
+            }
+            
+            modal3.style.display = 'none';
+            stopTimer();
+            
+            if (!isAnyModalOpen()) {
+                hideOverlay();
+            }
+        });
+    }
+ 
+    // 19. ЗАПУСК ВСЕХ ИНИЦИАЛИЗАЦИЙ
     
     initEmojiPicker();
     initColorSelector();
     initCategoryForm();
-    
-    console.log('🚀 Скрипт полностью загружен и инициализирован');
 });
 
 
@@ -1314,7 +1109,7 @@ function hideTooltip(element) {
 
 
 
-// ========== ВОЗОБНОВЛЕНИЕ СЕАНСА ==========
+// ВОЗОБНОВЛЕНИЕ СЕАНСА
 function initResumeSession() {
     const resumeButtons = document.querySelectorAll('.btn-again');
     
@@ -1326,15 +1121,14 @@ function initResumeSession() {
             const categoryId = this.dataset.categoryId;
             const description = this.dataset.description || '';
             
-            // Загружаем актуальные категории
-            // Загружаем актуальные категории
+            // Загрузка актуальных категорий
             if (typeof loadUserCategories === 'function') {
                 loadUserCategories();
             } else if (typeof window.loadUserCategories === 'function') {
                 window.loadUserCategories();
             }
             
-            // Открываем первое модальное окно
+            // Первое модальное окно
             const modal1 = document.getElementById('modal');
             const contentContainer = document.querySelector('.content-container');
             if (modal1) {
@@ -1349,7 +1143,6 @@ function initResumeSession() {
                     btn.classList.remove('selected');
                 });
                 
-                // Сбрасываем кнопку "выбрать"
                 const selectBtn = document.querySelector('.category-select-btn');
                 if (selectBtn) {
                     const span = selectBtn.querySelector('span');
@@ -1357,7 +1150,7 @@ function initResumeSession() {
                     selectBtn.classList.remove('selected');
                 }
                 
-                // Ищем и выбираем нужную категорию в выпадающем списке
+                // Ищет и выбирает нужную категорию в выпадающем списке
                 const categoryOption = document.querySelector(
                     `.category-option[data-value="${categoryId}"], .category-option[data-id="${categoryId}"]`
                 );
@@ -1374,7 +1167,7 @@ function initResumeSession() {
     });
 }
 
-// Вызываем после загрузки страницы
+// После загрузки страницы
 document.addEventListener('DOMContentLoaded', function() {
     initResumeSession();
 });
@@ -1389,7 +1182,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let searchTimeout;
     let allCategories = []; // Хранилище всех категорий
     
-    // Загружаем все категории при загрузке страницы
     function loadCategories() {
         const csrftoken = getCookie('csrftoken');
         
@@ -1402,10 +1194,9 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(categories => {
             allCategories = categories;
-            console.log('📦 Загружено категорий для поиска:', allCategories.length);
         })
         .catch(error => {
-            console.error('❌ Ошибка загрузки категорий:', error);
+            console.error(' Ошибка загрузки категорий:', error);
         });
     }
     
@@ -1437,7 +1228,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return category.name.toLowerCase().includes(lowerQuery);
         });
         
-        // Возвращаем максимум 4 результата
+        // Возвращает максимум 4 результата
         return results.slice(0, 4);
     }
     
@@ -1474,7 +1265,7 @@ document.addEventListener('DOMContentLoaded', function() {
         searchResults.innerHTML = html;
         searchDropdown.style.display = 'block';
         
-        // Добавляем обработчики кликов на результаты
+        // Обработчики кликов на результаты
         document.querySelectorAll('.search-result-item').forEach(item => {
             item.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -1519,16 +1310,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.location.href = url;
             }
         } else {
-            // Если нет результатов, но есть текст в инпуте - можно создать новую категорию
+            // Если нет результатов, но есть текст в инпуте можно создать новую категорию
             const query = searchInput.value.trim();
             if (query) {
                 const createNew = confirm(`Категория "${query}" не найдена. Создать новую?`);
                 if (createNew) {
-                    // Открываем модальное окно создания категории
                     const openBtn = document.getElementById('openCategoryModalBtn');
                     if (openBtn) {
                         openBtn.click();
-                        // Заполняем поле имени
                         const nameInput = document.getElementById('category-name');
                         if (nameInput) {
                             nameInput.value = query;
@@ -1539,7 +1328,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Обработчик ввода текста (debounced)
+    // Обработчик ввода текста
     function onSearchInput() {
         clearTimeout(searchTimeout);
         const query = searchInput.value;
@@ -1590,13 +1379,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('click', closeSearchDropdown);
     }
     
-    // Запускаем поиск
     initSearch();
 });
 
 
-    // ========== ОБРАБОТКА ПЕРЕХОДА С ДЕТАЛЬНОЙ СТРАНИЦЫ КАТЕГОРИИ ==========
-// Читаем sessionStorage при загрузке дашборда
+ //ОБРАБОТКА ПЕРЕХОДА С ДЕТАЛЬНОЙ СТРАНИЦЫ КАТЕГОРИИ
 document.addEventListener('DOMContentLoaded', function() {
     const stored = sessionStorage.getItem('resumeTask');
     if (!stored) return;
@@ -1610,12 +1397,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     sessionStorage.removeItem('resumeTask');
 
-    // Ждём пока loadUserCategories загрузит список
     setTimeout(() => {
         // Загружаем категории
         const dropdown = document.querySelector('.category-dropdown');
         if (!dropdown || !dropdown.children.length) {
-            // Если список пуст — загружаем принудительно
+            // Если список пуст загружаем принудительно
             fetch('/api/categories/', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
                 .then(r => r.json())
                 .then(cats => {
@@ -1639,7 +1425,6 @@ function openModalWithTask(task) {
         if (contentContainer) contentContainer.classList.add('dimmed');
     }
 
-    // Сохраняем taskId если режим 'start' — понадобится при завершении таймера
     if (task.mode === 'start' && task.taskId) {
         window._pendingTaskId = task.taskId;
     } else {
@@ -1647,7 +1432,6 @@ function openModalWithTask(task) {
     }
 
     setTimeout(() => {
-        // Снимаем выделение со стандартных кнопок
         document.querySelectorAll('.categories-row .category:not(.category-select-btn)').forEach(btn => {
             btn.classList.remove('selected');
         });

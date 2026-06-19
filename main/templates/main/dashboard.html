@@ -47,7 +47,6 @@
     <div class="history-container">
     <div class="history-header">
         <h4>Последние сеансы фокуса</h4>
-        <!-- <span class="sessions-count">{{ sessions_by_day.today|length|add:sessions_by_day.yesterday|length|add:sessions_by_day.older|length }}</span> -->
     </div>
 
     <div class="focus-history">
@@ -65,7 +64,7 @@
                         </button>
                         <div class="info-category">
                             <p>{{ session.category_emoji }} {{ session.time }} — {{ session.duration }}</p>
-                            <p>{{ session.category_name }}: «{{ session.description }}»</p>
+                            <p>{{ session.category_name|truncatechars:30 }}: «{{ session.description|truncatechars:30 }}»</p>
                         </div>
                     </div>
                     {% endfor %}
@@ -85,7 +84,7 @@
                         </button>
                         <div class="info-category">
                             <p>{{ session.category_emoji }} {{ session.time }} — {{ session.duration }}</p>
-                            <p>{{ session.category_name }}: «{{ session.description }}»</p>
+                            <p>{{ session.category_name|truncatechars:30 }}: «{{ session.description|truncatechars:30 }}»</p>
                         </div>
                     </div>
                     {% endfor %}
@@ -105,7 +104,7 @@
                         </button>
                         <div class="info-category">
                             <p>{{ session.category_emoji }} {{ session.time }} — {{ session.duration }}</p>
-                            <p>{{ session.category_name }}: «{{ session.description }}»</p>
+                            <p>{{ session.category_name|truncatechars:30 }}: «{{ session.description|truncatechars:30 }}»</p>
                         </div>
                     </div>
                     {% endfor %}
@@ -127,7 +126,7 @@
 </div>
 
 
-    <!-- Модальное окно1 -->
+    <!-- Модальное окно1 создание фокуса -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <span class="close-btn close-mod1">&times;</span>
@@ -164,21 +163,20 @@
                                     <path d="M8.5 0.5L4.5 4.5L0.5 0.5" stroke="#2D268C" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                             </button>
-                                <div class="category-dropdown">
-                                    {% if categories %}
-                                        {% for category in categories %}
-                                        <div class="category-option" 
-                                            data-value="{{ category.name|lower }}"
-                                            data-id="{{ category.id }}">
-                                            {{ category.name }}
-                                        </div>
-                                        {% endfor %}
-                                    {% else %}
-                                        <div class="category-option-empty">Нет категорий</div>
-                                    {% endif %}
-                                </div>
+                            <div class="category-dropdown">
+                                {% if categories %}
+                                    {% for category in categories %}
+                                    <div class="category-option" 
+                                        data-value="{{ category.name|lower }}"
+                                        data-id="{{ category.id }}">
+                                        {{ category.name }}
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="category-option-empty">Нет категорий</div>
+                                {% endif %}
+                            </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -205,7 +203,7 @@
                 <input type="hidden" id="selected-minutes" name="selected_minutes" value="25">
             </form>
             
-            <input class="mod1-tasks" type="text" placeholder="описание задачи">
+            <input class="mod1-tasks" type="text" placeholder="описание задачи" maxlength="100">
             
             <div class="button-mod1">
                 <button class="create">+ новая категория</button>
@@ -224,7 +222,6 @@
             <form class="category-form" id="createCategoryForm" method="post">
                 {% csrf_token %}
                 
-                <!-- Название категории -->
                 <input type="text" 
                     id="category-name" 
                     name="name" 
@@ -327,5 +324,6 @@
 
 
 {% block scripts %}
+    <script src="{% static 'js/notify.js' %}"></script>
     <script src="{% static 'js/dashboard-modal.js' %}"></script>
 {% endblock %}

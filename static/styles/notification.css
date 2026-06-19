@@ -33,7 +33,7 @@ body, h1, h2, h3, h4, h5, h6 {
     animation: fadeIn 0.3s ease;
 }
 
-/* Иконка и текст */
+
 .error-icon {
     color: #ff4444;
     font-size: 20px;
@@ -49,7 +49,7 @@ body, h1, h2, h3, h4, h5, h6 {
     vertical-align: middle;
 }
 
-/* Кнопка закрытия */
+
 .error-close {
     float: right;
     background: none;
@@ -65,7 +65,6 @@ body, h1, h2, h3, h4, h5, h6 {
     color: #333;
 }
 
-/* Анимация появления */
 @keyframes fadeIn {
     from {
         opacity: 0;

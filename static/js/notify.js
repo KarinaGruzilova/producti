@@ -1,20 +1,6 @@
-// static/js/notify.js
-// Единая система уведомлений и валидации для всех модальных окон
-
-// ══════════════════════════════════════════════
-// TOAST — всплывающее уведомление сверху
-// ══════════════════════════════════════════════
-
 window.notify = {
 
-    /**
-     * Показать уведомление
-     * @param {string} message — текст
-     * @param {string} type — 'error' | 'success' | 'warning' | 'info'
-     * @param {number} duration — время в мс (0 = не скрывать)
-     */
     show(message, type = 'error', duration = 4000) {
-        // Удаляем предыдущее если есть
         document.querySelectorAll('.notify-toast').forEach(el => el.remove());
 
         const colors = {
@@ -96,15 +82,10 @@ window.notify = {
 };
 
 
-// ══════════════════════════════════════════════
 // ВАЛИДАЦИЯ ПОЛЕЙ ФОРМ
-// ══════════════════════════════════════════════
 
 window.validate = {
 
-    /**
-     * Подсветить поле как ошибочное
-     */
     markError(fieldId, message) {
         const el = document.getElementById(fieldId);
         if (!el) return;
@@ -114,9 +95,6 @@ window.validate = {
         if (message) notify.error(message);
     },
 
-    /**
-     * Снять подсветку ошибки
-     */
     clearError(fieldId) {
         const el = document.getElementById(fieldId);
         if (!el) return;
@@ -124,17 +102,11 @@ window.validate = {
         el.style.borderColor = '';
     },
 
-    /**
-     * Сбросить все ошибки в форме
-     */
     clearAll(fieldIds = []) {
         fieldIds.forEach(id => this.clearError(id));
         document.querySelectorAll('.notify-toast').forEach(el => el.remove());
     },
 
-    /**
-     * Подсветить элемент (не input) — например список категорий
-     */
     markElements(selector, color = '#FF4444') {
         document.querySelectorAll(selector).forEach(el => {
             el.style.borderColor = color;
@@ -148,15 +120,8 @@ window.validate = {
     },
 };
 
-
-// ══════════════════════════════════════════════
-// ЗАМЕНА СТАРЫХ alert() НА notify
-// Опционально — раскомментируй если хочешь
-// ══════════════════════════════════════════════
-
-// window._originalAlert = window.alert;
-// window.alert = function(msg) {
-//     if (msg && msg.includes('✅')) notify.success(msg);
-//     else if (msg && msg.includes('❌')) notify.error(msg);
-//     else notify.info(msg);
-// };
+window.truncateText = function(text, maxLength = 30) {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength).trim() + '...';
+};

@@ -1,4 +1,3 @@
-/* Стили для системных сообщений */
 .messages-container {
     position: fixed;
     top: 20px;
@@ -68,7 +67,6 @@
     }
 }
  
-/* ── ШРИФТЫ ── */
 @font-face {
     font-family: 'DVDDS';
     src: url('../fonts/h1/dvdds.ttf') format('truetype');
@@ -101,7 +99,6 @@
     font-display: swap;
 }
  
-/* Базовый шрифт для всего текста */
 body, p, a, span, input, button, label,
 h4, h5, h6 {
     font-family: 'DVDDS', sans-serif;
@@ -110,7 +107,7 @@ h4, h5, h6 {
     text-transform: none;
 }
  
-/* Заголовки — Unbounded */
+
 h1, h2, h3 {
     font-family: 'Unbounded', sans-serif;
 }
@@ -372,7 +369,7 @@ main {
     gap: 20px;
 }
  
-/* ========== КОНТЕЙНЕР 1 ========== */
+/* КОНТЕЙНЕР 1 */
 .container-1 {
     position: relative;
     display: flex;
@@ -450,7 +447,7 @@ main {
     font-weight: 300;
 }
  
-/* ========== КОНТЕЙНЕР 2 ========== */
+/* КОНТЕЙНЕР 2 */
 .container-2 {
     display: flex;
     flex-direction: column;
@@ -512,7 +509,7 @@ main {
  
  
  
-/* ========== КОНТЕЙНЕР 3 ========== */
+/* КОНТЕЙНЕР 3 */
 .container-3 {
     display: flex;
     flex-direction: column;
@@ -661,11 +658,7 @@ main {
 
 
 
-
-
-
-
-/* ── ФУТЕР ── */
+/* ФУТЕР */
 .site-footer {
     background: #2A2A2A;
     color: #fff;
@@ -682,7 +675,7 @@ main {
     gap: 60px;
 }
 
-/* ── БРЕНД ── */
+
 .footer-logo {
     display: flex;
     align-items: center;
@@ -706,7 +699,7 @@ main {
     max-width: 280px;
 }
 
-/* ── СОЦИАЛЬНЫЕ ССЫЛКИ ── */
+
 .footer-social {
     display: flex;
     flex-direction: column;
@@ -727,7 +720,7 @@ main {
 .footer-social-link:hover { color: #AEBCFE; }
 .footer-social-link svg   { flex-shrink: 0; }
 
-/* ── НАВИГАЦИЯ ── */
+
 .footer-nav {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -757,7 +750,7 @@ main {
 
 .footer-nav-link:hover { color: #AEBCFE; }
 
-/* ── НИЖНЯЯ СТРОКА ── */
+
 .footer-legal {
     border-top: 1px solid rgba(255,255,255,0.08);
     padding: 20px 40px;

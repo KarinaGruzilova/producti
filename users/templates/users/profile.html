@@ -73,7 +73,7 @@
             </div>
         </div>
 
-        <!-- СТРОКА 2: тренд (с замком) | тариф -->
+        <!-- СТРОКА 2: тренд | тариф -->
         <div class="pro-lock-wrapper {% if not user.is_pro %}locked{% endif %}">
             <div class="trend-chart-container">
                 <h3>Динамика активности по категориям</h3>
@@ -115,7 +115,7 @@
             {% endif %}
         </div>
 
-        <!-- СТРОКА 3: экспорт (с замком) | промокод -->
+        <!-- СТРОКА 3: экспорт | промокод -->
         <div class="pro-lock-wrapper {% if not user.is_pro %}locked{% endif %}">
             <div class="export-section">
                 <div class="export-header">
@@ -130,11 +130,11 @@
                 <div class="export-filters">
                     <div class="filter-group">
                         <label>Дата от:</label>
-                        <input type="date" id="exportDateFrom" class="filter-date">
+                        <input type="date" id="exportDateFrom" class="filter-date" min="2020-01-01" max="2030-12-31">>
                     </div>
                     <div class="filter-group">
                         <label>Дата до:</label>
-                        <input type="date" id="exportDateTo" class="filter-date">
+                        <input type="date" id="exportDateTo" class="filter-date" min="2020-01-01" max="2030-12-31">
                     </div>
                     <button id="applyDateFilter" class="btn-filter">Применить</button>
                     <button id="clearDateFilter" class="btn-filter-clear">Сбросить</button>
@@ -154,7 +154,7 @@
                 <h3>Промокод</h3>
             </div>
             <div class="promo-input-row">
-                <input type="text" id="promoCode" placeholder="Введите промокод" class="promo-input">
+                <input type="text" id="promoCode" placeholder="Введите промокод" class="promo-input" maxlength="20">
                 <button onclick="activatePromo()" class="promo-btn">Применить</button>
             </div>
             <div id="promoResult" class="promo-result"></div>
@@ -209,7 +209,7 @@
 
     </div>
 
-    <!-- Выезжающая панель (вне grid) -->
+    <!-- Панель -->
     <div id="profileEditOverlay" class="profile-edit-overlay"></div>
     <div class="profile-edit-panel" id="profileEditPanel">
         <div class="profile-edit-header">
@@ -280,10 +280,10 @@
         .then(r => r.json())
         .then(data => {
             const el = document.getElementById('promoResult');
-            if (data.success) { el.innerHTML = '<span class="promo-success">✅ ' + data.success + '</span>'; location.reload(); }
-            else { el.innerHTML = '<span class="promo-error">❌ ' + data.error + '</span>'; }
+            if (data.success) { el.innerHTML = '<span class="promo-success"> ' + data.success + '</span>'; location.reload(); }
+            else { el.innerHTML = '<span class="promo-error"> ' + data.error + '</span>'; }
         })
-        .catch(() => { document.getElementById('promoResult').innerHTML = '<span class="promo-error">❌ Ошибка сети</span>'; });
+        .catch(() => { document.getElementById('promoResult').innerHTML = '<span class="promo-error"> Ошибка сети</span>'; });
     }
     </script>
 {% endblock %}

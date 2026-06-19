@@ -1,5 +1,3 @@
-// static/js/trend-chart.js
-
 async function loadMonthlyTrends() {
     const canvas = document.getElementById('monthlyTrendChart');
     if (!canvas) return;
@@ -19,7 +17,7 @@ async function loadMonthlyTrends() {
 function renderBeautifulChart(data) {
     const ctx = document.getElementById('monthlyTrendChart').getContext('2d');
     
-    // Удаляем старый график
+    // Удаляет старый график
     const existingChart = Chart.getChart(ctx.canvas);
     if (existingChart) existingChart.destroy();
     
@@ -28,7 +26,7 @@ function renderBeautifulChart(data) {
         return;
     }
     
-    // Создаём градиенты для линий
+    // Создаёт градиенты для линий
     const gradients = data.categories.map(cat => {
         const gradient = ctx.createLinearGradient(0, 0, 0, 300);
         gradient.addColorStop(0, cat.color);
@@ -126,16 +124,7 @@ function renderBeautifulChart(data) {
                         display: false,
                         drawBorder: false
                     },
-                    // title: {
-                    //     display: true,
-                    //     text: 'дни месяца',
-                    //     font: {
-                    //         family: "'DVDDS', sans-serif",
-                    //         size: 11,
-                    //         weight: '400'
-                    //     },
-                    //     color: '#AEBCFE'
-                    // },
+
                     ticks: {
                         color: '#757575',
                         font: { size: 10 },
@@ -182,7 +171,7 @@ function showEmptyChart() {
     ctx.font = '14px "DVDDS", sans-serif';
     ctx.fillStyle = '#AEBCFE';
     ctx.textAlign = 'center';
-    ctx.fillText('✨ пока нет данных ✨', canvas.width / 2, canvas.height / 2);
+    ctx.fillText('пока нет данных', canvas.width / 2, canvas.height / 2);
 }
 
 function showChartError() {
@@ -196,7 +185,7 @@ function showChartError() {
     ctx.font = '14px "DVDDS", sans-serif';
     ctx.fillStyle = '#FF4444';
     ctx.textAlign = 'center';
-    ctx.fillText('❌ ошибка загрузки данных', canvas.width / 2, canvas.height / 2);
+    ctx.fillText(' ошибка загрузки данных', canvas.width / 2, canvas.height / 2);
 }
 
 document.addEventListener('DOMContentLoaded', loadMonthlyTrends);

@@ -1,5 +1,3 @@
-// static/js/export.js
-
 (function() {
     'use strict';
     
@@ -16,12 +14,18 @@
         
         let currentDateFrom = '';
         let currentDateTo = '';
+
+        // Проверяет что год в дате состоит ровно из 4 цифр
+        function isValidYear(dateString) {
+            if (!dateString) return true;
+            const year = dateString.split('-')[0];
+            return /^\d{4}$/.test(year);
+        }
         
         function doExport(format) {
             let url = `/user/export/?format=${format}`;
             if (currentDateFrom) url += `&date_from=${currentDateFrom}`;
             if (currentDateTo) url += `&date_to=${currentDateTo}`;
-            console.log(`📤 Экспорт ${format}:`, url);
             window.location.href = url;
         }
         
@@ -48,9 +52,34 @@
         
         if (applyBtn) {
             applyBtn.addEventListener('click', function() {
-                currentDateFrom = dateFromInput?.value || '';
-                currentDateTo = dateToInput?.value || '';
-                alert(`Фильтр применён: с ${currentDateFrom || 'начала'} по ${currentDateTo || 'сегодня'}`);
+                const from = dateFromInput?.value || '';
+                const to = dateToInput?.value || '';
+
+                if (!isValidYear(from)) {
+                    if (window.validate) window.validate.markError('exportDateFrom', 'Год должен состоять из 4 цифр');
+                    else if (window.notify) window.notify.error('Год должен состоять из 4 цифр');
+                    return;
+                }
+
+                if (!isValidYear(to)) {
+                    if (window.validate) window.validate.markError('exportDateTo', 'Год должен состоять из 4 цифр');
+                    else if (window.notify) window.notify.error('Год должен состоять из 4 цифр');
+                    return;
+                }
+
+                if (from && to && from > to) {
+                    if (window.notify) window.notify.error('Дата "от" не может быть позже даты "до"');
+                    return;
+                }
+
+                currentDateFrom = from;
+                currentDateTo = to;
+
+                if (window.notify) {
+                    window.notify.success(`Фильтр применён: с ${currentDateFrom || 'начала'} по ${currentDateTo || 'сегодня'}`);
+                } else {
+                    alert(`Фильтр применён: с ${currentDateFrom || 'начала'} по ${currentDateTo || 'сегодня'}`);
+                }
             });
         }
         
@@ -60,11 +89,11 @@
                 if (dateToInput) dateToInput.value = '';
                 currentDateFrom = '';
                 currentDateTo = '';
-                alert('Фильтр сброшен');
+                if (window.notify) window.notify.info('Фильтр сброшен');
+                else alert('Фильтр сброшен');
             });
         }
         
-        console.log('✅ Экспорт инициализирован');
     });
     
 })();

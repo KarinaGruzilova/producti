@@ -1,4 +1,3 @@
-<!-- Уведомления об ошибках -->
 {% if form.non_field_errors %}
 <div class="error-toast" id="errorToast" style="display: none;">
     <button class="error-close" onclick="this.parentElement.style.display='none'">×</button>
@@ -11,7 +10,6 @@
 </div>
 
 <script>
-// Показываем уведомление при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
     const toast = document.getElementById('errorToast');
     if (toast) {

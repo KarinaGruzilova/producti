@@ -12,6 +12,27 @@ from users.forms import UserRegistrationForm
 
 from django.contrib import messages
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
+from django.db.models import Sum, Count
+from django.utils import timezone
+from datetime import datetime, timedelta
+from .models import ProPromoCode, User
+from categories.models import Category, Task
+
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
+import os
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+import json
+
 
 
 try:
@@ -55,22 +76,10 @@ def registration(request):
     }
     return render(request, 'users/registration.html', context)
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import update_session_auth_hash
-from django.contrib import messages
-from django.db.models import Sum, Count
-from django.utils import timezone
-from datetime import datetime, timedelta
-from .models import ProPromoCode, User
-from categories.models import Category, Task
-
 @login_required
 def profile(request):
-    """Страница профиля пользователя"""
+    #Страница профиля
     user = request.user
-    
-    # ========== СТАТИСТИКА ПОЛЬЗОВАТЕЛЯ ==========
     
     # Общее количество категорий
     categories_count = Category.objects.filter(user=user, is_active=True).count()
@@ -82,7 +91,7 @@ def profile(request):
     total_seconds = Task.objects.filter(user=user).aggregate(Sum('duration_seconds'))['duration_seconds__sum'] or 0
     total_hours = round(total_seconds / 3600, 1)
     
-    # Количество выполненных целей (если есть модель Goal)
+    # Количество выполненных целей
     # completed_goals = 0
     # try:
     #     from goals.models import Goal
@@ -90,11 +99,11 @@ def profile(request):
     # except ImportError:
     #     pass
     
-    # Текущая серия (количество дней подряд с активностью)
+    # Текущая серия
     streak_days = calculate_streak(user)
     
-    # ========== ДАННЫЕ ДЛЯ ГРАФИКА АКТИВНОСТИ ==========
-    # Получаем активность за последние 12 месяцев
+    # ДАННЫЕ ДЛЯ ГРАФИКА АКТИВНОСТИ
+    # Активность за последние 12 месяцев
     today = timezone.now().date()
     months_data = []
     
@@ -119,7 +128,7 @@ def profile(request):
             'hours': month_hours,
         })
     
-    months_data.reverse()  # Отображаем от января к декабрю
+    months_data.reverse()
 
     # Подсчёт невыполненных задач
     total_incomplete = Task.objects.filter(
@@ -141,11 +150,11 @@ def profile(request):
 
 
 def calculate_streak(user):
-    """Расчёт текущей серии (дней подряд с активностью)"""
+    # Расчёт текущей серии
     today = timezone.now().date()
     streak = 0
     
-    # Получаем все даты, когда были задачи
+    # Даты, когда были задачи
     dates = Task.objects.filter(
         user=user
     ).dates('created_at', 'day', order='DESC')
@@ -153,12 +162,12 @@ def calculate_streak(user):
     if not dates:
         return 0
     
-    # Проверяем, была ли активность сегодня или вчера
+    # Была ли активность сегодня или вчера
     latest_date = dates[0]
     if (today - latest_date).days > 1:
         return 0
     
-    # Считаем непрерывную серию
+    # Считает непрерывную серию
     current_date = latest_date
     for date in dates:
         if date == current_date:
@@ -171,7 +180,6 @@ def calculate_streak(user):
 
 
 def get_month_name(month_number):
-    """Возвращает название месяца на русском"""
     months = {
         1: 'Янв', 2: 'Фев', 3: 'Мар', 4: 'Апр', 5: 'Май', 6: 'Июн',
         7: 'Июл', 8: 'Авг', 9: 'Сен', 10: 'Окт', 11: 'Ноя', 12: 'Дек'
@@ -187,25 +195,13 @@ def logout(request):
     return redirect(reverse('main:index'))
 
 
-
-
-# users/api_views.py
-from rest_framework import viewsets, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.conf import settings
-import os
-
 class UserProfileViewSet(viewsets.ViewSet):
-    """API для работы с профилем пользователя"""
+    # API для работы с профилем
     permission_classes = [IsAuthenticated]
     
     @action(detail=False, methods=['post'], url_path='upload-avatar')
     def upload_avatar(self, request):
-        """Загрузка аватара пользователя"""
+        # Загрузка аватара
         user = request.user
         
         if 'avatar' not in request.FILES:
@@ -230,18 +226,17 @@ class UserProfileViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Удаляем старый аватар, если он существует
+        # Удаляет старый аватар, если он существует
         if user.profile.avatar and user.profile.avatar.name != 'default.png':
             old_avatar_path = os.path.join(settings.MEDIA_ROOT, user.profile.avatar.name)
             if os.path.exists(old_avatar_path):
                 os.remove(old_avatar_path)
         
-        # Сохраняем новый аватар
+        # Сохраняет новый аватар
         file_extension = os.path.splitext(avatar_file.name)[1]
         new_filename = f"avatars/{user.id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}{file_extension}"
         saved_path = default_storage.save(new_filename, ContentFile(avatar_file.read()))
         
-        # Обновляем запись в базе данных
         user.profile.avatar = saved_path
         user.profile.save()
         
@@ -256,20 +251,15 @@ class UserProfileViewSet(viewsets.ViewSet):
     
 
 
-    # users/views.py (исправленная функция get_task_status)
-
-from django.utils import timezone
-
-
 def get_task_status(task):
-    """Определяет статус задачи"""
+    # Cтатус задачи
     today = timezone.now().date()
     
-    # Если есть потраченное время — задача выполнена через фокус
+    # Если есть потраченное время, задача выполнена через фокус
     if task.duration_seconds > 0:
         return 'Выполнена (фокус)'
     
-    # Для плановых задач (без времени) определяем статус по дате
+    # Для плановых задач определяет статус по дате
     due_date = task.due_date
     compare_date = due_date if due_date else task.created_at.date()
     
@@ -280,39 +270,33 @@ def get_task_status(task):
     else:
         return 'В планах'
 
-# users/views.py
-
-# def get_task_status(task):
-#     """Определяет статус задачи"""
-#     today = timezone.now().date()
-    
-#     # Задачи с потраченным временем (из фокуса)
-#     if task.duration_seconds > 0:
-#         if task.completed:
-#             return 'Выполнена (фокус)'
-#         else:
-#             return 'Прервана (фокус)'
-    
-#     # Плановые задачи (без времени)
-#     due_date = task.due_date
-#     compare_date = due_date if due_date else task.created_at.date()
-    
-#     if task.completed:
-#         return 'Выполнена'
-#     elif compare_date < today:
-#         return 'Просрочена'
-#     elif compare_date == today:
-#         return 'На сегодня'
-#     else:
-#         return 'В планах'
-
 
 @login_required
 def export_tasks(request):
-    """Экспорт задач пользователя с расширенной информацией"""
     format_type = request.GET.get('format', 'csv')
     date_from = request.GET.get('date_from', '')
     date_to = request.GET.get('date_to', '')
+
+    def is_valid_date(date_string):
+        """Проверяет что дата в формате YYYY-MM-DD с ровно 4-значным годом"""
+        if not date_string:
+            return True
+        parts = date_string.split('-')
+        if len(parts) != 3:
+            return False
+        year_part = parts[0]
+        if len(year_part) != 4 or not year_part.isdigit():
+            return False
+        try:
+            datetime.strptime(date_string, '%Y-%m-%d')
+            return True
+        except ValueError:
+            return False
+
+    if date_from and not is_valid_date(date_from):
+        return HttpResponse('Некорректный формат даты "от". Год должен состоять из 4 цифр.', status=400)
+    if date_to and not is_valid_date(date_to):
+        return HttpResponse('Некорректный формат даты "до". Год должен состоять из 4 цифр.', status=400)
     
     tasks = Task.objects.filter(user=request.user).select_related('category')
     
@@ -409,18 +393,10 @@ def export_tasks(request):
 
 
 
-
-
-    # users/api_views.py
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
-from django.http import JsonResponse
-import json
-
 @csrf_exempt
 @require_POST
 def yookassa_webhook(request):
-    """Обработка уведомлений от YooKassa"""
+    # Обработка уведомлений от YooKassa
     event = json.loads(request.body)
     
     if event.get('event') == 'payment.succeeded':
@@ -445,20 +421,16 @@ def yookassa_webhook(request):
             
             user.save()
             
-            print(f"✅ Платеж {payment_id} подтверждён. Пользователь {user.username} получил Pro-подписку до {user.subscription_until}")
+            print(f" Платеж {payment_id} подтверждён. Пользователь {user.username} получил Pro-подписку до {user.subscription_until}")
             
         except User.DoesNotExist:
-            print(f"❌ Пользователь с ID {user_id} не найден")
+            print(f" Пользователь с ID {user_id} не найден")
     
     return JsonResponse({'status': 'ok'})
 
-from django.shortcuts import render
-from .models import ProPromoCode
-from django.utils import timezone
-from datetime import timedelta
 
 def payment(request):
-    """Страница после успешной оплаты с промокодом"""
+    # Страница после успешной оплаты с промокодом
     promo_data = request.session.get('pending_promo', {})
     promo_code = promo_data.get('code', '')
     user_id = promo_data.get('user_id')
@@ -486,18 +458,17 @@ def payment(request):
             )
     
     return render(request, 'payment.html', {'promo_code': promo_code})
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
-from django.utils import timezone
-from datetime import timedelta  # ← ДОБАВИТЬ ЭТУ СТРОКУ
-from .models import ProPromoCode
+
+
+
 
 @csrf_exempt
 @require_POST
 def activate_promo(request):
-    """Активация промокода"""
     code = request.POST.get('promo_code', '').strip().upper()
+
+    if len(code) > 20:
+        return JsonResponse({'error': 'Промокод указан некорректно'}, status=400)
     
     try:
         promo = ProPromoCode.objects.get(code=code, user=request.user)

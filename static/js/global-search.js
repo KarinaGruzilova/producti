@@ -1,15 +1,13 @@
-// static/js/global-search.js
-
 (function() {
     'use strict';
     
     let searchInput = null;
     let allCategoriesCache = []; // Кэш всех категорий
     
-    // Загружаем все категории через API (работает на любой странице)
+    // Загрузка всех категории через API
     function loadAllCategories() {
         return new Promise((resolve, reject) => {
-            // Если уже загружены, возвращаем из кэша
+            // Если уже загружены, возвращаею из кэша
             if (allCategoriesCache.length > 0) {
                 resolve(allCategoriesCache);
                 return;
@@ -26,12 +24,11 @@
             .then(response => response.json())
             .then(categories => {
                 allCategoriesCache = categories;
-                console.log('📦 Загружено категорий через API:', categories.length);
                 resolve(categories);
             })
             .catch(error => {
-                console.error('❌ Ошибка загрузки категорий:', error);
-                // Если API не работает, пробуем собрать со страницы
+                console.error(' Ошибка загрузки категорий:', error);
+                // Если API не работает, пробую собрать со страницы
                 const categoriesFromPage = getCategoriesFromPage();
                 resolve(categoriesFromPage);
             });
@@ -42,7 +39,7 @@
     function getCategoriesFromPage() {
         const categories = [];
         
-        // Пробуем найти на странице
+        // Пробует найти на странице
         const categoryElements = document.querySelectorAll('.activiti');
         
         categoryElements.forEach(elem => {
@@ -70,7 +67,7 @@
             return [];
         }
         
-        // Загружаем все категории
+        // Все категории
         const allCategories = await loadAllCategories();
         const lowerQuery = query.toLowerCase().trim();
         
@@ -78,7 +75,6 @@
             return category.name && category.name.toLowerCase().includes(lowerQuery);
         });
         
-        console.log(`🔍 Поиск "${query}" - найдено ${results.length} из ${allCategories.length}`);
         return results.slice(0, 4);
     }
     
@@ -98,7 +94,6 @@
         return cookieValue;
     }
     
-    // Остальной код (displayResults, highlightText и т.д.)...
     function highlightText(text, query) {
         if (!query || !text) return text || '';
         
@@ -130,7 +125,7 @@
         
         // Если результаты еще не загружены, показываем загрузку
         if (results.then) {
-            searchResults.innerHTML = '<div class="search-loading">🔍 Поиск...</div>';
+            searchResults.innerHTML = '<div class="search-loading">Поиск...</div>';
             searchDropdown.style.display = 'block';
             results = await results;
         }
@@ -208,7 +203,6 @@
         searchInput = document.getElementById('searchInput');
         
         if (!searchInput) {
-            console.log('⚠️ Поиск не инициализирован: нет #searchInput');
             return;
         }
         
@@ -251,10 +245,9 @@
             }
         });
         
-        console.log('✅ Поиск инициализирован');
     }
     
-    // Экспортируем функции
+    // Экспортирует функции
     window.GlobalSearch = {
         init: initSearch,
         createCategory: createCategory,
@@ -264,7 +257,7 @@
         }
     };
     
-    // Запускаем
+    // Запуск
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initSearch);
     } else {

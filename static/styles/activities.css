@@ -30,12 +30,10 @@
     font-display: swap;
 }
 
-/* Базовый шрифт */
 *, *::before, *::after {
     font-family: 'DVDDS', sans-serif;
 }
 
-/* Заголовки — Unbounded */
 h1, h2, h3 {
     font-family: 'Unbounded', sans-serif;
 }
@@ -50,7 +48,7 @@ h4, h5, h6 {
     flex-direction: column;
 }
 
-/* ── БЛОК С КРУГОВОЙ ДИАГРАММОЙ ── */
+/* БЛОК С КРУГОВОЙ ДИАГРАММОЙ */
 .categories-stats { position: relative; }
 
 .categories-stats__wrapper {
@@ -101,7 +99,6 @@ h4, h5, h6 {
     gap: 0px;
 }
 
-/* h4 в заголовке блока — оставляем DVDDS как подпись */
 .zagolovok h4 {
     font-family: 'DVDDS', sans-serif;
     color: #2A2A2A;
@@ -117,7 +114,6 @@ h4, h5, h6 {
     gap: 0;
 }
 
-/* Большое число часов — Unbounded */
 .zagolovok .text span {
     font-family: 'Unbounded', sans-serif;
     font-size: 36px;
@@ -134,7 +130,7 @@ h4, h5, h6 {
     width: auto;
 }
 
-/* ── ЛЕГЕНДА ── */
+/* ЛЕГЕНДА */
 .stats-legend {
     display: flex;
     flex-wrap: wrap;
@@ -152,7 +148,7 @@ h4, h5, h6 {
     font-size: 13px;
 }
 
-/* ── КРУГОВОЙ ГРАФИК ── */
+/* КРУГОВОЙ ГРАФИК */
 .categories-stats__chart {
     width: 260px; height: 260px;
     display: flex; align-items: center; justify-content: center;
@@ -186,7 +182,6 @@ h4, h5, h6 {
     transform: translateY(-2px);
 }
 
-/* ── СПИСОК КАТЕГОРИЙ ── */
 .categories {
     position: relative;
     display: flex;
@@ -198,7 +193,6 @@ h4, h5, h6 {
     padding: 28px;
 }
 
-/* Заголовок раздела категорий — Unbounded */
 h6 {
     font-family: 'Unbounded', sans-serif;
     font-weight: 700;
@@ -253,7 +247,7 @@ h6 {
 .all-btn button { border: none; background-color: #fff; cursor: pointer; }
 .two-btn { display: flex; gap: 16px; }
 
-/* ── ПАНЕЛЬ РЕДАКТИРОВАНИЯ ── */
+/* ПАНЕЛЬ РЕДАКТИРОВАНИЯ */
 .edit-overlay {
     display: none;
     position: fixed;
@@ -288,7 +282,6 @@ h6 {
     border-bottom: 1px solid #F0F0F0;
 }
 
-/* Заголовок панели — Unbounded */
 .edit-panel-header h3 {
     font-family: 'Unbounded', sans-serif;
     font-size: 16px;
@@ -345,7 +338,7 @@ h6 {
     box-shadow: 0 0 0 2px rgba(45,38,140,0.1);
 }
 
-/* ── ЭМОДЗИ ── */
+/* ЭМОДЗИ */
 .emoji-selector-btn {
     display: flex;
     align-items: center;
@@ -370,7 +363,7 @@ h6 {
     top: 32%;
 }
 
-/* ── ВЫБОР ЦВЕТА ── */
+/* ВЫБОР ЦВЕТА */
 .color-selector-btn {
     display: flex;
     align-items: center;
@@ -416,7 +409,7 @@ h6 {
 .color-option:hover { background: #ECEFFE; }
 .color-dot { width: 20px; height: 20px; border-radius: 50%; }
 
-/* ── КНОПКИ ПАНЕЛИ ── */
+/* КНОПКИ ПАНЕЛИ */
 .edit-panel-buttons { display: flex; gap: 12px; margin-top: 20px; }
 
 .btn-cancel, .btn-save {
@@ -433,7 +426,9 @@ h6 {
 .btn-cancel:hover { background: #E0E0E0; }
 .btn-save { background: #2D268C; border: none; color: white; }
 .btn-save:hover { background: #AEBCFE; color: #2D268C; }
-/* ── МОДАЛЬНОЕ ОКНО СОЗДАНИЯ КАТЕГОРИИ ── */
+
+
+/* МОДАЛЬНОЕ ОКНО СОЗДАНИЯ КАТЕГОРИИ */
 .cat-modal-content {
     padding: 44px 40px 36px;
     display: flex;
@@ -450,7 +445,7 @@ h6 {
     margin-bottom: 8px;
 }
 
-/* Подпись поля */
+
 .cat-field-label {
     font-family: 'DVDDS', sans-serif;
     font-size: 11px;
@@ -462,7 +457,7 @@ h6 {
     display: block;
 }
 
-/* Строка эмодзи + цвет */
+
 .cat-row {
     display: flex;
     gap: 16px;
@@ -555,7 +550,7 @@ h6 {
 .cat-color-option:last-child { border-bottom: none; }
 .cat-color-option:hover { background: #F0F1FF; color: #2D268C; }
 
-/* Инпут названия */
+
 .cat-name-input {
     width: 100%;
     padding: 13px 20px;
@@ -573,7 +568,6 @@ h6 {
 .cat-name-input:focus { border-color: #2D268C; background: #fff; }
 .cat-name-input::placeholder { color: #C0C0CC; }
 
-/* Кнопка создания */
 .cat-submit-btn {
     width: 100%;
     height: 52px;

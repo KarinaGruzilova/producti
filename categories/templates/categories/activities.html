@@ -10,12 +10,11 @@
     <!-- БЛОК С КРУГОВОЙ ДИАГРАММОЙ -->
     <div class="categories-stats">
         <div class="categories-stats__wrapper">
-
-<div data-svg-wrapper style="position: relative">
-  <svg width="1015" height="305" viewBox="0 0 1015 305" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M834.729 0C770.383 36.3802 720.309 89.5266 710 159.282C710 212.885 738.736 262.205 781.491 302.551C780.522 303.524 779.364 304.335 778.179 305H40C17.9086 305 0 287.091 0 265V40C3.70498e-06 17.9086 17.9086 3.22922e-07 40 0H834.729ZM1339.43 0C1361.52 0 1379.43 17.9086 1379.43 40V265C1379.43 287.091 1361.52 305 1339.43 305H1259.89C1299.1 264.984 1325 216.478 1325 165.357C1325 63.97 1312.56 37.2977 1242.69 0H1339.43Z" fill="white" fill-opacity="0.8"/>
-  </svg>
-</div>
+            <div data-svg-wrapper style="position: relative">
+                <svg width="1015" height="305" viewBox="0 0 1015 305" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M834.729 0C770.383 36.3802 720.309 89.5266 710 159.282C710 212.885 738.736 262.205 781.491 302.551C780.522 303.524 779.364 304.335 778.179 305H40C17.9086 305 0 287.091 0 265V40C3.70498e-06 17.9086 17.9086 3.22922e-07 40 0H834.729ZM1339.43 0C1361.52 0 1379.43 17.9086 1379.43 40V265C1379.43 287.091 1361.52 305 1339.43 305H1259.89C1299.1 264.984 1325 216.478 1325 165.357C1325 63.97 1312.56 37.2977 1242.69 0H1339.43Z" fill="white" fill-opacity="0.8"/>
+                </svg>
+            </div>
             <div class="categories-stats__content">
                 <div class="categories-stats__row">
                     
@@ -43,7 +42,6 @@
                     <div class="categories-stats__chart">
                         {{ chart_html|safe }}
                     </div>
-
                 </div>
             </div>
         </div>
@@ -58,23 +56,21 @@
         <div class="activities">
             {% for category in categories %}
             <div class="activiti">
-                
-                    <a href="{% url 'categories:category_detail' category.id %}" class="category-link info">
-                        <div class="smail" style="background-color: {{ category.color }}">
-                            {{ category.emoji }}
-                        </div>
+                <a href="{% url 'categories:category_detail' category.id %}" class="category-link info">
+                    <div class="smail" style="background-color: {{ category.color }}">
+                        {{ category.emoji }}
+                    </div>
                         
-                        <div class="text">
-                            <span>{{ category.name }}</span>
-                            <p class="info-time">объем работы: {{ category.total_time_formatted }}</p>
-                        </div>
-                    </a>
-                
-                
+                    <div class="text">
+                        <span>{{ category.name|truncatechars:30 }}</span>
+                        <p class="info-time">объем работы: {{ category.total_time_formatted }}</p>
+                    </div>
+                </a>
+            
                 <div class="all-btn">
                     <div class="two-btn"> 
                         <button class="edit-category-btn" data-id="{{ category.id }}"
-                            data-name="{{ category.name }}"
+                            data-name="{{ category.name|truncatechars:30 }}"
                             data-emoji="{{ category.emoji }}"
                             data-color="{{ category.color }}"
                             data-description="{{ category.description|escapejs }}">
@@ -99,75 +95,70 @@
         </div>
     </div>
 
+    <!-- Затемнение для панели редактирования -->
+    <div id="editCategoryOverlay" class="edit-overlay"></div>
 
-
-<!-- Затемнение для панели редактирования -->
-<div id="editCategoryOverlay" class="edit-overlay"></div>
-
-<!-- Выезжающая панель редактирования категории -->
-<div id="editCategoryPanel" class="edit-category-panel">
-    <div class="edit-panel-header">
-        <h3>Редактирование категории</h3>
-        <button class="close-edit-panel" id="closeEditPanelBtn">×</button>
-    </div>
-    
-    <form id="editCategoryForm" class="edit-category-form">
-        {% csrf_token %}
-        
-        <!-- Название -->
-        <div class="form-group">
-            <label>Название категории</label>
-            <input type="text" id="editCategoryName" name="name" placeholder="Введите название" required>
+    <!-- Выезжающая панель редактирования -->
+    <div id="editCategoryPanel" class="edit-category-panel">
+        <div class="edit-panel-header">
+            <h3>Редактирование категории</h3>
+            <button class="close-edit-panel" id="closeEditPanelBtn">×</button>
         </div>
+        
+        <form id="editCategoryForm" class="edit-category-form">
+            {% csrf_token %}
 
-                
-        <div class="form-group">
-            <label>Эмодзи</label>
-            <div class="emoji-select-wrapper">
-                <button type="button" class="emoji-selector-btn" id="editEmojiPickerBtn">
-                    <span id="editSelectedEmoji">🎨</span>
-                    <span>выбрать эмодзи</span>
-                </button>
-                <div id="editEmojiPickerContainer" class="emoji-picker-container redact" style="display: none;"></div>
-                <input type="hidden" id="editEmojiInput" value="🎨">
+            <div class="form-group">
+                <label>Название категории</label>
+                <input type="text" id="editCategoryName" name="name" placeholder="Введите название" required>
             </div>
-        </div>
-        
-        <div class="form-group">
-            <label>Цвет категории</label>
-            <div class="color-select-wrapper">
-                <button type="button" class="color-selector-btn" id="editColorSelectorBtn">
-                    <span class="color-preview" id="editColorPreview" style="background-color: #C7CEEA;"></span>
-                    <span id="editColorName">Пастельно-лавандовый</span>
-                    <svg width="12" height="6" viewBox="0 0 9 5" fill="none">
-                        <path d="M8.5 0.5L4.5 4.5L0.5 0.5" stroke="#2D268C" stroke-linecap="round"/>
-                    </svg>
-                </button>
-                <div id="editColorDropdown" class=" color-dropdown" style="display: none;">
-                    {% for color_code, color_name in color_choices %}
-                    <div class="color-option" data-color="{{ color_code }}" data-name="{{ color_name }}">
-                        <span class="color-dot" style="background-color: {{ color_code }};"></span>
-                        <span class="color-text">{{ color_name }}</span>
-                    </div>
-                    {% endfor %}
+     
+            <div class="form-group">
+                <label>Эмодзи</label>
+                <div class="emoji-select-wrapper">
+                    <button type="button" class="emoji-selector-btn" id="editEmojiPickerBtn">
+                        <span id="editSelectedEmoji">🎨</span>
+                        <span>выбрать эмодзи</span>
+                    </button>
+                    <div id="editEmojiPickerContainer" class="emoji-picker-container redact" style="display: none;"></div>
+                    <input type="hidden" id="editEmojiInput" value="🎨">
                 </div>
-                <input type="hidden" id="editColorInput" value="#C7CEEA">
             </div>
-        </div>
+            
+            <div class="form-group">
+                <label>Цвет категории</label>
+                <div class="color-select-wrapper">
+                    <button type="button" class="color-selector-btn" id="editColorSelectorBtn">
+                        <span class="color-preview" id="editColorPreview" style="background-color: #C7CEEA;"></span>
+                        <span id="editColorName">Пастельно-лавандовый</span>
+                        <svg width="12" height="6" viewBox="0 0 9 5" fill="none">
+                            <path d="M8.5 0.5L4.5 4.5L0.5 0.5" stroke="#2D268C" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <div id="editColorDropdown" class=" color-dropdown" style="display: none;">
+                        {% for color_code, color_name in color_choices %}
+                        <div class="color-option" data-color="{{ color_code }}" data-name="{{ color_name }}">
+                            <span class="color-dot" style="background-color: {{ color_code }};"></span>
+                            <span class="color-text">{{ color_name }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" id="editColorInput" value="#C7CEEA">
+                </div>
+            </div>
 
-        
-        <!-- Описание -->
-        <div class="form-group">
-            <label>Описание (необязательно)</label>
-            <textarea id="editCategoryDescription" rows="3" placeholder="Описание категории"></textarea>
-        </div>
-        
-        <div class="edit-panel-buttons">
-            <button type="button" class="btn-cancel" id="cancelEditBtn">Отмена</button>
-            <button type="submit" class="btn-save">Сохранить изменения</button>
-        </div>
-    </form>
-</div>
+            <div class="form-group">
+                <label>Описание (необязательно)</label>
+                <textarea id="editCategoryDescription" rows="3" placeholder="Описание категории"></textarea>
+            </div>
+            
+            <div class="edit-panel-buttons">
+                <button type="button" class="btn-cancel" id="cancelEditBtn">Отмена</button>
+                <button type="submit" class="btn-save">Сохранить изменения</button>
+            </div>
+        </form>
+    </div>
+
     <!-- Модальное окно2 - Создание категории -->
     <div id="createCategoryModal" class="modal">
         <div class="modal-content">
@@ -177,7 +168,6 @@
             <form class="category-form" id="createCategoryForm" method="post">
                 {% csrf_token %}
                 
-                <!-- Название категории -->
                 <input type="text" 
                     id="category-name" 
                     name="name" 
@@ -188,7 +178,6 @@
                     maxlength="100">
                 
                 <div class="options-row">
-                    <!-- Блок с эмодзи -->
                     <div class="option-selector emoji-selector-container">
                         <span class="option-label">Иконка:</span>
                         
@@ -228,27 +217,21 @@
                     </div>
                 </div>
                 
-                <!-- Кнопка создания -->
                 <div class="button-mod2">
                     <button type="submit" class="btn-create" id="createCategorySubmit">+ создать</button>
                 </div>
                 
-                <!-- Контейнер для ошибок -->
                 <div id="categoryError" class="error-message" style="display: none; color: red; margin-top: 10px; text-align: center;"></div>
             </form>
         </div>
     </div>
 {% endblock %}
 
-
-
-
 {% block scripts %}
     <script src="{% static 'js/notify.js' %}"></script>
     <script src="{% static 'js/category.js' %}"></script>
 {% endblock %}
 
-<!-- Переопределяем extra_js, чтобы отключить dashboard-modal.js -->
 {% block extra_js %}
     <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/emoji-mart.js"></script>
 {% endblock %}

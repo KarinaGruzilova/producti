@@ -1,8 +1,6 @@
-// tasks_calendar.js
-
 document.addEventListener('DOMContentLoaded', function() {
     
-    // ========== 1. ПОЛУЧАЕМ ВСЕ НЕОБХОДИМЫЕ ЭЛЕМЕНТЫ ==========
+    // ВСЕ НЕОБХОДИМЫЕ ЭЛЕМЕНТЫ
     const modal = document.getElementById('createTaskModal');
     const modalOverlay = document.getElementById('modalOverlay');
     const openModalBtn = document.getElementById('openCreateTaskModal');
@@ -23,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const categoryDropdown = document.querySelector('.category-dropdown');
     const categoryOptions = document.querySelectorAll('.category-option');
     
-    // ========== 2. ФУНКЦИЯ ПОЛУЧЕНИЯ CSRF-ТОКЕНА ==========
+    // ФУНКЦИЯ ПОЛУЧЕНИЯ CSRF-ТОКЕНА
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -39,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookieValue;
     }
     
-    // ========== 3. ЦВЕТА И ЭМОДЗИ ДЛЯ СТАНДАРТНЫХ КАТЕГОРИЙ ==========
+    // ЦВЕТА И ЭМОДЗИ ДЛЯ СТАНДАРТНЫХ КАТЕГОРИЙ
     const colorMap = {
         'учеба': '#C7CEEA',
         'чтение': '#B5EAD7',
@@ -54,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'хобби': '🎨'
     };
     
-    // ========== 4. УПРАВЛЕНИЕ ОКНОМ И ЗАТЕМНЕНИЕМ ==========
+    // УПРАВЛЕНИЕ ОКНОМ И ЗАТЕМНЕНИЕМ
     function openModal() {
         if (modal && contentContainer) {
             modal.style.display = 'block';
@@ -66,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function closeModal() {
         if (modal && contentContainer) {
             modal.style.display = 'none';
-            contentContainer.classList.remove('dimmed');  // убираем затемнение
+            contentContainer.classList.remove('dimmed');  // убирает затемнение
             document.body.style.overflow = '';
             resetForm();
         }
@@ -89,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (categoryDropdown) categoryDropdown.style.display = 'none';
     }
     
-    // ========== 5. ОТКРЫТИЕ/ЗАКРЫТИЕ ==========
+    // ОТКРЫТИЕ/ЗАКРЫТИЕ
     if (openModalBtn) {
         openModalBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -111,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // ========== 6. ВЫБОР КАТЕГОРИИ ==========
+    // ВЫБОР КАТЕГОРИИ
     categoryButtons.forEach(btn => {
         btn.addEventListener('click', function() {
             categoryButtons.forEach(b => b.classList.remove('selected'));
@@ -163,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // ========== 7. ПОЛУЧЕНИЕ ДАННЫХ КАТЕГОРИИ ==========
+    // ПОЛУЧЕНИЕ ДАННЫХ КАТЕГОРИИ 
     function getSelectedCategoryData() {
         let categoryData = {
             name: null,
@@ -204,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return categoryData;
     }
     
-    // ========== 8. СОЗДАНИЕ СТАНДАРТНОЙ КАТЕГОРИИ ==========
+    // СОЗДАНИЕ СТАНДАРТНОЙ КАТЕГОРИИ
     async function createStandardCategoryIfNeeded(categoryName) {
         const csrftoken = getCookie('csrftoken');
         
@@ -221,7 +219,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 );
                 
                 if (existingCategory) {
-                    console.log('✅ Стандартная категория уже существует:', existingCategory);
                     return existingCategory.id;
                 }
             }
@@ -242,7 +239,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (createResponse.ok) {
                 const data = await createResponse.json();
-                console.log('✅ Создана новая стандартная категория:', data);
                 return data.id;
             }
         } catch (error) {
@@ -251,48 +247,72 @@ document.addEventListener('DOMContentLoaded', function() {
         return null;
     }
     
-    // ========== 9. ПРОВЕРКА ДАТЫ ==========
+    // ПРОВЕРКА ДАТЫ
     function isValidDueDate(dateString) {
         if (!dateString) return true;
         const selectedDate = new Date(dateString);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
+        const maxDate = new Date(today.getFullYear() + 5, today.getMonth(), today.getDate());
+
+        if (isNaN(selectedDate.getTime())) {
+            if (window.validate) window.validate.markError('taskDueDate', 'Некорректная дата');
+            else if (window.notify) window.notify.error('Некорректная дата');
+            return false;
+        }
         if (selectedDate < today) {
             if (window.validate) window.validate.markError('taskDueDate', 'Дата не может быть раньше сегодняшнего дня');
             else if (window.notify) window.notify.error('Дата не может быть раньше сегодняшнего дня');
             return false;
         }
+        if (selectedDate > maxDate) {
+            if (window.validate) window.validate.markError('taskDueDate', 'Дата не должна быть позже чем через 5 лет');
+            else if (window.notify) window.notify.error('Дата не должна быть позже чем через 5 лет');
+            return false;
+        }
         return true;
     }
     
-    // ========== 10. СОЗДАНИЕ ЗАДАЧИ ==========
-if (submitTaskBtn) {
-    submitTaskBtn.addEventListener('click', async function() {
-        const title = taskTitleInput?.value.trim();
-        const description = taskDescriptionInput?.value.trim() || '';
-        const dueDate = taskDueDate?.value;
-        const dueTime = taskTime?.value;
+    // СОЗДАНИЕ ЗАДАЧИ
+    if (submitTaskBtn) {
+        submitTaskBtn.addEventListener('click', async function() {
+            const title = taskTitleInput?.value.trim();
+            const description = taskDescriptionInput?.value.trim() || '';
+            const dueDate = taskDueDate?.value;
+            const dueTime = taskTime?.value;
 
-        // ── ПРОВЕРКА ЛИМИТА FREE ТАРИФА ──
-        const isPro = document.body.dataset.isPro === 'true';
-        if (!isPro) {
-            try {
-                const limitRes = await fetch('/api/tasks/');
-                const allTasks = await limitRes.json();
-                const activeTasks = allTasks.filter(t => !t.completed);
-                if (activeTasks.length >= 10) {
-                    if (window.notify) window.notify.error('Лимит 10 задач на бесплатном тарифе. Выполните или удалите существующие задачи, или оформите PRO.');
-                    return;
-                }
-            } catch(e) {}
-        }
-            
+            // ПРОВЕРКА ЛИМИТА БАЗОВОГО ТАРИФА
+            const isPro = document.body.dataset.isPro === 'true';
+            if (!isPro) {
+                try {
+                    const limitRes = await fetch('/api/tasks/');
+                    const allTasks = await limitRes.json();
+                    const activeTasks = allTasks.filter(t => !t.completed);
+                    if (activeTasks.length >= 10) {
+                        if (window.notify) window.notify.error('Лимит 10 задач на бесплатном тарифе. Выполните или удалите существующие задачи, или оформите PRO.');
+                        return;
+                    }
+                } catch(e) {}
+            }
+                
             if (!title) {
                 if (window.validate) window.validate.markError('taskTitle', 'Введите название задачи');
                 else if (window.notify) window.notify.error('Введите название задачи');
                 return;
             }
-            
+
+            if (title.length > 100) {
+                if (window.validate) window.validate.markError('taskTitle', 'Название не должно превышать 100 символов');
+                else if (window.notify) window.notify.error('Название не должно превышать 100 символов');
+                return;
+            }
+
+            if (description.length > 500) {
+                if (window.validate) window.validate.markError('taskDescription', 'Описание не должно превышать 500 символов');
+                else if (window.notify) window.notify.error('Описание не должно превышать 500 символов');
+                return;
+            }
+                
             const categoryData = getSelectedCategoryData();
             if (!categoryData.name) {
                 if (window.notify) window.notify.error('Выберите категорию');
@@ -302,11 +322,11 @@ if (submitTaskBtn) {
                 });
                 return;
             }
-            
+                
             if (!isValidDueDate(dueDate)) return;
-            
+                
             let categoryId = categoryData.id;
-            
+                
             if (categoryData.isStandard && !categoryId) {
                 categoryId = await createStandardCategoryIfNeeded(categoryData.name);
                 if (!categoryId) {
@@ -314,12 +334,12 @@ if (submitTaskBtn) {
                     return;
                 }
             }
-            
+                
             if (!categoryId) {
                 if (window.notify) window.notify.error('Выберите категорию из списка');
                 return;
             }
-            
+                
             const taskData = {
                 title: title,
                 description: description,
@@ -329,9 +349,9 @@ if (submitTaskBtn) {
                 due_date: dueDate || null
             };
             if (dueTime) taskData.due_time = dueTime;
-            
+                
             const csrftoken = getCookie('csrftoken');
-            
+                
             try {
                 const response = await fetch('/api/tasks/', {
                     method: 'POST',
@@ -341,24 +361,33 @@ if (submitTaskBtn) {
                     },
                     body: JSON.stringify(taskData)
                 });
-                
+                    
                 const data = await response.json();
-                
+                    
                 if (response.ok && data.id) {
                     if (window.notify) window.notify.success('Задача создана!');
                     closeModal();
                     location.reload();
                 } else {
-                    if (window.notify) window.notify.error('Ошибка при создании задачи');
+                    let errorMsg = 'Ошибка при создании задачи';
+                    if (data && typeof data === 'object') {
+                        const firstField = Object.keys(data)[0];
+                        if (firstField && Array.isArray(data[firstField])) {
+                            errorMsg = data[firstField][0];
+                        } else if (data.error) {
+                            errorMsg = data.error;
+                        }
+                    }
+                    if (window.notify) window.notify.error(errorMsg);
                 }
-            } catch (error) {
-                console.error('Ошибка:', error);
-                if (window.notify) window.notify.error('Ошибка сети');
-            }
-        });
-    }
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                    if (window.notify) window.notify.error('Ошибка сети');
+                }
+            });
+        }
     
-    // ========== 11. КНОПКА "НОВАЯ КАТЕГОРИЯ" ==========
+    // КНОПКА НОВАЯ КАТЕГОРИЯ
     if (addCategoryBtn) {
         addCategoryBtn.addEventListener('click', function() {
             closeModal();
@@ -372,5 +401,57 @@ if (submitTaskBtn) {
         });
     }
     
-    console.log('✅ Модальное окно создания задачи инициализировано');
+
+    // УДАЛЕНИЕ ЗАДАЧИ
+    document.querySelectorAll('.btn-del').forEach(btn => {
+        btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const card = this.closest('.task-card');
+            const taskId = card?.dataset.taskId;
+            if (!taskId) { if (window.notify) window.notify.error('ID задачи не найден'); return; }
+
+            if (!confirm('Удалить задачу?')) return;
+
+            try {
+                const res = await fetch(`/api/tasks/${taskId}/`, {
+                    method: 'DELETE',
+                    headers: { 'X-CSRFToken': getCookie('csrftoken') }
+                });
+                if (res.ok || res.status === 204) {
+                    card.remove();
+                    if (window.notify) window.notify.success('Задача удалена');
+                } else {
+                    if (window.notify) window.notify.error('Ошибка при удалении');
+                }
+            } catch (err) {
+                if (window.notify) window.notify.error('Ошибка сети');
+            }
+        });
+    });
+
+    // ВЫПОЛНИТЬ — переход на дашборд с запуском таймера
+    document.querySelectorAll('.btn-done').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const card = this.closest('.task-card');
+            const taskId = card?.dataset.taskId;
+            const categoryId = card?.dataset.categoryId;
+            const title = card?.querySelector('.task-title')?.innerText || '';
+
+            if (!taskId) { if (window.notify) window.notify.error('ID задачи не найден'); return; }
+
+            sessionStorage.setItem('resumeTask', JSON.stringify({
+                categoryId: categoryId,
+                description: title,
+                taskId: taskId,
+                mode: 'start'
+            }));
+
+            window.location.href = '/dashboard/';
+        });
+    });
 });

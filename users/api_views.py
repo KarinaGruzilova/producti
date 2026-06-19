@@ -1,4 +1,3 @@
-# users/api_views.py
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -9,6 +8,18 @@ from django.conf import settings
 from .models import User
 import os
 from datetime import datetime
+
+from yookassa import Configuration, Payment
+from django.http import JsonResponse
+from rest_framework.views import APIView
+import uuid
+import random
+import string
+from django.shortcuts import render
+from .models import ProPromoCode
+from django.utils import timezone
+from datetime import timedelta
+from categories.models import Category, Task
 
 
 class UserProfileViewSet(viewsets.ViewSet):
@@ -40,24 +51,24 @@ class UserProfileViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Удаляем старый аватар, если он существует и не является дефолтным
+        # Удаляет старый аватар, если он существует и не является дефолтным
         if user.avatar and user.avatar.name != 'users_images/default.png':
             old_avatar_path = os.path.join(settings.MEDIA_ROOT, user.avatar.name)
             if os.path.exists(old_avatar_path):
                 os.remove(old_avatar_path)
         
-        # Формируем новое имя файла
+        # Формирует новое имя файла
         file_extension = os.path.splitext(avatar_file.name)[1]
         new_filename = f"users_images/{user.id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}{file_extension}"
         
-        # Сохраняем файл
+        # Сохраняю файл
         saved_path = default_storage.save(new_filename, ContentFile(avatar_file.read()))
         
-        # Обновляем поле avatar в модели User
+        # Обновляем поле  в модели User
         user.avatar = saved_path
         user.save()
         
-        # Возвращаем URL нового аватара
+        # URL нового аватара
         avatar_url = settings.MEDIA_URL + saved_path
         
         return Response({
@@ -68,10 +79,9 @@ class UserProfileViewSet(viewsets.ViewSet):
     
 
 
-
     @action(detail=False, methods=['get'], url_path='profile-data')
     def get_profile_data(self, request):
-        """Получение данных профиля для редактирования"""
+        # Получение данных профиля для редактирования
         user = request.user
         
         return Response({
@@ -83,7 +93,7 @@ class UserProfileViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'], url_path='update-profile')
     def update_profile(self, request):
-        """Обновление данных профиля"""
+        # Обновление данных профиля
         user = request.user
         
         new_username = request.data.get('username')
@@ -107,7 +117,7 @@ class UserProfileViewSet(viewsets.ViewSet):
         if new_email and new_email != user.email:
             user.email = new_email
         
-        # Обновление пароля (если указан и не пустой)
+        # Обновление пароля
         password_changed = False
         if new_password and new_password.strip():
             if len(new_password) < 6:
@@ -132,7 +142,7 @@ class UserProfileViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['get'], url_path='check-username')
     def check_username(self, request):
-        """Проверка уникальности логина"""
+        # Проверка уникальности логина
         username = request.query_params.get('username')
         if not username:
             return Response({'exists': False})
@@ -146,20 +156,19 @@ class UserProfileViewSet(viewsets.ViewSet):
 
 
 
-
 @action(detail=False, methods=['get'], url_path='monthly-trends')
 def monthly_trends(self, request):
-    """Линейная диаграмма: топ-6 категорий по кол-ву задач за месяц"""
+    # Линейная диаграмма: топ-6 категорий по кол-ву задач
     user = request.user
     today = timezone.now().date()
     first_day = today.replace(day=1)
     
-    # Получаем даты месяца
+    # Даты месяца
     days_in_month = (today - first_day).days + 1
     date_range = [first_day + timedelta(days=i) for i in range(days_in_month)]
     date_labels = [d.strftime('%d.%m') for d in date_range]
     
-    # Получаем категории с количеством задач за месяц
+    # Категории с количеством задач за месяц
     categories = Category.objects.filter(user=user, is_active=True)
     
     category_stats = []
@@ -182,7 +191,7 @@ def monthly_trends(self, request):
     category_stats.sort(key=lambda x: x['total'], reverse=True)
     top_categories = category_stats[:6]
     
-    # Формируем данные для графика
+    # Данные для графика
     result = {
         'dates': date_labels,
         'categories': []
@@ -211,19 +220,6 @@ def monthly_trends(self, request):
     return Response(result)
 
 
-# users/api_views.py
-from yookassa import Configuration, Payment
-from django.conf import settings
-from django.http import JsonResponse
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-import uuid
-import random
-import string
-from django.shortcuts import render
-from .models import ProPromoCode
-from django.utils import timezone
-from datetime import timedelta
 
 # Настройка YooKassa
 Configuration.account_id = settings.YOKASSA_SHOP_ID
@@ -231,14 +227,14 @@ Configuration.secret_key = settings.YOKASSA_SECRET_KEY
 
 
 def generate_promo_code():
-    """Генерация уникального промокода"""
+    # Генерация уникального промокода
     prefix = "PRO"
     random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
     return f"{prefix}-{random_part}"
 
 
 class CreatePaymentView(APIView):
-    """Создание платежа для подписки Pro"""
+    # Создание платежа для подписки Pro
     permission_classes = [IsAuthenticated]
     
     def post(self, request):
@@ -252,10 +248,10 @@ class CreatePaymentView(APIView):
         
         amount = prices.get(plan_type, 299)
         
-        # ГЕНЕРИРУЕМ ПРОМОКОД ЗДЕСЬ
+        # ГЕНЕРИРУЕМ ПРОМОКОД
         promo_code = generate_promo_code()
         
-        # Сохраняем в сессию (или сразу в БД со статусом pending)
+        # Сохраняем
         request.session['pending_promo'] = {
             'code': promo_code,
             'user_id': user.id,
@@ -265,7 +261,7 @@ class CreatePaymentView(APIView):
         
         idempotence_key = str(uuid.uuid4())
         
-        # Добавляем промокод в метаданные платежа
+        # Добавляю промокод в метаданные платежа
         payment = Payment.create({
             "amount": {
                 "value": str(amount),
@@ -283,7 +279,7 @@ class CreatePaymentView(APIView):
                 "user_id": user.id,
                 "username": user.username,
                 "plan_type": plan_type,
-                "promo_code": promo_code  # ← сохраняем промокод в метаданные
+                "promo_code": promo_code
             }
         }, idempotence_key)
         
@@ -291,12 +287,6 @@ class CreatePaymentView(APIView):
             'success': True,
             'confirmation_url': payment.confirmation.confirmation_url,
             'payment_id': payment.id,
-            'promo_code': promo_code  # ← возвращаем промокод на фронт
+            'promo_code': promo_code
         })
     
-
-
-
-    
-
-

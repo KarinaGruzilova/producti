@@ -1,22 +1,13 @@
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-9se71swa2c5hgqlme@ywqm-kko#a87jnor=&j4(yuue=^lfqz5'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = [ '127.0.0.1', 'localhost']
 
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -27,8 +18,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 'debug_toolbar',
-
-     # Добавить DRF
     'rest_framework',
 
     'main',
@@ -36,7 +25,6 @@ INSTALLED_APPS = [
     'users'
 ]
 
-# Добавить в середину файла
 INTERNAL_IPS = [
     '127.0.0.1',
     'localhost',
@@ -88,9 +76,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'app.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -109,9 +94,6 @@ import dj_database_url
 #     )
 # }
 # CSRF_TRUSTED_ORIGINS = ['https://producti-production.up.railway.app']
-
-
-# Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -129,9 +111,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = 'ru'
 
@@ -153,25 +132,16 @@ STATICFILES_DIRS = [
 ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Для продакшена:
+# Для продакшена
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
-
-
-# Добавить в конец файла
-# if DEBUG:
-#     import debug_toolbar
-#     MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
-
 
 LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
@@ -182,11 +152,5 @@ YOKASSA_SHOP_ID = '1360286'
 YOKASSA_SECRET_KEY = 'test_2YVIuF2elpzgjhsAS65gyHymMO86R1FKpVaKDiIPyG8'
 YOKASSA_TEST_MODE = True
 
-
-
-
-
-
-
-# Для разработки (письма будут выводиться в консоль)
+# Для разработки письма будут выводиться в консоль
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

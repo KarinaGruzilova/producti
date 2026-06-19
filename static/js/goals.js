@@ -1,12 +1,10 @@
-// static/js/goals.js
-
 const GOALS_API = '/api/goals/';
 
 let selectedType     = 'time';
 let selectedPeriod   = 'week';
 let selectedCategoryId = null;
 
-// ── CSRF ──
+// CSRF
 function getCookie(name) {
     let value = null;
     document.cookie.split(';').forEach(c => {
@@ -16,7 +14,7 @@ function getCookie(name) {
     return value;
 }
 
-// ── СООБЩЕНИЯ ──
+// СООБЩЕНИЯ
 function showMessage(msg, type) {
     if (window.notify) {
         if (type === 'error') window.notify.error(msg);
@@ -37,7 +35,7 @@ function markError(fieldId, msg) {
     else showMessage(msg, 'error');
 }
 
-// ── ОТКРЫТИЕ/ЗАКРЫТИЕ МОДАЛКИ ──
+// ОТКРЫТИЕ/ЗАКРЫТИЕ МОДАЛКИ
 function openModal() {
     document.getElementById('goalModal').classList.add('active');
     document.getElementById('goalModalOverlay').classList.add('active');
@@ -61,7 +59,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeModal();
 });
 
-// ── КНОПКИ ТИПА ──
+// КНОПКИ ТИПА
 document.querySelectorAll('.goal-type-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.goal-type-btn').forEach(b => b.classList.remove('selected'));
@@ -75,7 +73,7 @@ document.querySelectorAll('.goal-type-btn').forEach(btn => {
     });
 });
 
-// ── КНОПКИ ПЕРИОДА ──
+// КНОПКИ ПЕРИОДА
 document.querySelectorAll('.goal-period-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.goal-period-btn').forEach(b => b.classList.remove('selected'));
@@ -86,7 +84,7 @@ document.querySelectorAll('.goal-period-btn').forEach(btn => {
     });
 });
 
-// ── ПОИСК КАТЕГОРИЙ ──
+// ПОИСК КАТЕГОРИЙ
 const catSearch = document.getElementById('catSearch');
 if (catSearch) {
     const noResults = document.createElement('p');
@@ -107,7 +105,7 @@ if (catSearch) {
     });
 }
 
-// ── ВЫБОР КАТЕГОРИИ ──
+// ВЫБОР КАТЕГОРИИ
 document.querySelectorAll('.goal-cat-item').forEach(item => {
     item.addEventListener('click', () => {
         document.querySelectorAll('.goal-cat-item').forEach(p => {
@@ -116,17 +114,17 @@ document.querySelectorAll('.goal-cat-item').forEach(item => {
         });
         item.classList.add('selected');
         selectedCategoryId = item.dataset.id;
-        // Сбрасываем ошибку категории
+        // Сбрасываею ошибку категории
         const errEl = document.getElementById('goalFormError');
         if (errEl && errEl.textContent.includes('категор')) errEl.style.display = 'none';
     });
 });
 
-// ── ОТПРАВКА ФОРМЫ ──
+// ОТПРАВКА ФОРМЫ
 document.getElementById('submitGoal')?.addEventListener('click', async () => {
     clearErrors();
 
-    // ── ПРОВЕРКА ЛИМИТА FREE ТАРИФА ──
+    // ПРОВЕРКА ЛИМИТА
     const isPro = document.body.dataset.isPro === 'true';
     if (!isPro) {
         try {
@@ -140,14 +138,14 @@ document.getElementById('submitGoal')?.addEventListener('click', async () => {
     }
 
     const title    = document.getElementById('goalTitle')?.value.trim();
-    // ... остальной код без изменений
+
     const target = document.getElementById('goalTarget')?.value;
     const deadline = document.getElementById('goalDeadline')?.value;
 
     let valid = true;
 
     if (!selectedCategoryId) {
-        // Подсвечиваем список категорий
+        // Подсвечивает список категорий
         document.querySelectorAll('.goal-cat-item').forEach(el => {
             el.style.borderColor = '#FF4444';
         });
@@ -155,23 +153,52 @@ document.getElementById('submitGoal')?.addEventListener('click', async () => {
         valid = false;
     }
 
-    if (!title) {
-        if (valid) markError('goalTitle', 'Введите название цели');
-        else document.getElementById('goalTitle').style.borderBottomColor = '#FF4444';
-        valid = false;
-    }
+if (!title) {
+    if (valid) markError('goalTitle', 'Введите название цели');
+    else document.getElementById('goalTitle').style.borderBottomColor = '#FF4444';
+    valid = false;
+}
 
-    if (!target || parseFloat(target) <= 0) {
-        if (valid) markError('goalTarget', 'Укажите целевое значение больше 0');
-        else document.getElementById('goalTarget').style.borderBottomColor = '#FF4444';
-        valid = false;
-    }
+if (title && title.length > 100) {
+    if (valid) markError('goalTitle', 'Название не должно превышать 100 символов');
+    else document.getElementById('goalTitle').style.borderBottomColor = '#FF4444';
+    valid = false;
+}
 
-    if (selectedPeriod === 'custom' && !deadline) {
+const targetIsValidInteger = !!target && /^[0-9]+$/.test(target.trim());
+const targetNum = targetIsValidInteger ? parseInt(target.trim(), 10) : NaN;
+
+if (!target || !targetIsValidInteger || isNaN(targetNum) || targetNum <= 0) {
+    if (valid) markError('goalTarget', 'Введите целое число больше 0');
+    else document.getElementById('goalTarget').style.borderBottomColor = '#FF4444';
+    valid = false;
+} else if (targetNum > 99999) {
+    if (valid) markError('goalTarget', 'Значение не должно превышать 99 999');
+    else document.getElementById('goalTarget').style.borderBottomColor = '#FF4444';
+    valid = false;
+}
+if (selectedPeriod === 'custom') {
+    if (!deadline) {
         if (valid) markError('goalDeadline', 'Укажите дату выполнения');
         else document.getElementById('goalDeadline').style.borderBottomColor = '#FF4444';
         valid = false;
+    } else {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const selectedDate = new Date(deadline);
+        const maxDate = new Date(today.getFullYear() + 5, today.getMonth(), today.getDate());
+
+        if (selectedDate <= today) {
+            if (valid) markError('goalDeadline', 'Дата должна быть позже сегодняшнего дня');
+            else document.getElementById('goalDeadline').style.borderBottomColor = '#FF4444';
+            valid = false;
+        } else if (selectedDate > maxDate) {
+            if (valid) markError('goalDeadline', 'Дата не должна быть позже чем через 5 лет');
+            else document.getElementById('goalDeadline').style.borderBottomColor = '#FF4444';
+            valid = false;
+        }
     }
+}
 
     if (!valid) return;
 
@@ -189,7 +216,7 @@ document.getElementById('submitGoal')?.addEventListener('click', async () => {
                 title,
                 goal_type:    selectedType,
                 category_id:  selectedCategoryId,
-                target_value: parseFloat(target),
+                target_value: targetNum,
                 period:       selectedPeriod,
                 deadline:     selectedPeriod === 'custom' ? deadline : null,
             }),
@@ -210,7 +237,7 @@ document.getElementById('submitGoal')?.addEventListener('click', async () => {
     }
 });
 
-// ── ЗАГРУЗКА ЦЕЛЕЙ ──
+// ЗАГРУЗКА ЦЕЛЕЙ
 async function loadGoals() {
     try {
         const [activeRes, archiveRes] = await Promise.all([
@@ -271,7 +298,7 @@ function createGoalCard(goal, archived) {
         <div class="goal-card-header">
             <div class="goal-card-left">
                 <span class="goal-category">${goal.category_emoji} ${goal.category_name}</span>
-                <div class="goal-title">${goal.title}</div>
+                <div class="goal-title">${truncateText(goal.title, 30)}</div>
             </div>
             ${!archived ? `
             <button class="goal-delete" data-id="${goal.id}" title="Удалить">

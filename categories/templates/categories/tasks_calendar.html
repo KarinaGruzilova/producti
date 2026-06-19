@@ -8,227 +8,224 @@
 {% block content %}
 <div class="content-container">
 
-    <!-- HEADER ROW -->
     <div class="page-header">
         <div class="page-header-left">
             <div class="page-title">Мои задачи</div>
                 <div class="stat-pill">
-                    {% comment %} <div class="dot" style="background:#2D268C"></div> {% endcomment %}
                     Всего активных
                     <span class="count">{{ total_incomplete }}</span>
                 </div>
             </div>
-        <div class="stat-info-tasks">
-            <div class="stats-strip">
-                <div class="stat-pill">
-                    <div class="dot dot-red"></div>
-                    Просроченные
-                    <span class="count">{{ overdue_tasks.count }}</span>
-                </div>
-                <div class="stat-pill">
-                    <div class="dot dot-green"></div>
-                    Активные
-                    <span class="count">{{ active_tasks.count }}</span>
-                </div>
-                <div class="stat-pill">
-                    <div class="dot dot-blue"></div>
-                    Запланированные
-                    <span class="count">{{ planned_tasks.count }}</span>
-                </div>
-            </div>
-
-
-            <button class="btn-create" id="openCreateTaskModal">
-                + Запланировать задачу
-            </button>
-        </div>
-    </div>
-
-
-    <!-- COLUMNS -->
-    <div class="all-tasks">
-
-        <!-- OVERDUE -->
-        <div class="column col-overdue">
-            <div class="column-header">
-                <div class="col-title">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                    Просроченные
-                </div>
-                <span class="col-badge">{{ overdue_tasks.count }}</span>
-            </div>
-            <div class="tasks">
-                {% for task in overdue_tasks %}
-                <div class="task-card" data-task-id="{{ task.id }}" data-category-id="{{ task.category.id }}">
-                    <div class="accent-bar accent-red"></div>
-                    <button class="task-cat" style="background-color: {{ task.category.color }}; color: #fff;">
-                        {{ task.category.emoji }} {{ task.category.name }}
-                    </button>
-                    <p class="task-title">{{ task.title }}</p>
-                    <div class="task-footer">
-                        <span class="task-date date-red">до {{ task.due_date|date:"d.m.Y" }}</span>
-                        <div class="task-actions">
-                            <button class="btn-done run">выполнить</button>
-                            <button class="btn-del mysor">
-                                <svg width="11" height="12" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7.375 5.16667V9.83333M4.625 5.16667V9.83333M1.875 2.5V10.3667C1.875 11.1134 1.875 11.4865 2.02487 11.7717C2.15669 12.0226 2.36689 12.227 2.62561 12.3548C2.91945 12.5 3.30431 12.5 4.07288 12.5H7.92712C8.69569 12.5 9.07999 12.5 9.37383 12.3548C9.63256 12.227 9.84345 12.0226 9.97528 11.7717C10.125 11.4868 10.125 11.114 10.125 10.3687V2.5M1.875 2.5H3.25M1.875 2.5H0.5M3.25 2.5H8.75M3.25 2.5C3.25 1.87874 3.25 1.56827 3.35467 1.32324C3.49422 0.996538 3.76172 0.736819 4.09863 0.601494C4.35132 0.5 4.67183 0.5 5.3125 0.5H6.6875C7.32817 0.5 7.6485 0.5 7.90119 0.601494C8.2381 0.736819 8.50571 0.996538 8.64526 1.32324C8.74993 1.56827 8.75 1.87875 8.75 2.5M8.75 2.5H10.125M10.125 2.5H11.5" stroke="#757575" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
-                        </div>
+            <div class="stat-info-tasks">
+                <div class="stats-strip">
+                    <div class="stat-pill">
+                        <div class="dot dot-red"></div>
+                        Просроченные
+                        <span class="count">{{ overdue_tasks.count }}</span>
+                    </div>
+                    <div class="stat-pill">
+                        <div class="dot dot-green"></div>
+                        Активные
+                        <span class="count">{{ active_tasks.count }}</span>
+                    </div>
+                    <div class="stat-pill">
+                        <div class="dot dot-blue"></div>
+                        Запланированные
+                        <span class="count">{{ planned_tasks.count }}</span>
                     </div>
                 </div>
-                {% empty %}
-                <div class="empty-state">
-                    <p>Просроченных задач нет</p>
-                </div>
-                {% endfor %}
+
+                <button class="btn-create" id="openCreateTaskModal">
+                    + Запланировать задачу
+                </button>
             </div>
         </div>
 
-        <!-- ACTIVE -->
-        <div class="column col-active">
-            <div class="column-header">
-                <div class="col-title">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
-                    Активные
-                </div>
-                <span class="col-badge">{{ active_tasks.count }}</span>
-            </div>
-            <div class="tasks">
-                {% for task in active_tasks %}
-                <div class="task-card" data-task-id="{{ task.id }}" data-category-id="{{ task.category.id }}">
-                    <div class="accent-bar accent-green"></div>
-                    <button class="task-cat" style="background-color: {{ task.category.color }}; color: #fff;">
-                        {{ task.category.emoji }} {{ task.category.name }}
-                    </button>
-                    <p class="task-title">{{ task.title }}</p>
-                    <div class="task-footer">
-                        <span class="task-date date-green">сегодня {{ task.created_at|date:"H:i" }}</span>
-                        <div class="task-actions">
-                            <button class="btn-done run" data-task-id="{{ task.id }}">выполнить</button>
-                            <button class="btn-del mysor">
-                                <svg width="11" height="12" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7.375 5.16667V9.83333M4.625 5.16667V9.83333M1.875 2.5V10.3667C1.875 11.1134 1.875 11.4865 2.02487 11.7717C2.15669 12.0226 2.36689 12.227 2.62561 12.3548C2.91945 12.5 3.30431 12.5 4.07288 12.5H7.92712C8.69569 12.5 9.07999 12.5 9.37383 12.3548C9.63256 12.227 9.84345 12.0226 9.97528 11.7717C10.125 11.4868 10.125 11.114 10.125 10.3687V2.5M1.875 2.5H3.25M1.875 2.5H0.5M3.25 2.5H8.75M3.25 2.5C3.25 1.87874 3.25 1.56827 3.35467 1.32324C3.49422 0.996538 3.76172 0.736819 4.09863 0.601494C4.35132 0.5 4.67183 0.5 5.3125 0.5H6.6875C7.32817 0.5 7.6485 0.5 7.90119 0.601494C8.2381 0.736819 8.50571 0.996538 8.64526 1.32324C8.74993 1.56827 8.75 1.87875 8.75 2.5M8.75 2.5H10.125M10.125 2.5H11.5" stroke="#757575" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
-                        </div>
+        
+        <div class="all-tasks">
+
+            <!-- Просроченные -->
+            <div class="column col-overdue">
+                <div class="column-header">
+                    <div class="col-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        Просроченные
                     </div>
+                    <span class="col-badge">{{ overdue_tasks.count }}</span>
                 </div>
-                {% empty %}
-                <div class="empty-state">
-                    {% comment %} <div class="empty-icon">🌟</div> {% endcomment %}
-                    <p>Нет активных задач на сегодня</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
+                <div class="tasks">
+                    {% for task in overdue_tasks %}
+                    <div class="task-card" data-task-id="{{ task.id }}" data-category-id="{{ task.category.id }}">
+                        <div class="accent-bar accent-red"></div>
 
-        <!-- PLANNED -->
-        <div class="column col-planned">
-            <div class="column-header">
-                <div class="col-title">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                    Запланированные
-                </div>
-                <span class="col-badge">{{ planned_tasks.count }}</span>
-            </div>
-            <div class="tasks">
-                {% for task in planned_tasks %}
-                <div class="task-card" data-task-id="{{ task.id }}" data-category-id="{{ task.category.id }}">
-                    <div class="accent-bar accent-blue"></div>
-                        <button class="task-cat" style="background-color: {{ task.category.color }}; color:#fff;">
-                            {{ task.category.emoji }} {{ task.category.name }}
+                        <button class="task-cat" style="background-color: {{ task.category.color }}; color: #fff;">
+                            {{ task.category.emoji }} {{ task.category.name|truncatechars:20 }}
                         </button>
-                    <p class="task-title">{{ task.title }}</p>
-                    <div class="task-footer">
-                        <span class="task-date date-blue">{{ task.due_date|date:"d.m.Y" }}</span>
-                        <div class="task-actions">
-                            <button class="btn-done run">выполнить</button>
-                            <button class="btn-del mysor">
-                                <svg width="11" height="12" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7.375 5.16667V9.83333M4.625 5.16667V9.83333M1.875 2.5V10.3667C1.875 11.1134 1.875 11.4865 2.02487 11.7717C2.15669 12.0226 2.36689 12.227 2.62561 12.3548C2.91945 12.5 3.30431 12.5 4.07288 12.5H7.92712C8.69569 12.5 9.07999 12.5 9.37383 12.3548C9.63256 12.227 9.84345 12.0226 9.97528 11.7717C10.125 11.4868 10.125 11.114 10.125 10.3687V2.5M1.875 2.5H3.25M1.875 2.5H0.5M3.25 2.5H8.75M3.25 2.5C3.25 1.87874 3.25 1.56827 3.35467 1.32324C3.49422 0.996538 3.76172 0.736819 4.09863 0.601494C4.35132 0.5 4.67183 0.5 5.3125 0.5H6.6875C7.32817 0.5 7.6485 0.5 7.90119 0.601494C8.2381 0.736819 8.50571 0.996538 8.64526 1.32324C8.74993 1.56827 8.75 1.87875 8.75 2.5M8.75 2.5H10.125M10.125 2.5H11.5" stroke="#757575" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="empty-state">
-                    {% comment %} <div class="empty-icon">📅</div> {% endcomment %}
-                    <p>Запланированных задач нет</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
 
-    </div><!-- /all-tasks -->
+                        <p class="task-title">{{ task.title|truncatechars:30 }}</p>
 
-    <!-- MODAL OVERLAY -->
-    <div id="modalOverlay" class="modal-overlay"></div>
-
-    <!-- MODAL CREATE TASK -->
-    <div id="createTaskModal" class="modal">
-        <div class="modal-content">
-            <button class="close-mod1">&times;</button>
-            <h3 class="modal-title">На чём сфокусируемся?</h3>
-
-            {% comment %} <div class="section-label">Категория</div> {% endcomment %}
-            <div class="category-content">
-                <div class="categories-container">
-                    <div class="categories-row">
-                        {% for category in categories|slice:":3" %}
-                        <button class="category cat-pill"
-                                data-value="{{ category.name|lower }}"
-                                data-id="{{ category.id }}"
-                                data-name="{{ category.name }}">
-                            <span>{{ category.emoji }}</span>
-                            <span>{{ category.name }}</span>
-                        </button>
-                        {% endfor %}
-                    </div>
-                    <div class="categories-row">
-                        {% if categories|length > 3 %}
-                        <div class="category-select-wrapper">
-                            <button class="category cat-pill category-select-btn" data-value="other">
-                                <span>выбрать</span>
-                                <svg width="10" height="6" viewBox="0 0 9 5" fill="none" class="select-arrow">
-                                    <path d="M8.5 0.5L4.5 4.5L0.5 0.5" stroke="#2D268C" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
-                            <div class="category-dropdown">
-                                {% for category in categories|slice:"3:" %}
-                                <div class="category-option"
-                                     data-value="{{ category.name|lower }}"
-                                     data-id="{{ category.id }}">
-                                    {{ category.emoji }} {{ category.name }}
-                                </div>
-                                {% endfor %}
+                        <div class="task-footer">
+                            <span class="task-date date-red">до {{ task.due_date|date:"d.m.Y" }}</span>
+                            <div class="task-actions">
+                                <button class="btn-done run">выполнить</button>
+                                
+                                <button class="btn-del mysor">
+                                    <svg width="11" height="12" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.375 5.16667V9.83333M4.625 5.16667V9.83333M1.875 2.5V10.3667C1.875 11.1134 1.875 11.4865 2.02487 11.7717C2.15669 12.0226 2.36689 12.227 2.62561 12.3548C2.91945 12.5 3.30431 12.5 4.07288 12.5H7.92712C8.69569 12.5 9.07999 12.5 9.37383 12.3548C9.63256 12.227 9.84345 12.0226 9.97528 11.7717C10.125 11.4868 10.125 11.114 10.125 10.3687V2.5M1.875 2.5H3.25M1.875 2.5H0.5M3.25 2.5H8.75M3.25 2.5C3.25 1.87874 3.25 1.56827 3.35467 1.32324C3.49422 0.996538 3.76172 0.736819 4.09863 0.601494C4.35132 0.5 4.67183 0.5 5.3125 0.5H6.6875C7.32817 0.5 7.6485 0.5 7.90119 0.601494C8.2381 0.736819 8.50571 0.996538 8.64526 1.32324C8.74993 1.56827 8.75 1.87875 8.75 2.5M8.75 2.5H10.125M10.125 2.5H11.5" stroke="#757575" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
-                        {% endif %}
                     </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <p>Просроченных задач нет</p>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
-            <div class="section-label">Срок выполнения (необязательно)</div>
-            <div class="date-chose">
-                <div class="date-select">
-                    <div class="data-info">
-                        <input type="date" id="taskDueDate" class="modal-input date-input" placeholder="дд.мм.гггг">
-                        <input type="time" id="taskTime" class="modal-input time-input" placeholder="чч:мм">
+            <!-- Активные -->
+            <div class="column col-active">
+                <div class="column-header">
+                    <div class="col-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
+                        Активные
                     </div>
+                    <span class="col-badge">{{ active_tasks.count }}</span>
+                </div>
+                <div class="tasks">
+                    {% for task in active_tasks %}
+                    <div class="task-card" data-task-id="{{ task.id }}" data-category-id="{{ task.category.id }}">
+                        <div class="accent-bar accent-green"></div>
+                        <button class="task-cat" style="background-color: {{ task.category.color }}; color: #fff;">
+                            {{ task.category.emoji }} {{ task.category.name|truncatechars:20 }}
+                        </button>
+                        <p class="task-title">{{ task.title|truncatechars:30 }}</p>
+                        <div class="task-footer">
+                            <span class="task-date date-green">сегодня {{ task.created_at|date:"H:i" }}</span>
+                            <div class="task-actions">
+                                <button class="btn-done run" data-task-id="{{ task.id }}">выполнить</button>
+                                <button class="btn-del mysor">
+                                    <svg width="11" height="12" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.375 5.16667V9.83333M4.625 5.16667V9.83333M1.875 2.5V10.3667C1.875 11.1134 1.875 11.4865 2.02487 11.7717C2.15669 12.0226 2.36689 12.227 2.62561 12.3548C2.91945 12.5 3.30431 12.5 4.07288 12.5H7.92712C8.69569 12.5 9.07999 12.5 9.37383 12.3548C9.63256 12.227 9.84345 12.0226 9.97528 11.7717C10.125 11.4868 10.125 11.114 10.125 10.3687V2.5M1.875 2.5H3.25M1.875 2.5H0.5M3.25 2.5H8.75M3.25 2.5C3.25 1.87874 3.25 1.56827 3.35467 1.32324C3.49422 0.996538 3.76172 0.736819 4.09863 0.601494C4.35132 0.5 4.67183 0.5 5.3125 0.5H6.6875C7.32817 0.5 7.6485 0.5 7.90119 0.601494C8.2381 0.736819 8.50571 0.996538 8.64526 1.32324C8.74993 1.56827 8.75 1.87875 8.75 2.5M8.75 2.5H10.125M10.125 2.5H11.5" stroke="#757575" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        {% comment %} <div class="empty-icon">🌟</div> {% endcomment %}
+                        <p>Нет активных задач на сегодня</p>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
-            <input class="modal-input mod1-tasks" type="text" id="taskTitle" placeholder="Название задачи *" required>
-            <input class="modal-input mod1-tasks" type="text" id="taskDescription" placeholder="Описание задачи (необязательно)">
-
-            <div class="button-mod1">
-                <button class="btn-submit start" id="submitTaskBtn">Создать задачу</button>
+            <!-- Запланированные -->
+            <div class="column col-planned">
+                <div class="column-header">
+                    <div class="col-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                        Запланированные
+                    </div>
+                    <span class="col-badge">{{ planned_tasks.count }}</span>
+                </div>
+                <div class="tasks">
+                    {% for task in planned_tasks %}
+                    <div class="task-card" data-task-id="{{ task.id }}" data-category-id="{{ task.category.id }}">
+                        <div class="accent-bar accent-blue"></div>
+                            <button class="task-cat" style="background-color: {{ task.category.color }}; color:#fff;">
+                                {{ task.category.emoji }} {{ task.category.name|truncatechars:20 }}
+                            </button>
+                        <p class="task-title">{{ task.title|truncatechars:30 }}</p>
+                        <div class="task-footer">
+                            <span class="task-date date-blue">{{ task.due_date|date:"d.m.Y" }}</span>
+                            <div class="task-actions">
+                                <button class="btn-done run">выполнить</button>
+                                <button class="btn-del mysor">
+                                    <svg width="11" height="12" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.375 5.16667V9.83333M4.625 5.16667V9.83333M1.875 2.5V10.3667C1.875 11.1134 1.875 11.4865 2.02487 11.7717C2.15669 12.0226 2.36689 12.227 2.62561 12.3548C2.91945 12.5 3.30431 12.5 4.07288 12.5H7.92712C8.69569 12.5 9.07999 12.5 9.37383 12.3548C9.63256 12.227 9.84345 12.0226 9.97528 11.7717C10.125 11.4868 10.125 11.114 10.125 10.3687V2.5M1.875 2.5H3.25M1.875 2.5H0.5M3.25 2.5H8.75M3.25 2.5C3.25 1.87874 3.25 1.56827 3.35467 1.32324C3.49422 0.996538 3.76172 0.736819 4.09863 0.601494C4.35132 0.5 4.67183 0.5 5.3125 0.5H6.6875C7.32817 0.5 7.6485 0.5 7.90119 0.601494C8.2381 0.736819 8.50571 0.996538 8.64526 1.32324C8.74993 1.56827 8.75 1.87875 8.75 2.5M8.75 2.5H10.125M10.125 2.5H11.5" stroke="#757575" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        {% comment %} <div class="empty-icon">📅</div> {% endcomment %}
+                        <p>Запланированных задач нет</p>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
-    </div>
 
+        <div id="modalOverlay" class="modal-overlay"></div>
+        <!-- Модальное окно создания задачи -->
+        <div id="createTaskModal" class="modal">
+            <div class="modal-content">
+                <button class="close-mod1">&times;</button>
+                <h3 class="modal-title">На чём сфокусируемся?</h3>
+
+                {% comment %} <div class="section-label">Категория</div> {% endcomment %}
+                <div class="category-content">
+                    <div class="categories-container">
+                        <div class="categories-row">
+                            {% for category in categories|slice:":3" %}
+                            <button class="category cat-pill"
+                                    data-value="{{ category.name|lower }}"
+                                    data-id="{{ category.id }}"
+                                    data-name="{{ category.name }}">
+                                <span>{{ category.emoji }}</span>
+                                <span>{{ category.name }}</span>
+                            </button>
+                            {% endfor %}
+                        </div>
+                        <div class="categories-row">
+                            {% if categories|length > 3 %}
+                            <div class="category-select-wrapper">
+                                <button class="category cat-pill category-select-btn" data-value="other">
+                                    <span>выбрать</span>
+                                    <svg width="10" height="6" viewBox="0 0 9 5" fill="none" class="select-arrow">
+                                        <path d="M8.5 0.5L4.5 4.5L0.5 0.5" stroke="#2D268C" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                                <div class="category-dropdown">
+                                    {% for category in categories|slice:"3:" %}
+                                    <div class="category-option"
+                                        data-value="{{ category.name|lower }}"
+                                        data-id="{{ category.id }}">
+                                        {{ category.emoji }} {{ category.name }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-label">Срок выполнения (необязательно)</div>
+                <div class="date-chose">
+                    <div class="date-select">
+                        <div class="data-info">
+                            <input type="date" id="taskDueDate" class="modal-input date-input" placeholder="дд.мм.гггг">
+                            <input type="time" id="taskTime" class="modal-input time-input" placeholder="чч:мм">
+                        </div>
+                    </div>
+                </div>
+
+                <input class="modal-input mod1-tasks" type="text" id="taskTitle" placeholder="Название задачи" maxlength="100" required>
+                <input class="modal-input mod1-tasks" type="text" id="taskDescription" placeholder="Описание задачи (необязательно)" maxlength="500">
+
+                <div class="button-mod1">
+                    <button class="btn-submit start" id="submitTaskBtn">Создать задачу</button>
+                </div>
+            </div>
+        </div>
+    </div>  
 </div>
 {% endblock %}
 

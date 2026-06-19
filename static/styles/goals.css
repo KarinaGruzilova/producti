@@ -1,19 +1,8 @@
-/* ============================================================
-   goals.css  |  Producti — Цели
-   ============================================================ */
- 
-/* ── ШАПКА СТРАНИЦЫ ── */
-
-
-
-
-
 html, body {
     overflow-y: auto !important;
     height: auto !important;
 }
 
-/* Минимальная высота контейнера — весь экран */
 .content-container {
     min-height: calc(100vh - 120px);
     display: flex;
@@ -61,7 +50,6 @@ html, body {
 }
 
  
-/* ── СЕКЦИЯ-ЗАГОЛОВОК ── */
 .section-heading {
     font-size: 15px;
     font-weight: 700;
@@ -72,14 +60,13 @@ html, body {
     margin-top: 8px;
 }
  
-/* ── СЕТКА ЦЕЛЕЙ ── */
+/* СЕТКА ЦЕЛЕЙ */
 .goals-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 18px;
 }
  
-/* ── КАРТОЧКА ЦЕЛИ ── */
 .goal-card {
     background: #fff;
     border-radius: 28px;
@@ -113,7 +100,7 @@ html, body {
 .goal-card.completed { opacity: 0.75; }
 .goal-card.failed::before { background: #8B0000; }
  
-/* ── ШАПКА КАРТОЧКИ ── */
+
 .goal-card-header {
     display: flex;
     align-items: flex-start;
@@ -157,7 +144,7 @@ html, body {
 .goal-delete:hover { background: #FFF0F0; }
 .goal-delete:hover svg path { stroke: #8B0000; }
  
-/* ── ПРОГРЕСС-БАР ── */
+/* ПРОГРЕСС-БАР */
 .goal-progress-wrap { display: flex; flex-direction: column; gap: 8px; }
  
 .goal-progress-bar-bg {
@@ -204,7 +191,7 @@ html, body {
     color: #2A2A2A;
 }
  
-/* ── ФУТЕР КАРТОЧКИ ── */
+/* ФУТЕР КАРТОЧКИ */
 .goal-card-footer {
     display: flex;
     align-items: center;
@@ -235,7 +222,7 @@ html, body {
 .goal-status-badge.completed { background: #F0FFF1; color: #2E7D32; }
 .goal-status-badge.failed    { background: #FFF0F0; color: #8B0000; }
  
-/* ── ПУСТОЕ СОСТОЯНИЕ ── */
+
 .goals-empty {
     grid-column: 1 / -1;
     background: #fff;
@@ -271,7 +258,7 @@ html, body {
  
 .btn-empty-add:hover { background: #AEBCFE; color: #2D268C; }
  
-/* ── АРХИВ ── */
+/* АРХИВ */
 .goals-archive-toggle {
     display: flex;
     align-items: center;
@@ -312,7 +299,7 @@ html, body {
  
 .goals-archive-grid.open { display: grid; }
  
-/* ── МОДАЛЬНОЕ ОКНО ── */
+/* МОДАЛЬНОЕ ОКНО */
 .goal-modal-overlay {
     display: none;
     position: fixed;
@@ -487,7 +474,7 @@ html, body {
     color: #2D268C;
 }
  
-/* Инпуты */
+
 .goal-input {
     width: 82%;
     padding: 12px 20px;
@@ -512,11 +499,10 @@ html, body {
     border-bottom-color: #FF4444 !important;
 }
  
-/* Дата (скрыта по умолчанию) */
+
 .goal-deadline-wrap { display: none; margin-bottom: 14px; }
 .goal-deadline-wrap.visible { display: block; }
- 
-/* Кнопка сабмита */
+
 .goal-submit-btn {
     padding: 12px 32px;
     background: #2d268c;
@@ -534,7 +520,7 @@ html, body {
 
 .goal-submit-btn:hover { background: #eceffe; color: #2d268c; }
 
-/* ── СПИСОК КАТЕГОРИЙ С ПОИСКОМ ── */
+/* СПИСОК КАТЕГОРИЙ С ПОИСКОМ */
 .goal-cat-list {
     display: flex;
     flex-direction: column;

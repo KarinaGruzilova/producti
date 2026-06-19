@@ -6,7 +6,7 @@ from django.db.models import Sum
 from django.utils import timezone
 from datetime import timedelta
 
-from .models import Category, Task
+from .models import Category, Task, Goal
 from .serializers import CategorySerializer, TaskSerializer
 
 from rest_framework.views import APIView
@@ -16,6 +16,8 @@ from datetime import datetime
 import csv
 import json
 import io
+
+from django.db import IntegrityError
 
 class CategoryViewSet(viewsets.ModelViewSet):
     
@@ -38,7 +40,22 @@ class CategoryViewSet(viewsets.ModelViewSet):
                 'error': 'Достигнут лимит категорий (5). Оформите Pro-подписку для безлимита.'
             })
     
-        serializer.save(user=user)
+        try:
+            serializer.save(user=user)
+        except IntegrityError:
+            from rest_framework import serializers
+            raise serializers.ValidationError({
+                'error': 'Категория с таким названием уже существует'
+            })
+
+    def perform_update(self, serializer):
+        try:
+            serializer.save()
+        except IntegrityError:
+            from rest_framework import serializers
+            raise serializers.ValidationError({
+                'error': 'Категория с таким названием уже существует'
+            })
     
     @action(detail=True, methods=['get'])
     def tasks(self, request, pk=None):
@@ -59,7 +76,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 class TaskViewSet(viewsets.ModelViewSet):
-    """API для управления задачами"""
+    # API для управления задачами
     
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
@@ -109,7 +126,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 
 
 class StatsViewSet(viewsets.ViewSet):
-    """API для статистики"""
+    # API для статистики
     
     permission_classes = [IsAuthenticated]
     
@@ -150,7 +167,7 @@ class StatsViewSet(viewsets.ViewSet):
     
     @action(detail=False, methods=['get'])
     def month(self, request):
-        """Статистика за последние 30 дней (для круговой диаграммы)"""
+        # Статистика за последние 30 дней (для круговой диаграммы)
         month_ago = timezone.now().date() - timedelta(days=30)
         
         categories_stats = []
@@ -210,7 +227,7 @@ class StatsViewSet(viewsets.ViewSet):
     
     @action(detail=False, methods=['get'])
     def category_detail(self, request):
-        """Статистика для детальной страницы категории"""
+        # Статистика для детальной страницы категории
         category_id = request.query_params.get('category_id')
         if not category_id:
             return Response({'error': 'category_id required'}, status=400)
@@ -291,7 +308,7 @@ class StatsViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['get'], url_path='monthly-trends')
     def monthly_trends(self, request):
-        """Tоп-6 категорий по количеству задач за месяц"""
+        # Tоп-6 категорий по количеству задач за месяц
         user = request.user
         today = timezone.now().date()
         first_day = today.replace(day=1)
@@ -301,7 +318,7 @@ class StatsViewSet(viewsets.ViewSet):
         date_range = [first_day + timedelta(days=i) for i in range(days_range)]
         date_labels = [d.strftime('%d.%m') for d in date_range]
         
-        # Cтатистику по категориям за месяц
+        # Cтатистикa по категориям за месяц
         categories = Category.objects.filter(user=user, is_active=True)
         
         category_stats = []
@@ -345,28 +362,17 @@ class StatsViewSet(viewsets.ViewSet):
             })
         
         return Response(result)
-    
-
-
-
-
-    from rest_framework import viewsets, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.utils import timezone
-from .models import Goal
  
- 
+
 class GoalViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
  
     def list(self, request):
-        """Активные цели пользователя"""
+        # Активные цели пользователя
         goals = Goal.objects.filter(user=request.user, status='active')
         data = []
         for goal in goals:
-            # Автоматически проверяем выполнение
+            # Проверяем выполнение
             if goal.progress_percent >= 100:
                 goal.status = 'completed'
                 goal.completed_at = timezone.now()
@@ -382,7 +388,7 @@ class GoalViewSet(viewsets.ViewSet):
  
     @action(detail=False, methods=['get'])
     def archive(self, request):
-        """Выполненные и просроченные цели"""
+        # Выполненные и просроченные цели
         goals = Goal.objects.filter(
             user=request.user,
             status__in=['completed', 'failed']
@@ -437,7 +443,7 @@ class GoalViewSet(viewsets.ViewSet):
     def _serialize(self, goal):
         from datetime import date
     
-    # Безопасно получаем end_date
+    # Безопасно получает end_date
         end_date = goal.end_date
         if isinstance(end_date, str):
             try:
@@ -445,7 +451,7 @@ class GoalViewSet(viewsets.ViewSet):
             except (ValueError, TypeError):
                 end_date = None
         
-        # Безопасно проверяем is_overdue
+        # Безопасно проверяет is_overdue
         try:
             is_overdue = bool(end_date and date.today() > end_date)
         except TypeError:
